@@ -23,6 +23,20 @@ void App::Update() {
       }
     }
   }
+
+  if (Util::Input::IsKeyDown(Util::Keycode::W)) {
+    fire_boy->Jump();
+  }
+  if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
+    fire_boy->MoveRight();
+  }
+  if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
+    fire_boy->MoveLeft();
+  }
+
+  float deltaTime = 1.0f / 60.0f; // 設定時間步長 (假設 60FPS)
+  fire_boy->Update(deltaTime);
+
   // float expect_x = Fire_boy->GetPosition().x;
   // float expect_y = Fire_boy->GetPosition().y;
 

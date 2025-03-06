@@ -16,17 +16,11 @@ void App::Start() {
   start_btn->SetZIndex(50);
   m_Root.AddChild(start_btn);
 
-  // fb = std::make_shared<FireBoy>();
-  // m_Root.AddChild(Fire_boy);
-  // Fire_boy = std::make_shared<FireBoy>();
-  // Fire_boy->SetZIndex(55);
-  // Fire_boy->m_Transform.scale = {0.4, 0.4f};
-  // m_Root.AddChild(Fire_boy);
-  boy = std::make_shared<FireBoy>(GA_RESOURCE_DIR "/FireBoy/boy/boy_1.png");
-  boy->SetPosition({0, 0});
-  boy->SetZIndex(55);
-  boy->m_Transform.scale = {0.4, 0.4f};
-  m_Root.AddChild(boy);
+  fire_boy = std::make_shared<FireBoy>();
+  // fire_boy->Set({0, 0});
+  fire_boy->SetZIndex(55);
+  fire_boy->m_Transform.scale = {0.4, 0.4f};
+  m_Root.AddChild(fire_boy);
 
   // LOG_DEBUG(Fire_boy->GetScaledSize());
   m_PRM = std::make_shared<PhaseResourceManger>();
