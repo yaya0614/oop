@@ -2,6 +2,7 @@
 #define APP_HPP
 
 #include "FireBoy.hpp"
+#include "MapBackground.hpp"
 #include "pch.hpp" // IWYU pragma: export
 
 #include "AnimatedCharacter.hpp"
@@ -48,9 +49,10 @@ private:
   std::shared_ptr<Character> start_btn;
   std::shared_ptr<FireBoy> fire_boy;
   std::shared_ptr<Character> m_Chest;
+  std::shared_ptr<MapBackground> mapbackground;
 
-  std::shared_ptr<Character> Background;
-  std::shared_ptr<Character> Level1;
+  // std::shared_ptr<Character> Background;
+  // std::shared_ptr<Character> Level1;
   std::vector<std::shared_ptr<Character>> m_Doors;
 
   std::shared_ptr<AnimatedCharacter> m_Bee;
