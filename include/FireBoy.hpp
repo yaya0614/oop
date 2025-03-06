@@ -1,5 +1,5 @@
-#ifndef CHARACTER_HPP
-#define CHARACTER_HPP
+#ifndef FIREBOY_HPP
+#define FIREBOY_HPP
 
 #include <string>
 
@@ -7,17 +7,17 @@
 
 #include "Util/GameObject.hpp"
 
-class Character : public Util::GameObject {
+class FireBoy : public Util::GameObject {
 public:
-  explicit Character(const std::string &ImagePath);
+  explicit FireBoy(const std::string &ImagePath);
 
-  Character(const Character &) = delete;
+  FireBoy(const FireBoy &) = delete;
 
-  Character(Character &&) = delete;
+  FireBoy(FireBoy &&) = delete;
 
-  Character &operator=(const Character &) = delete;
+  FireBoy &operator=(const FireBoy &) = delete;
 
-  Character &operator=(Character &&) = delete;
+  FireBoy &operator=(FireBoy &&) = delete;
 
   [[nodiscard]] const std::string &GetImagePath() const { return m_ImagePath; }
 
@@ -54,7 +54,7 @@ public:
     return false;
   }
   // TODO: Implement the collision detection
-  [[nodiscard]] bool IfCollides(const std::shared_ptr<Character> &other) const {
+  [[nodiscard]] bool IfCollides(const std::shared_ptr<FireBoy> &other) const {
     (void)other;
     float x_self = GetPosition().x;
     float y_self = GetPosition().y;
@@ -71,7 +71,7 @@ public:
   }
 
   [[nodiscard]] void
-  IfCollides_door(const std::shared_ptr<Character> &other) const {
+  IfCollides_door(const std::shared_ptr<FireBoy> &other) const {
     (void)other;
     float x_self = GetPosition().x;
     float y_self = GetPosition().y;

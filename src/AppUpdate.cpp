@@ -12,6 +12,7 @@ void App::Update() {
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
 
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
     if (start_btn) {
       int x = start_btn->GetPosition().x;
       int y = start_btn->GetPosition().y;
@@ -22,47 +23,26 @@ void App::Update() {
       }
     }
   }
+  // float expect_x = Fire_boy->GetPosition().x;
+  // float expect_y = Fire_boy->GetPosition().y;
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::W)) { // 上
-    float x = start_btn->GetPosition().x;
-    float y = start_btn->GetPosition().y + 3;
-    start_btn->SetPosition({x, y});
-    if (m_Phase == Phase::OPEN_THE_DOORS) {
-      for (auto each_door : m_Doors) {
-        start_btn->IfCollides_door(each_door);
-      }
-    }
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::S)) { // 下
-    float x = start_btn->GetPosition().x;
-    float y = start_btn->GetPosition().y - 3;
-    start_btn->SetPosition({x, y});
-    if (m_Phase == Phase::OPEN_THE_DOORS) {
-      for (auto each_door : m_Doors) {
-        start_btn->IfCollides_door(each_door);
-      }
-    }
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
-    float x = start_btn->GetPosition().x + 3;
-    float y = start_btn->GetPosition().y;
-    start_btn->SetPosition({x, y});
-    if (m_Phase == Phase::OPEN_THE_DOORS) {
-      for (auto each_door : m_Doors) {
-        start_btn->IfCollides_door(each_door);
-      }
-    }
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::A)) { // 左
-    float x = start_btn->GetPosition().x - 3;
-    float y = start_btn->GetPosition().y;
-    start_btn->SetPosition({x, y});
-    if (m_Phase == Phase::OPEN_THE_DOORS) {
-      for (auto each_door : m_Doors) {
-        start_btn->IfCollides_door(each_door);
-      }
-    }
-  }
+  // if (Util::Input::IsKeyPressed(Util::Keycode::W)) { // 上
+  //   expect_y += 2;
+  // }
+  // if (Util::Input::IsKeyPressed(Util::Keycode::S)) { // 下
+  //   expect_y -= 3;
+  // }
+  // if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
+  //   expect_x += 3;
+  // }
+  // if (Util::Input::IsKeyPressed(Util::Keycode::A)) { // 左
+  //   expect_x -= 3;
+  // }
+
+  // // 如果移動後不會超出邊界，才真正移動
+  // if (!Fire_boy->IsOverlines(expect_x, expect_y, m_PRM)) {
+  //   Fire_boy->SetPosition({expect_x, expect_y});
+  // }
 
   if (m_Phase == Phase::BEE_ANIMATION) {
     m_Bee->SetLooping(true);

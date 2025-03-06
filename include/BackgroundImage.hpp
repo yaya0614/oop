@@ -18,6 +18,11 @@ public:
     temp->SetImage(ImagePath(phase));
   }
 
+  float GetMinX() const { return -420.0f; }
+  float GetMaxX() const { return 420.0f; }
+  float GetMinY() const { return -310.0f; }
+  float GetMaxY() const { return 300.0f; }
+
 private:
   inline std::string ImagePath(const int phase) {
     LOG_DEBUG("phase:", phase);

@@ -1,6 +1,7 @@
 #include "PhaseResourceManger.hpp"
 
 #include "Util/Logger.hpp"
+#include <glm/fwd.hpp>
 
 PhaseResourceManger::PhaseResourceManger() {
   m_TaskText = std::make_shared<TaskText>();

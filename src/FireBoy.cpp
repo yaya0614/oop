@@ -1,13 +1,13 @@
-#include "Character.hpp"
+#include "FireBoy.hpp"
 #include "Util/Image.hpp"
 
-Character::Character(const std::string &ImagePath) {
+FireBoy::FireBoy(const std::string &ImagePath) {
   SetImage(ImagePath);
 
   ResetPosition();
 }
 
-void Character::SetImage(const std::string &ImagePath) {
+void FireBoy::SetImage(const std::string &ImagePath) {
   m_ImagePath = ImagePath;
 
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);

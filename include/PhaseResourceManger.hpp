@@ -2,11 +2,12 @@
 #define PHASE_MANGER_HPP
 
 #include "BackgroundImage.hpp"
-#include "Character.hpp"
+// #include "Character.hpp"
 #include "TaskText.hpp"
 #include "Util/GameObject.hpp"
+#include <glm/fwd.hpp>
 
-class PhaseResourceManger {
+class PhaseResourceManger : public Util::GameObject {
 public:
   PhaseResourceManger();
 
@@ -17,6 +18,11 @@ public:
 
   void NextPhase();
   void IsPressed();
+
+  float GetMinX() const { return m_Background->GetMinX(); }
+  float GetMaxX() const { return m_Background->GetMaxX(); }
+  float GetMinY() const { return m_Background->GetMinY(); }
+  float GetMaxY() const { return m_Background->GetMaxY(); }
 
 private:
   std::shared_ptr<TaskText> m_TaskText;

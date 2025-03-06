@@ -1,6 +1,7 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include "FireBoy.hpp"
 #include "pch.hpp" // IWYU pragma: export
 
 #include "AnimatedCharacter.hpp"
@@ -8,6 +9,7 @@
 #include "PhaseResourceManger.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Text.hpp"
+#include <memory>
 
 class App {
 public:
@@ -44,7 +46,11 @@ private:
   Util::Renderer m_Root;
 
   std::shared_ptr<Character> start_btn;
+  std::shared_ptr<FireBoy> boy;
   std::shared_ptr<Character> m_Chest;
+
+  std::shared_ptr<Character> Background;
+  std::shared_ptr<Character> Level1;
   std::vector<std::shared_ptr<Character>> m_Doors;
 
   std::shared_ptr<AnimatedCharacter> m_Bee;
