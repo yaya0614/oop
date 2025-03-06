@@ -46,7 +46,7 @@ private:
   Util::Renderer m_Root;
 
   std::shared_ptr<Character> start_btn;
-  std::shared_ptr<FireBoy> boy;
+  std::shared_ptr<FireBoy> fire_boy;
   std::shared_ptr<Character> m_Chest;
 
   std::shared_ptr<Character> Background;
