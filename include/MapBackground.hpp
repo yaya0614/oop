@@ -13,11 +13,11 @@ public:
   void SetImage(const std::string &ImagePath);
 
   struct Platform {
-    float x1, x2, y;
+    float x1, x2, y_low, y_high;
   };
 
   struct Slope {
-    float x1, y1, x2, y2;
+    float x1, x2, y_low, y_high;
   };
 
   struct Wall {
@@ -49,20 +49,20 @@ private:
   int level_id;
   std::vector<Level> levels{
       {
-          {{332.8f, 420, -232.8f}},
-          {{337, -259, 360, -234}},
+          {
+              {-401.0f, -350, -322, -307.2},
+              {350.0f, 433, -307.2, -210.0},
+              {0.0f, 325, -192.0, -143.0},
+              {-401.0f, -54, -148, -100.2},
+          },
+          {{-54, -11, -259, -103.0}},
           {{337.0f, -232.8f}},
           {
               "wall",
           },
           {GA_RESOURCE_DIR "/Image/Background/Level1.png"},
       },
-      // {{{100, 300, 400}, {400, 600, 500}},
-      //  {{600, 700, 500, 550}},
-      //  GA_RESOURCE_DIR "/Fire/boy/boy_1.png"},
-      // {{{360, 420, -237}, {400, 600, 500}},
-      //  {{336, -259, 360, -235}},
-      //  GA_RESOURCE_DIR "/Image/Background/Level1.png"},
+
   };
 };
 

@@ -2,3 +2,22 @@
  [debug] vec2(360.000000, -235.000000)
 
  [debug] vec2(337.000000, -259.000000)
+
+
+
+人物碰撞障礙物IsCollider()
+
+橫向：
+障礙物在火人右側
+(fb_left_x < platform_left_x)&&(fb_right_x > platform_left_x)
+障礙物在火人左側
+(fb_right_x > platform_right_x)&&(fb_left_x < platform_left_x)
+
+縱向：
+火人當前站地高度 fireboy->GetPosition.y - fireboy->GetScaledSize.y/2
+
+如果火人當前站地高度==platform_y_high && platform_y_high-platform_y_low>30 （為true）那表示火人站在平台上（該平台不是障礙物）
+=false表示有可能遇到障礙物遇到障礙物
+
+
+

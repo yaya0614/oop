@@ -1,5 +1,7 @@
 #include "Collider.hpp"
+#include "FireBoy.hpp"
 #include "Util/Logger.hpp"
+#include <cstdlib>
 
 bool Collider::IsOverLines(float expect_x, float expect_y,
                            std::shared_ptr<MapBackground> &background) {
@@ -20,21 +22,46 @@ bool Collider::IsOverLines(float expect_x, float expect_y,
     return false;
   }
 };
+// 加上 AD 後的值
+// bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
+//                           std::shared_ptr<MapBackground> &background,
+//                           int level_id, int a) {
+//   float fb_right_x = (fb_expect_x + GetHalfWidth());
+//   float fb_left_x = (fb_expect_x - GetHalfWidth());
+//   float fb_low_y = (fb_expect_y - GetHalfHeight());
 
-/*
-  Update(會一直觸發)->
-  在每個IsPressed(KeyCode)之前要做預測角色是否可以移動，所以先記下expect_x、expect_y表示當前玩家的位置加上未來要觸發的
-  WAD 會是多少位移量
-  -> 丟進第一層 IsOverLines（整個地圖最外的邊界判斷） ->
-  如果為未觸碰到邊界即觸發
-  IsCollider()判斷是否有觸發地圖的障礙物，因為障礙物有很多個所以用for(以障礙物陣列的長度做range)來跑
-  這樣就可以配對到是否有符合當前狀態的最近障礙物。若有障礙物則不可移動（AD位移量+0）；反之則觸發（WA、WD）讓人物跳到障礙物上SetPosition
-*/
+//   float platform_left_x =
+//   (background->GetLevelData(level_id).platforms[a].x1); float
+//   platform_right_x = (background->GetLevelData(level_id).platforms[a].x2);
+//   float platform_y_low =
+//       (background->GetLevelData(level_id).platforms[a].y_low);
 
-// bool Collider::IsCollider(float expect_x, float expect_y,) {
-
-//   float player_min_x = expect_x - GetScaledSize().x / 2;
-//   float player_max_x = expect_x + GetScaledSize().x / 2;
-//   float player_min_y = expect_y - GetScaledSize().y / 2;
-//   float player_max_y = expect_y + GetScaledSize().y / 2;
+//   if (((fb_left_x < platform_left_x) && (fb_right_x > platform_left_x)) ||
+//       ((fb_right_x > platform_right_x) && (fb_left_x < platform_right_x))) {
+//     return true;
+//   }
+//   return false;
 // };
+bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
+                          std::shared_ptr<MapBackground> &background,
+                          int level_id, int a) {
+  float fb_right_x = fb_expect_x + GetHalfWidth();
+  float fb_left_x = fb_expect_x - GetHalfWidth();
+  float fb_low_y = GetScaledSize().y / 2;
+  float t1 = GetPosition().y;
+  float tt = GetPosition().y - GetHalfHeight();
+
+  float platform_left_x = background->GetLevelData(level_id).platforms[a].x1;
+  float platform_right_x = background->GetLevelData(level_id).platforms[a].x2;
+  float platform_y_high =
+      background->GetLevelData(level_id).platforms[a].y_high;
+  float platform_y_low = background->GetLevelData(level_id).platforms[a].y_low;
+
+  bool isHorizontalCollision =
+      (((fb_left_x < platform_left_x) && (fb_right_x > platform_left_x)) ||
+       ((fb_right_x > platform_right_x) && (fb_left_x < platform_right_x)));
+
+  bool isStandingOnPlatform = (t1 < platform_y_high && tt == platform_y_low);
+
+  return isHorizontalCollision && isStandingOnPlatform;
+};

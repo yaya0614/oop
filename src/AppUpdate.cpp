@@ -11,15 +11,11 @@
 using namespace std;
 
 void App::Update() {
-  // LOG_DEBUG("...");
-  // TODO: Add your own logics to finish the tasks in README.md
 
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  // auto a = mapbackground->GetLevelData(0).tag[0];
-  // LOG_DEBUG(a);
 
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos.x);
+    LOG_DEBUG(mousePos);
 
     // if (start_btn) {
     //   int x = start_btn->GetPosition().x;
@@ -31,19 +27,17 @@ void App::Update() {
     //   }
     // }
   }
+  float deltaTime = 1.0 / 60.0f;
+  fire_boy->Update(deltaTime, mapbackground);
 
+  float expect_x = fire_boy->GetPosition().x;
+  float expect_y = fire_boy->GetPosition().y;
   if (Util::Input::IsKeyDown(Util::Keycode::W)) {
     fire_boy->Jump();
   }
 
-  float deltaTime = 1.0f / 60.0f;
-  float ground = fire_boy->GetPosition().y - 1;
-
-  // LOG_DEBUG(ground);
-  // LOG_DEBUG(fire_boy->GetPosition().y);
-  fire_boy->Update(deltaTime);
-  float expect_x = fire_boy->GetPosition().x;
-  float expect_y = fire_boy->GetPosition().y;
+  // GetPosition 是抓物體的正中心
+  // SetPosition 是以物體中心的.x設 物體最底的.y設
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
     expect_x += 2;
@@ -53,38 +47,21 @@ void App::Update() {
   }
 
   if (!fire_boy->IsOverLines(expect_x, expect_y, mapbackground)) {
-    // 不會出界 fire_boy->SetPosition({expect_x, expect_y});
-    for (auto check_str : mapbackground->GetLevelData(0).tag) {
-      if (check_str == "wall") {
-        auto wall = mapbackground->GetLevelData(0).walls[0];
-        float player_x = expect_x + fire_boy->GetScaledSize().x / 2;
-        float player_y = expect_y + fire_boy->GetScaledSize().y / 2;
+    bool collided = false;
 
-        LOG_DEBUG("player_x", player_x);
-        float wall_x = wall.x1;
-        float wall_y = wall.y1;
-
-        if (!(player_x > wall_x && player_y == wall_y)) {
-          fire_boy->SetPosition({expect_x, expect_y});
-        }
-        LOG_DEBUG(player_x);
-        if ((player_x >= mapbackground->GetLevelData(0).platforms[0].x1) &&
-            (player_x <= mapbackground->GetLevelData(0).platforms[0].x2) &&
-            (fire_boy->GetGround() <=
-             mapbackground->GetLevelData(0).platforms[0].y) &&
-            fire_boy->GetJump()) {
-
-          fire_boy->Setter(mapbackground->GetLevelData(0).platforms[0].y + 20);
-        };
+    for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
+      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, i)) {
+        LOG_DEBUG(i);
+        collided = true;
+        collidedPlatformIndex = i;
+        break;
       }
     }
-  }
 
-  if (m_Phase == Phase::BEE_ANIMATION) {
-    m_Bee->SetLooping(true);
-  }
-  if (m_Phase == Phase::COUNTDOWN) {
-    m_Ball->SetLooping(true);
+    if (!collided) {
+      fire_boy->SetPosition({expect_x, expect_y});
+    } else {
+    }
   }
 
   /*

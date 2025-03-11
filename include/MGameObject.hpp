@@ -13,5 +13,8 @@ public:
 
   const float GetHeight() { return GetScaledSize().y + GetScaledSize().y / 2; };
   const float GetWidth() { return GetScaledSize().x + GetScaledSize().x / 2; };
+  // glm::vec2 GetChracterSize(){return {m_Transform.translation.x+}};
+  const float GetHalfHeight() { return GetScaledSize().y / 2; };
+  const float GetHalfWidth() { return GetScaledSize().x / 2; };
 };
 #endif
