@@ -17,3 +17,11 @@ void MapBackground::SetImage(const std::string &ImagePath) {
 };
 
 MapBackground::Boundry MapBackground::GetBoundry() const { return Boundry{}; }
+
+MapBackground::Level MapBackground::GetLevelData(int level_num) {
+  return levels[level_num];
+};
+
+int MapBackground::GetLevelSize(int level_num) {
+  return levels[level_num].tag.size();
+}
