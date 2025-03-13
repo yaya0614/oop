@@ -47,7 +47,7 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
                           int level_id, int a) {
   float fb_right_x = fb_expect_x + GetHalfWidth();
   float fb_left_x = fb_expect_x - GetHalfWidth();
-  float fb_low_y = GetScaledSize().y / 2;
+  // float fb_low_y = GetScaledSize().y / 2;
   float t1 = GetPosition().y;
   float tt = GetPosition().y - GetHalfHeight();
 
@@ -62,6 +62,27 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
        ((fb_right_x > platform_right_x) && (fb_left_x < platform_right_x)));
 
   bool isStandingOnPlatform = (t1 < platform_y_high && tt == platform_y_low);
+
+  return isHorizontalCollision && isStandingOnPlatform;
+};
+
+bool Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
+                                   std::shared_ptr<MapBackground> &background,
+                                   int level_id, int a) {
+  float fb_right_x = fb_expect_x + GetHalfWidth() - 10;
+  float fb_left_x = fb_expect_x - GetHalfWidth() + 10;
+
+  float tt = GetPosition().y - GetHalfHeight();
+
+  float button_left_x = background->GetLevelData(level_id).buttons[a].x1;
+  float button_right_x = background->GetLevelData(level_id).buttons[a].x2;
+  float button_y_high = background->GetLevelData(level_id).buttons[a].y_high;
+
+  bool isHorizontalCollision =
+      (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
+       ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)));
+
+  bool isStandingOnPlatform = (tt == button_y_high);
 
   return isHorizontalCollision && isStandingOnPlatform;
 };

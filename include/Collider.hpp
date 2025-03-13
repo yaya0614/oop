@@ -17,6 +17,11 @@ public:
 
   bool IsPlatformOrSlope(float fb_expect_x, float fb_expect_y,
                          std::shared_ptr<MapBackground> &background);
+
+  bool IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
+                           std::shared_ptr<MapBackground> &background,
+                           int level_id, int a);
+
   // bool IsCollider(float expect_x, float expect_y,
   //                 std::shared_ptr<MapBackground> &background);
   // 如果player跟障礙物有碰撞，jump就要跳上去

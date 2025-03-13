@@ -4,15 +4,16 @@
 #include <string>
 #include <vector>
 
+#include "MGameObject.hpp"
 #include "Util/Animation.hpp"
 #include "Util/GameObject.hpp"
 
-class AnimatedCharacter : public Util::GameObject {
+class AnimatedCharacter : public MGameObject {
 
 public:
   explicit AnimatedCharacter(const std::vector<std::string> &AnimationPaths);
 
-  [[nodiscard]] bool IsLooping() const {
+  bool IsLooping() const {
 
     return std::dynamic_pointer_cast<Util::Animation>(m_Drawable)->GetLooping();
   }

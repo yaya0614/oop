@@ -7,7 +7,7 @@ MapBackground::MapBackground(int level_id) : level_id(level_id) {
   if (level_id < 0 || level_id >= levels.size()) {
     this->level_id = 0;
   }
-  SetZIndex(10);
+  SetZIndex(20);
   SetImage(levels[this->level_id].ImagePath);
 }
 

@@ -20,8 +20,6 @@ public:
   void Jump();
   void Update(float deltaTime,
               std::shared_ptr<MapBackground> &map); // 更新位置
-  void IfOverlines();
-
   void Setter(float groundLevel);
   float GetGround();
   bool GetJump();

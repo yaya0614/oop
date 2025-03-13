@@ -6,6 +6,7 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "elevation.hpp"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -27,6 +28,14 @@ void App::Update() {
     //   }
     // }
   }
+
+  if (!fire_sea->IsLooping()) {
+    fire_sea->SetLooping(true);
+  }
+
+  if (!ice_sea->IsLooping()) {
+    ice_sea->SetLooping(true);
+  }
   float deltaTime = 1.0 / 60.0f;
   fire_boy->Update(deltaTime, mapbackground);
 
@@ -35,12 +44,16 @@ void App::Update() {
   if (Util::Input::IsKeyDown(Util::Keycode::W)) {
     fire_boy->Jump();
   }
+  bool IsPress =
+      fire_boy->IsPressedButtonbool(expect_x, expect_y, mapbackground, 0, 0);
+  button->CheckCollision(fire_boy, expect_x, expect_y, mapbackground, 0, 0);
+  button->Update(deltaTime);
 
+  ele_blue->Update(deltaTime, IsPress);
   // GetPosition 是抓物體的正中心
   // SetPosition 是以物體中心的.x設 物體最底的.y設
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
-
     expect_x += 2;
   }
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) { // 左
@@ -51,8 +64,8 @@ void App::Update() {
     bool collided = false;
     int collidedPlatformIndex = -1;
     for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
-      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, i)) {
-        LOG_DEBUG(i);
+      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, 1)) {
+        // LOG_DEBUG("我就進來");
         collided = true;
         collidedPlatformIndex = i;
         break;
@@ -60,8 +73,10 @@ void App::Update() {
     }
 
     if (!collided) {
+      // LOG_DEBUG("沒碰撞");
       fire_boy->SetPosition({expect_x, expect_y});
     } else {
+      // LOG_DEBUG("碰撞");
     }
   }
 

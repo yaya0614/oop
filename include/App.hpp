@@ -1,6 +1,8 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include "Button.hpp"
+#include "Elevation.hpp"
 #include "FireBoy.hpp"
 #include "MapBackground.hpp"
 #include "pch.hpp" // IWYU pragma: export
@@ -54,10 +56,12 @@ private:
   // std::shared_ptr<Character> Background;
   // std::shared_ptr<Character> Level1;
   std::vector<std::shared_ptr<Character>> m_Doors;
-
+  std::shared_ptr<Elevation> ele_blue;
+  std::shared_ptr<Button> button;
   std::shared_ptr<AnimatedCharacter> m_Bee;
   std::shared_ptr<AnimatedCharacter> m_Ball;
-
+  std::shared_ptr<AnimatedCharacter> fire_sea;
+  std::shared_ptr<AnimatedCharacter> ice_sea;
   std::shared_ptr<PhaseResourceManger> m_PRM;
 
   bool m_EnterDown = false;
