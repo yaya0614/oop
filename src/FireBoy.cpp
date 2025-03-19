@@ -28,6 +28,7 @@ void FireBoy::MoveRight() {
 }
 void FireBoy::Jump() {
   if (!isJumping) {
+    LOG_DEBUG("我在跳");
     velocity.y = 5.0f; // 設定跳躍初速度
     isJumping = true;
     jumpingBuffer = 0.1f; // 100ms 內不會進入 onPlatform 判定
@@ -45,6 +46,32 @@ float FireBoy::GetGround() { return groundLevel; };
 
 bool FireBoy::GetJump() { return isJumping; };
 
+FireBoy::BoolandValue
+FireBoy::IfFireFallIce(std::shared_ptr<MapBackground> &map) {
+  float current_fb_x = GetPosition().x;
+  float current_fb_y = GetPosition().y - GetHalfHeight();
+  bool isTure = false;
+  std::string pair_tag;
+  float current_fall_down_h;
+
+  for (auto pool : map->GetLevelData(0).pools) {
+    bool check_range =
+        ((current_fb_x >= pool.x1) && (current_fb_x <= pool.x2)) &&
+        ((current_fb_y == pool.y_high) || (current_fb_y < pool.y_high - 5));
+
+    if (check_range) {
+      isTure = true;
+      pair_tag = pool.tag;
+      current_fall_down_h = pool.expect_fall_down_h;
+    }
+  }
+
+  if (isTure) {
+    return {true, current_fall_down_h, pair_tag};
+  }
+  return {false, current_fall_down_h, "no"};
+};
+
 void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
   glm::vec2 pos = GetPosition();
 
@@ -55,11 +82,11 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
   velocity.y += gravity * deltaTime;
   pos.y += velocity.y;
 
+  float poss = pos.x + GetHalfWidth() + 2;
+  groundLevel = -270.0f;
+
   bool onPlatform = false;
   float nearestPlatformY = groundLevel;
-
-  float poss = pos.x + GetHalfWidth() + 2;
-
   for (const auto &platform : map->GetLevelData(0).platforms) {
     if (poss >= platform.x1 && poss <= platform.x2) {
       if (pos.y >= platform.y_high - 5.0f && pos.y <= platform.y_high + 5.0f) {
@@ -72,8 +99,14 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
 
   if (onPlatform && jumpingBuffer <= 0.0f) {
     pos.y = nearestPlatformY;
-    if (velocity.y <= 0.0f) { // 只有當角色正在下落時才停止跳躍
-      velocity.y = 0.0f;
+    velocity.y = 0.0f;
+    isJumping = false;
+  } else if (IfFireFallIce(map).IsFall) {
+    if (fb_tag != IfFireFallIce(map).pair_tag) { // G掉
+      Die();
+    } else {
+      groundLevel = IfFireFallIce(map).current_fall_down_h;
+      pos.y = groundLevel;
       isJumping = false;
     }
   } else if (pos.y <= groundLevel) {
@@ -81,97 +114,15 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
     velocity.y = 0.0f;
     isJumping = false;
   }
-
   SetPosition(pos);
 }
 
-// void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
-//   glm::vec2 pos = GetPosition();
+float FireBoy::GetMaxJumpHeight() { return 50.0f; }
 
-//   velocity.y += gravity * deltaTime;
-
-//   LOG_DEBUG(velocity.y);
-//   pos.y += velocity.y;
-
-//   bool onPlatform = false;
-//   float nearestPlatformY = groundLevel;
-
-//   float poss = pos.x + GetHalfWidth() + 2;
-
-//   for (const auto &platform : map->GetLevelData(0).platforms) {
-//     if (poss >= platform.x1 && poss <= platform.x2) {
-//       if (pos.y >= platform.y_high - 5.0f && pos.y <= platform.y_high + 5.0f)
-//       {
-//         nearestPlatformY = platform.y_high;
-//         onPlatform = true;
-//         break;
-//       }
-//     }
-//   }
-
-//   if (onPlatform) {
-//     LOG_DEBUG("在平台");
-//     pos.y = nearestPlatformY;
-//     velocity.y = 0.0f;
-//     isJumping = false;
-//   } else if (pos.y <= groundLevel) {
-//     LOG_DEBUG("在地上");
-//     pos.y = groundLevel;
-//     velocity.y = 0.0f;
-//     isJumping = false;
-//   }
-
-//   SetPosition(pos);
-// }
-
-// void FireBoy::Update(float deltaTime,
-//                      std::shared_ptr<MapBackground> &mapbackground) {
-//   float moveSpeed = 2.0f;
-//   float expect_x = GetPosition().x;
-//   float expect_y = GetPosition().y;
-
-//   // 左右移動
-//   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-//     expect_x += moveSpeed;
-//   }
-//   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-//     expect_x -= moveSpeed;
-//   }
-
-//   // W鍵：跳躍 + 輕微上升（模擬起跳感）
-//   if (Util::Input::IsKeyDown(Util::Keycode::W)) {
-//     Jump();
-//     // expect_y -= 2.0f;
-//   }
-
-//   // 重力計算（更新 Y 軸）
-//   // ApplyGravity(deltaTime);
-//   expect_y = GetPosition().y;
-
-//   // 加上角色寬度一半（碰撞/位置修正）
-//   // glm::vec2 halfSize = GetChracterSize();
-//   // expect_x += halfSize.x;
-
-//   // 判斷是否超出邊界或碰撞平台
-//   if (!IsOverLines(expect_x, expect_y, mapbackground)) {
-//     bool collided = false;
-//     for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); ++i)
-//     {
-//       if (IsCollider(expect_x, expect_y, mapbackground, 0, i)) {
-//         collided = true;
-//         break;
-//       }
-//     }
-
-//     if (!collided) {
-//       SetPosition({expect_x, expect_y}); // 減回去補正
-//     }
-//   }
-// }
-
-float FireBoy::GetMaxJumpHeight() {
-  return 50.0f; // 根據遊戲需求調整
-}
+void FireBoy::Die() {
+  SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+  SetPosition(GetPosition());
+};
 
 glm::vec2 FireBoy::GetVelocity() { return velocity; };
 void FireBoy::ResetVelocityY() {
