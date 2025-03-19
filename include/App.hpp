@@ -4,7 +4,9 @@
 #include "Button.hpp"
 #include "Elevation.hpp"
 #include "FireBoy.hpp"
+#include "FireSea.hpp"
 #include "MapBackground.hpp"
+#include "WaterGirl.hpp"
 #include "pch.hpp" // IWYU pragma: export
 
 #include "AnimatedCharacter.hpp"
@@ -50,6 +52,7 @@ private:
 
   std::shared_ptr<Character> start_btn;
   std::shared_ptr<FireBoy> fire_boy;
+  std::shared_ptr<WaterGirl> water_girl;
   std::shared_ptr<Character> m_Chest;
   std::shared_ptr<MapBackground> mapbackground;
 
@@ -60,8 +63,10 @@ private:
   std::shared_ptr<Button> button;
   std::shared_ptr<AnimatedCharacter> m_Bee;
   std::shared_ptr<AnimatedCharacter> m_Ball;
-  std::shared_ptr<AnimatedCharacter> fire_sea;
+
   std::shared_ptr<AnimatedCharacter> ice_sea;
+
+  std::shared_ptr<FireSea> m_fireSea;
   std::shared_ptr<PhaseResourceManger> m_PRM;
 
   bool m_EnterDown = false;

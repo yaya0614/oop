@@ -20,4 +20,13 @@
 =false表示有可能遇到障礙物遇到障礙物
 
 
+elevation:
+-> 這邊用elevation 去寫一個function（傳入player）來觸發 = 當player跳進elevation x的範圍且player_y_low == current_y_top 回傳一個bool跟當前elevation的高度
+-> 讓Player::Update（）來接收---因為Update才是真正可以Set Player Postion的。
+這邊會有一個判斷，如果回傳的值為true那麼就要根據回傳的elevation的高度，來先讓火人站在上面，並且可以行走。
+當電梯開始動的時候就讓他一直回傳其position給player讓火人可以跟電梯同步
+
+
+
+
 

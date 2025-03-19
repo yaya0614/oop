@@ -5,6 +5,8 @@
 Elevation::Elevation() {
   SetImage(GA_RESOURCE_DIR "/Elevation/ele_blue.png");
   SetPosition({-358, -28});
+  // SetPosition({-358, -108});
+
   m_Transform.scale = {0.415, 0.4f};
   SetVisible(true);
   SetZIndex(100);

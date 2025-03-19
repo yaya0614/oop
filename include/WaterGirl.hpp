@@ -1,5 +1,5 @@
-#ifndef FIREBOY_HPP
-#define FIREBOY_HPP
+#ifndef WATERGIRL_HPP
+#define WATERGIRL_HPP
 
 #include "Collider.hpp"
 #include "MGameObject.hpp"
@@ -9,21 +9,22 @@
 #include <memory>
 #include <string>
 
-class FireBoy : public Collider {
+class WaterGirl : public Collider {
 public:
-  explicit FireBoy();
+  explicit WaterGirl();
 
   struct BoolandValue {
     bool IsFall;
-    float current_fall_down_h;
-    std::string pair_tag;
+    float value;
+  };
+
+  struct Platform {
+    float x1, x2, y_low, y_high;
   };
 
   void SetImage(const std::string &ImagePath);
 
-  // void ResetPosition() { m_Transform.translation = {0, 0}; }
-  void MoveLeft();
-  void MoveRight();
+  //   // void ResetPosition() { m_Transform.translation = {0, 0}; }
   void Jump();
   void Update(float deltaTime,
               std::shared_ptr<MapBackground> &map); // 更新位置
@@ -33,7 +34,8 @@ public:
   float GetMaxJumpHeight();
   void ResetVelocityY();
   void Die();
-  BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa);
+  BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa,
+                             float deltaTime);
   glm::vec2 GetVelocity();
 
 private:
@@ -41,12 +43,13 @@ private:
   float gravity = -9.8f;             // 重力加速度
   bool isJumping = false;            // 是否正在跳躍
   bool onPlatform = false;
-  float groundLevel = -270.0f;
+  float groundLevel = -184.0f;
+  // float groundLevel = -270.0f;
   std::string m_ImagePath;
   int countD = 0;
   int countA = 0;
   float jumpingBuffer;
-  std::string fb_tag = "fire";
+  Platform init_stand_platform = {-401.0f, -142, -199, -224};
 };
 
-#endif // FIREBOY_HPP
+#endif // WATERGIRL_HPP

@@ -2,6 +2,7 @@
 #define MAPBACKGROUND_HPP
 
 #include "MGameObject.hpp"
+#include "elevation.hpp"
 #include <Util/GameObject.hpp>
 #include <glm/fwd.hpp>
 #include <string>
@@ -22,14 +23,26 @@ public:
   struct Button {
     float x1, x2, y_low, y_high;
   };
+
   struct Wall {
     float x1, y1;
+  };
+
+  struct Pool {
+    float x1, x2, y_low, y_high, expect_fall_down_h;
+    std::string tag;
+  };
+
+  struct Elevation {
+    float x1, x2, y_low, y_high;
   };
 
   struct Level {
     std::vector<Platform> platforms;
     std::vector<Slope> slopes;
     std::vector<Button> buttons;
+    std::vector<Elevation> elevations;
+    std::vector<Pool> pools;
     std::vector<Wall> walls;
     std::vector<std::string> tag;
     std::string ImagePath;
@@ -53,6 +66,7 @@ private:
   std::vector<Level> levels{
       {
           {
+              // {-401.0f, -350, -322, -308.13},
               {-401.0f, -350, -322, -308.13},
               {350.0f, 436, -308.13, -210.0},
               {0.0f, 330, -192.0, -143.0},
@@ -60,6 +74,14 @@ private:
           },
           {{-54, -11, -259, -103.0}},
           {{-162, -118, -148, -138.33}},
+          {{
+              -401,
+              -312,
+              -119,
+              -99,
+          }},
+          {{-22, 65, -322, -308.13, -276.2f, "ice"},
+           {122, 212, -322, -308.13, -276.2f, "fire"}},
           {{337.0f, -232.8f}},
           {
               "wall",
@@ -69,5 +91,4 @@ private:
 
   };
 };
-
 #endif // MAPBACKGROUND_HPP
