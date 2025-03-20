@@ -18,10 +18,10 @@ void App::Start() {
 
   LOG_DEBUG("Start");
 
-  start_btn = std::make_shared<Character>(GA_RESOURCE_DIR
-                                          "/Image/Background/start_btn.png");
-  start_btn->SetPosition({0, -180});
-  start_btn->SetZIndex(50);
+  // start_btn = std::make_shared<Character>(GA_RESOURCE_DIR
+  //                                         "/Image/Background/start_btn.png");
+  // start_btn->SetPosition({0, -180});
+  // start_btn->SetZIndex(50);
   // m_Root.AddChild(start_btn);
 
   fire_boy = std::make_shared<FireBoy>();
@@ -46,20 +46,16 @@ void App::Start() {
   m_Root.AddChild(ice_sea);
 
   m_fireSea = std::make_shared<FireSea>();
-
   m_Root.AddChild(m_fireSea);
 
   ele_blue = std::make_shared<Elevation>();
   m_Root.AddChild(ele_blue);
+
   button = std::make_shared<Button>();
   m_Root.AddChild(button);
 
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
-
-  // LOG_DEBUG(Fire_boy->GetScaledSize());
-  // m_PRM = std::make_shared<PhaseResourceManger>();
-  // m_Root.AddChildren(m_PRM->GetChildren());
 
   m_CurrentState = State::UPDATE;
 }

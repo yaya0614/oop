@@ -1,4 +1,5 @@
 #include "FireBoy.hpp"
+#include "Elevation.hpp"
 #include "MapBackground.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
@@ -6,6 +7,7 @@
 #include "Util/Logger.hpp"
 
 #include <glm/fwd.hpp>
+#include <memory>
 
 FireBoy::FireBoy() {
   SetImage(GA_RESOURCE_DIR "/Fire/boy/boy_1.png");
@@ -14,18 +16,7 @@ FireBoy::FireBoy() {
   SetZIndex(100);
   SetPosition({100, -307});
 }
-void FireBoy::MoveLeft() {
-  glm::vec2 newPos = GetPosition();
-  newPos.x -= 5.0f;
-  SetPosition(newPos);
-}
 
-// 向右移動
-void FireBoy::MoveRight() {
-  glm::vec2 newPos = GetPosition();
-  newPos.x += 5.0f;
-  SetPosition(newPos);
-}
 void FireBoy::Jump() {
   if (!isJumping) {
     LOG_DEBUG("我在跳");
@@ -72,9 +63,11 @@ FireBoy::IfFireFallIce(std::shared_ptr<MapBackground> &map) {
   return {false, current_fall_down_h, "no"};
 };
 
-void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
+void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+                     std::shared_ptr<Elevation> &elevation) {
   glm::vec2 pos = GetPosition();
 
+  // elevation->IsPlayerOnElevation(pos);
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
   }
@@ -117,15 +110,7 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map) {
   SetPosition(pos);
 }
 
-float FireBoy::GetMaxJumpHeight() { return 50.0f; }
-
 void FireBoy::Die() {
   SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
   SetPosition(GetPosition());
-};
-
-glm::vec2 FireBoy::GetVelocity() { return velocity; };
-void FireBoy::ResetVelocityY() {
-  velocity.y = 0;
-  isJumping = false;
 };

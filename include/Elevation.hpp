@@ -5,10 +5,17 @@
 #include <Util/Animation.hpp>
 
 class Elevation : public MGameObject {
+
 public:
   explicit Elevation();
+  struct ElevationData {
+    bool isOnElevation;
+    float elevationY;
+  };
   void SetImage(const std::string &ImagePath);
   void Update(float delatime, bool IsPressed);
+  ElevationData IsPlayerOnElevation(const glm::vec2 &playerPos,
+                                    float HalfHeight);
 
 private:
   std::string m_ImagePath;

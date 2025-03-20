@@ -2,6 +2,7 @@
 #define WATERGIRL_HPP
 
 #include "Collider.hpp"
+#include "Elevation.hpp"
 #include "MGameObject.hpp"
 #include "MapBackground.hpp"
 #include "Util/GameObject.hpp"
@@ -26,8 +27,8 @@ public:
 
   //   // void ResetPosition() { m_Transform.translation = {0, 0}; }
   void Jump();
-  void Update(float deltaTime,
-              std::shared_ptr<MapBackground> &map); // 更新位置
+  void Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+              std::shared_ptr<Elevation> &elevation); // 更新位置
   void Setter(float groundLevel);
   float GetGround();
   bool GetJump();
@@ -49,6 +50,9 @@ private:
   int countD = 0;
   int countA = 0;
   float jumpingBuffer;
+  float elevationBuffer = 0.3f;
+  bool onElevation = false;
+
   Platform init_stand_platform = {-401.0f, -142, -199, -224};
 };
 
