@@ -1,5 +1,6 @@
 #include "Elevation.hpp"
 #include "Util/Image.hpp"
+#include "Util/Logger.hpp"
 #include <memory>
 
 Elevation::Elevation() {
@@ -16,6 +17,24 @@ void Elevation::SetImage(const std::string &ImagePath) {
   m_ImagePath = ImagePath;
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
+
+Elevation::ElevationData
+Elevation::IsPlayerOnElevation(const glm::vec2 &playerPos, float HalfHeight) {
+  float player_x = playerPos.x;
+  float player_y_low = playerPos.y - HalfHeight; // Get是拿最下面的y
+  bool flag = false;
+  int ele_x_left = -400;
+  int ele_x_right = -314;
+  float ele_y_top = GetPosition().y;
+  bool Is_y_match =
+      (player_y_low - ele_y_top >= 0.05) && (player_y_low - ele_y_top <= 1);
+
+  if ((player_x >= ele_x_left && player_x <= ele_x_right) && Is_y_match) {
+    flag = true;
+    return {flag, ele_y_top};
+  }
+  return {flag, ele_y_top};
+};
 
 void Elevation::Update(float deltaTime, bool IsPressed) {
   float targetY = IsPressed ? m_TargetY : m_OriginalY;
