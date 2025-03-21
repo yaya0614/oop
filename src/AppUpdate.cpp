@@ -28,7 +28,7 @@ void App::Update() {
 
   float deltaTime = 1.0 / 60.0f;
   fire_boy->Update(deltaTime, mapbackground, ele_blue);
-  water_girl->Update(deltaTime, mapbackground, ele_blue);
+  water_girl->Update(deltaTime, mapbackground, ele_blue, ele_purple);
 
   float expect_x = fire_boy->GetPosition().x;
   float expect_y = fire_boy->GetPosition().y;
@@ -46,10 +46,14 @@ void App::Update() {
   bool IsPress =
       fire_boy->IsPressedButtonbool(expect_x, expect_y, mapbackground, 0, 0);
   button->CheckCollision(fire_boy, expect_x, expect_y, mapbackground, 0, 0);
-
   button->Update(deltaTime);
 
+  auto IsPushed = water_girl->IsPushedbool(expect_x, mapbackground, 0, 0);
+  pusher->CheckCollision(water_girl, expect_x_water_girl, mapbackground, 0, 0);
+  pusher->Update(deltaTime);
+
   ele_blue->Update(deltaTime, IsPress);
+  ele_purple->Update(deltaTime, IsPushed.tag);
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
     expect_x += 2;

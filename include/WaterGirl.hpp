@@ -3,6 +3,7 @@
 
 #include "Collider.hpp"
 #include "Elevation.hpp"
+#include "ElevationPurple.hpp"
 #include "MGameObject.hpp"
 #include "MapBackground.hpp"
 #include "Util/GameObject.hpp"
@@ -27,8 +28,10 @@ public:
 
   //   // void ResetPosition() { m_Transform.translation = {0, 0}; }
   void Jump();
-  void Update(float deltaTime, std::shared_ptr<MapBackground> &map,
-              std::shared_ptr<Elevation> &elevation); // 更新位置
+  void
+  Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+         std::shared_ptr<Elevation> &elevation,
+         std::shared_ptr<ElevationPurple> &elevationResult_purple); // 更新位置
   void Setter(float groundLevel);
   float GetGround();
   bool GetJump();

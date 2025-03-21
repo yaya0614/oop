@@ -1,27 +1,28 @@
-#ifndef ELEVATION_HPP
-#define ELEVATION_HPP
+#ifndef ELEVATIONPURPLE_HPP
+#define ELEVATIONPURPLE_HPP
 
 #include "MGameObject.hpp"
 #include <Util/Animation.hpp>
+#include <string>
 
-class Elevation : public MGameObject {
+class ElevationPurple : public MGameObject {
 
 public:
-  explicit Elevation();
+  explicit ElevationPurple();
   struct ElevationData {
     bool isOnElevation;
     float elevationY;
   };
   void SetImage(const std::string &ImagePath);
-  void Update(float delatime, bool IsPressed);
+  void Update(float delatime, std::string LeftOrRight);
   ElevationData IsPlayerOnElevation(const glm::vec2 &playerPos,
                                     float HalfHeight);
 
 private:
   std::string m_ImagePath;
-  bool init_pressed = false;
-  float m_TargetY = -108;
-  float m_OriginalY = -28;
+  std::string init_side = "left";
+  float m_TargetY = -28;
+  float m_OriginalY = 35;
   float m_Speed = 50.0f;
 };
 #endif

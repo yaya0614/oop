@@ -1,5 +1,6 @@
 #include "WaterGirl.hpp"
 #include "Elevation.hpp"
+#include "ElevationPurple.hpp"
 #include "MapBackground.hpp"
 #include "Util/Logger.hpp"
 #include <glm/fwd.hpp>
@@ -26,10 +27,15 @@ void WaterGirl::SetImage(const std::string &ImagePath) {
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
 
-void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
-                       std::shared_ptr<Elevation> &elevation) {
+void WaterGirl::Update(
+    float deltaTime, std::shared_ptr<MapBackground> &map,
+    std::shared_ptr<Elevation> &elevation,
+    std::shared_ptr<ElevationPurple> &elevationResult_purple) {
   glm::vec2 pos = GetPosition();
   auto elevationResult = elevation->IsPlayerOnElevation(pos, GetHalfHeight());
+
+  auto elevationResultP =
+      elevationResult_purple->IsPlayerOnElevation(pos, GetHalfHeight());
 
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
@@ -53,9 +59,12 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
   float nearestPlatformY = groundLevel;
   bool onPlatform = false;
 
-  if (elevationResult.isOnElevation) {
+  if (elevationResult.isOnElevation || elevationResultP.isOnElevation) {
+    float catch_value = elevationResult.isOnElevation
+                            ? elevationResult.elevationY
+                            : elevationResultP.elevationY;
     onElevation = true;
-    nearestPlatformY = elevationResult.elevationY + 42.0f;
+    nearestPlatformY = catch_value + 42.0f;
     LOG_DEBUG(nearestPlatformY);
 
     onPlatform = true;

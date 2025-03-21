@@ -4,8 +4,15 @@
 #include "MGameObject.hpp"
 #include "MapBackground.hpp"
 #include <memory>
+#include <string>
 class Collider : public MGameObject {
 public:
+  struct IsPushedData {
+    bool IsPushed;
+    std::string tag;
+  };
+  std::string recent_tag = "left";
+
   bool IsOverLines(float expect_x, float expect_y,
                    std::shared_ptr<MapBackground> &background);
 
@@ -21,10 +28,8 @@ public:
   bool IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
                            std::shared_ptr<MapBackground> &background,
                            int level_id, int a);
-
-  // bool IsCollider(float expect_x, float expect_y,
-  //                 std::shared_ptr<MapBackground> &background);
-  // 如果player跟障礙物有碰撞，jump就要跳上去
-  // player max_x, max_y
+  IsPushedData IsPushedbool(float fb_expect_x,
+                            std::shared_ptr<MapBackground> &background,
+                            int level_id, int a);
 };
 #endif // COLLIDER_HPP

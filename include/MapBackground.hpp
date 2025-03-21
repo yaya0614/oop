@@ -24,6 +24,12 @@ public:
     float x1, x2, y_low, y_high;
   };
 
+  // 之後做優化的時候，合併所有機關包括：按鈕跟推桿=>
+  // 用機關的英文做宣告然後在Collier共用一個function個用tag做區別
+  struct Push {
+    float x1, x2, y_high;
+  };
+
   struct Wall {
     float x1, y1;
   };
@@ -41,6 +47,7 @@ public:
     std::vector<Platform> platforms;
     std::vector<Slope> slopes;
     std::vector<Button> buttons;
+    std::vector<Push> pushers;
     std::vector<Elevation> elevations;
     std::vector<Pool> pools;
     std::vector<Wall> walls;
@@ -67,7 +74,7 @@ private:
       {
           {
               {-401.0f, -350, -322, -308.13},
-              {350.0f, 436, -308.13, -210.0},
+              {350.0f, 440, -308.13, -210.0},
               {0.0f, 330, -192.0, -143.0},
               {-401.0f, -25, -148, -100.2},
               {-311.0f, 50, -30, 14},
@@ -75,6 +82,7 @@ private:
           },
           {{-54, -11, -259, -103.0}},
           {{-162, -118, -148, -138.33}},
+          {{95, 104, -48.95}},
           {{
               -401,
               -312,
