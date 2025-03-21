@@ -4,7 +4,9 @@
 #include "Button.hpp"
 #include "Character.hpp"
 #include "Elevation.hpp"
+#include "ElevationPurple.hpp"
 #include "FireBoy.hpp"
+#include "Pusher.hpp"
 #include "WaterGirl.hpp"
 
 #include "FireSea.hpp"
@@ -51,9 +53,13 @@ void App::Start() {
   ele_blue = std::make_shared<Elevation>();
   m_Root.AddChild(ele_blue);
 
+  ele_purple = std::make_shared<ElevationPurple>();
+  m_Root.AddChild(ele_purple);
   button = std::make_shared<Button>();
   m_Root.AddChild(button);
 
+  pusher = std::make_shared<Pusher>();
+  m_Root.AddChild(pusher);
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
 

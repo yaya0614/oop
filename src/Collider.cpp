@@ -2,6 +2,7 @@
 #include "FireBoy.hpp"
 #include "Util/Logger.hpp"
 #include <cstdlib>
+#include <string>
 
 bool Collider::IsOverLines(float expect_x, float expect_y,
                            std::shared_ptr<MapBackground> &background) {
@@ -22,26 +23,6 @@ bool Collider::IsOverLines(float expect_x, float expect_y,
     return false;
   }
 };
-// 加上 AD 後的值
-// bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
-//                           std::shared_ptr<MapBackground> &background,
-//                           int level_id, int a) {
-//   float fb_right_x = (fb_expect_x + GetHalfWidth());
-//   float fb_left_x = (fb_expect_x - GetHalfWidth());
-//   float fb_low_y = (fb_expect_y - GetHalfHeight());
-
-//   float platform_left_x =
-//   (background->GetLevelData(level_id).platforms[a].x1); float
-//   platform_right_x = (background->GetLevelData(level_id).platforms[a].x2);
-//   float platform_y_low =
-//       (background->GetLevelData(level_id).platforms[a].y_low);
-
-//   if (((fb_left_x < platform_left_x) && (fb_right_x > platform_left_x)) ||
-//       ((fb_right_x > platform_right_x) && (fb_left_x < platform_right_x))) {
-//     return true;
-//   }
-//   return false;
-// };
 bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
                           std::shared_ptr<MapBackground> &background,
                           int level_id, int a) {
@@ -86,3 +67,50 @@ bool Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
 
   return isHorizontalCollision && isStandingOnPlatform;
 };
+
+// Collider::IsPushedData
+// Collider::IsPushedbool(float fb_expect_x,
+//                        std::shared_ptr<MapBackground> &background, int
+//                        level_id, int a) {
+//   float fb_right_x = fb_expect_x + GetHalfWidth() - 10;
+//   float fb_left_x = fb_expect_x - GetHalfWidth() + 10;
+
+//   float tt = GetPosition().y - GetHalfHeight();
+
+//   float pusher_left_x = background->GetLevelData(level_id).pushers[a].x1;
+//   float pusher_right_x = background->GetLevelData(level_id).pushers[a].x2;
+//   float pusher_y_high = background->GetLevelData(level_id).pushers[a].y_high;
+
+//   bool isStandingOnPlatform = (tt == pusher_y_high);
+
+// };
+
+Collider::IsPushedData
+Collider::IsPushedbool(float fb_expect_x,
+                       std::shared_ptr<MapBackground> &background, int level_id,
+                       int a) {
+
+  float p_right_x = fb_expect_x + GetHalfWidth();
+  float p_left_x = fb_expect_x - GetHalfWidth();
+  float p_bottom_y = GetPosition().y - GetHalfHeight();
+
+  float pusher_left_x = background->GetLevelData(level_id).pushers[a].x1;
+  float pusher_right_x = background->GetLevelData(level_id).pushers[a].x2;
+  float pusher_y_high = background->GetLevelData(level_id).pushers[a].y_high;
+
+  bool isStandingOnPlatform = (p_bottom_y == pusher_y_high);
+
+  if (isStandingOnPlatform) {
+    // 玩家左邊接觸推桿左邊（從左邊推）
+    if (p_right_x > pusher_left_x && p_left_x < pusher_left_x) {
+      recent_tag = "right";
+      return {true, "right"};
+    }
+
+    if (p_left_x < pusher_right_x && p_right_x > pusher_right_x) {
+      recent_tag = "left";
+      return {true, "left"};
+    }
+  }
+  return {false, recent_tag};
+}
