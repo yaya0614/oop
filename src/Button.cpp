@@ -4,7 +4,7 @@
 #include <memory>
 
 Button::Button() {
-  SetImage(GA_RESOURCE_DIR "/Button/white_btn.png");
+  SetImage(GA_RESOURCE_DIR "/Button/purple_btn.png");
   m_Transform.scale = {0.4, 0.32f};
   SetPosition({-140, -120});
   SetZIndex(25);

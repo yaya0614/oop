@@ -60,12 +60,12 @@ void WaterGirl::Update(
   bool onPlatform = false;
 
   if (elevationResult.isOnElevation || elevationResultP.isOnElevation) {
+
     float catch_value = elevationResult.isOnElevation
                             ? elevationResult.elevationY
                             : elevationResultP.elevationY;
     onElevation = true;
     nearestPlatformY = catch_value + 42.0f;
-    LOG_DEBUG(nearestPlatformY);
 
     onPlatform = true;
   } else {

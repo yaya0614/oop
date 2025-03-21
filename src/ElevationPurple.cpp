@@ -25,11 +25,12 @@ ElevationPurple::IsPlayerOnElevation(const glm::vec2 &playerPos,
   float player_x = playerPos.x;
   float player_y_low = playerPos.y - HalfHeight; // Get是拿最下面的y
   bool flag = false;
-  int ele_x_left = -400;
-  int ele_x_right = -314;
+  int ele_x_left = 312;
+  int ele_x_right = 404;
   float ele_y_top = GetPosition().y;
+
   bool Is_y_match =
-      (player_y_low - ele_y_top >= 0.05) && (player_y_low - ele_y_top <= 1);
+      (player_y_low - ele_y_top >= 0.05) && (player_y_low - ele_y_top <= 3);
 
   if ((player_x >= ele_x_left && player_x <= ele_x_right) && Is_y_match) {
     flag = true;
@@ -39,13 +40,7 @@ ElevationPurple::IsPlayerOnElevation(const glm::vec2 &playerPos,
 };
 
 void ElevationPurple::Update(float deltaTime, std::string LeftOrRight) {
-  LOG_DEBUG("LeftOrRight");
-  LOG_DEBUG(LeftOrRight);
-
   float targetY = LeftOrRight == init_side ? m_OriginalY : m_TargetY;
-  LOG_INFO("這是targetY");
-  LOG_INFO(targetY);
-
   float currentY = GetPosition().y;
 
   if (currentY != targetY) {

@@ -27,7 +27,7 @@ Elevation::IsPlayerOnElevation(const glm::vec2 &playerPos, float HalfHeight) {
   int ele_x_right = -314;
   float ele_y_top = GetPosition().y;
   bool Is_y_match =
-      (player_y_low - ele_y_top >= 0.05) && (player_y_low - ele_y_top <= 1);
+      (player_y_low - ele_y_top >= 0.05) && (player_y_low - ele_y_top <= 3);
 
   if ((player_x >= ele_x_left && player_x <= ele_x_right) && Is_y_match) {
     flag = true;

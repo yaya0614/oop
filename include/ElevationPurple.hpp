@@ -21,7 +21,7 @@ public:
 private:
   std::string m_ImagePath;
   std::string init_side = "left";
-  float m_TargetY = -28;
+  float m_TargetY = -8;
   float m_OriginalY = 35;
   float m_Speed = 50.0f;
 };

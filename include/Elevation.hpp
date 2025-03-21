@@ -20,7 +20,7 @@ public:
 private:
   std::string m_ImagePath;
   bool init_pressed = false;
-  float m_TargetY = -108;
+  float m_TargetY = -90;
   float m_OriginalY = -28;
   float m_Speed = 50.0f;
 };
