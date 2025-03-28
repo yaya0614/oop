@@ -5,9 +5,12 @@
 #include "Elevation.hpp"
 #include "ElevationPurple.hpp"
 #include "FireBoy.hpp"
+#include "FireDoor.hpp"
 #include "FireSea.hpp"
 #include "MapBackground.hpp"
 #include "Pusher.hpp"
+#include "Rock.hpp"
+#include "WaterDoor.hpp"
 #include "WaterGirl.hpp"
 #include "pch.hpp" // IWYU pragma: export
 
@@ -65,10 +68,13 @@ private:
   std::shared_ptr<Pusher> pusher;
   std::shared_ptr<AnimatedCharacter> m_Bee;
   std::shared_ptr<AnimatedCharacter> m_Ball;
+  std::shared_ptr<FireDoor> firedoor;
+  std::shared_ptr<WaterDoor> waterdoor;
 
   std::shared_ptr<AnimatedCharacter> ice_sea;
 
   std::shared_ptr<FireSea> m_fireSea;
+  std::shared_ptr<Rock> rock;
   std::shared_ptr<PhaseResourceManger> m_PRM;
 
   bool m_EnterDown = false;

@@ -6,6 +6,7 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "WaterGirl.hpp"
 #include "elevation.hpp"
 #include <iostream>
 #include <string>
@@ -28,7 +29,7 @@ void App::Update() {
 
   float deltaTime = 1.0 / 60.0f;
   fire_boy->Update(deltaTime, mapbackground, ele_blue);
-  water_girl->Update(deltaTime, mapbackground, ele_blue, ele_purple);
+  water_girl->Update(deltaTime, mapbackground, ele_blue, ele_purple, rock);
 
   float expect_x = fire_boy->GetPosition().x;
   float expect_y = fire_boy->GetPosition().y;
@@ -72,8 +73,7 @@ void App::Update() {
     bool collided = false;
     int collidedPlatformIndex = -1;
     for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
-      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, 1)) {
-        // LOG_DEBUG("我就進來");
+      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, i)) {
         collided = true;
         collidedPlatformIndex = i;
         break;
@@ -92,8 +92,7 @@ void App::Update() {
     int collidedPlatformIndex = -1;
     for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
       if (water_girl->IsCollider(expect_x_water_girl, expect_y_water_girl,
-                                 mapbackground, 0, 1)) {
-        // LOG_DEBUG("我就進來");
+                                 mapbackground, 0, i)) {
         collided = true;
         collidedPlatformIndex = i;
         break;
@@ -105,6 +104,16 @@ void App::Update() {
     } else {
     }
   }
+
+  bool tag = firedoor->IsWaterInto(water_girl, water_girl->GetHalfHeight());
+  firedoor->Update(tag);
+  water_girl->Die(firedoor->GetIsOpen());
+
+  auto data = rock->CheckCollision(water_girl->GetPosition(),
+                                   water_girl->GetHalfWidth(),
+                                   water_girl->GetHalfHeight());
+  rock->Update(data.tag, data.PushSide);
+
   if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE) ||
       Util::Input::IfExit()) {
     m_CurrentState = State::END;

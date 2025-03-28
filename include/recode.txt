@@ -28,5 +28,10 @@ elevation:
 
 
 
-
+Rock跟Player
+- 推動關係
+ 只要player的左邊接觸到Rock的右邊，就要讓Player跟Rock兩個一起推著走 往左邊的方向
+ 只要player的右邊接觸到Rock的左邊，就要讓Player跟Rock兩個一起推著走 往右邊的方向
+- Player可以跳到Rock上
+ 偵測如果Player.GetPosition.x中間的位置有在 Rock.GetPosition.x + 寬/2 且 Player.GetPosition.y_low高度 >= Rock.GetPosition.y + 高/2 就設定Player的高度在Rock上
 

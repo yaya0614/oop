@@ -23,6 +23,15 @@ void Pusher::CheckCollision(const std::shared_ptr<WaterGirl> &watergirl,
   tag = IsPushedResult.tag;
 };
 
+// void Pusher::CheckCollision(const std::shared_ptr<WaterGirl> &watergirl,
+//                             float expect_x,
+//                             std::shared_ptr<MapBackground> &background,
+//                             int level_id, int a) {
+//   auto IsPushedResult = watergirl->IsPushedbool(expect_x, background, 0, 0);
+//   // LOG_ERROR(IsPushedResult.IsPushed);
+//   m_IsPushed = IsPushedResult.IsPushed;
+//   tag = IsPushedResult.tag;
+// };
 void Pusher::Update(float deltaTime) {
   if (m_IsPushed) {
     if (tag == "right") {

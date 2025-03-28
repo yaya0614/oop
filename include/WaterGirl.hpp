@@ -6,7 +6,9 @@
 #include "ElevationPurple.hpp"
 #include "MGameObject.hpp"
 #include "MapBackground.hpp"
+#include "Rock.hpp"
 #include "Util/GameObject.hpp"
+#include <glm/fwd.hpp>
 #include <imgui.h>
 #include <memory>
 #include <string>
@@ -26,18 +28,17 @@ public:
 
   void SetImage(const std::string &ImagePath);
 
-  //   // void ResetPosition() { m_Transform.translation = {0, 0}; }
   void Jump();
-  void
-  Update(float deltaTime, std::shared_ptr<MapBackground> &map,
-         std::shared_ptr<Elevation> &elevation,
-         std::shared_ptr<ElevationPurple> &elevationResult_purple); // 更新位置
+  void Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+              std::shared_ptr<Elevation> &elevation,
+              std::shared_ptr<ElevationPurple> &elevationResult_purple,
+              std::shared_ptr<Rock> &rock); // 更新位置
   void Setter(float groundLevel);
   float GetGround();
   bool GetJump();
   float GetMaxJumpHeight();
   void ResetVelocityY();
-  void Die();
+  void Die(bool IsOpen);
   BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa,
                              float deltaTime);
   glm::vec2 GetVelocity();
@@ -55,6 +56,7 @@ private:
   float jumpingBuffer;
   float elevationBuffer = 0.3f;
   bool onElevation = false;
+  bool onRock = false;
 
   Platform init_stand_platform = {-401.0f, -142, -199, -224};
 };
