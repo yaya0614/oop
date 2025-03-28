@@ -6,7 +6,10 @@
 #include "Elevation.hpp"
 #include "ElevationPurple.hpp"
 #include "FireBoy.hpp"
+#include "FireDoor.hpp"
 #include "Pusher.hpp"
+#include "Rock.hpp"
+#include "WaterDoor.hpp"
 #include "WaterGirl.hpp"
 
 #include "FireSea.hpp"
@@ -53,6 +56,8 @@ void App::Start() {
   ele_blue = std::make_shared<Elevation>();
   m_Root.AddChild(ele_blue);
 
+  rock = std::make_shared<Rock>();
+  m_Root.AddChild(rock);
   ele_purple = std::make_shared<ElevationPurple>();
   m_Root.AddChild(ele_purple);
   button = std::make_shared<Button>();
@@ -60,6 +65,13 @@ void App::Start() {
 
   pusher = std::make_shared<Pusher>();
   m_Root.AddChild(pusher);
+
+  firedoor = std::make_shared<FireDoor>();
+  m_Root.AddChild(firedoor);
+
+  waterdoor = std::make_shared<WaterDoor>();
+  m_Root.AddChild(waterdoor);
+
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
 

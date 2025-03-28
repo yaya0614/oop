@@ -28,7 +28,6 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
                           int level_id, int a) {
   float fb_right_x = fb_expect_x + GetHalfWidth();
   float fb_left_x = fb_expect_x - GetHalfWidth();
-  // float fb_low_y = GetScaledSize().y / 2;
   float t1 = GetPosition().y;
   float tt = GetPosition().y - GetHalfHeight();
 
@@ -39,10 +38,13 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
   float platform_y_low = background->GetLevelData(level_id).platforms[a].y_low;
 
   bool isHorizontalCollision =
+
       (((fb_left_x < platform_left_x) && (fb_right_x > platform_left_x)) ||
        ((fb_right_x > platform_right_x) && (fb_left_x < platform_right_x)));
 
-  bool isStandingOnPlatform = (t1 < platform_y_high && tt == platform_y_low);
+  bool isStandingOnPlatform =
+      (t1 < platform_y_high && tt - platform_y_low > 0.01 &&
+       tt - platform_y_low < 1);
 
   return isHorizontalCollision && isStandingOnPlatform;
 };
@@ -67,23 +69,6 @@ bool Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
 
   return isHorizontalCollision && isStandingOnPlatform;
 };
-
-// Collider::IsPushedData
-// Collider::IsPushedbool(float fb_expect_x,
-//                        std::shared_ptr<MapBackground> &background, int
-//                        level_id, int a) {
-//   float fb_right_x = fb_expect_x + GetHalfWidth() - 10;
-//   float fb_left_x = fb_expect_x - GetHalfWidth() + 10;
-
-//   float tt = GetPosition().y - GetHalfHeight();
-
-//   float pusher_left_x = background->GetLevelData(level_id).pushers[a].x1;
-//   float pusher_right_x = background->GetLevelData(level_id).pushers[a].x2;
-//   float pusher_y_high = background->GetLevelData(level_id).pushers[a].y_high;
-
-//   bool isStandingOnPlatform = (tt == pusher_y_high);
-
-// };
 
 Collider::IsPushedData
 Collider::IsPushedbool(float fb_expect_x,
@@ -114,3 +99,29 @@ Collider::IsPushedbool(float fb_expect_x,
   }
   return {false, recent_tag};
 }
+
+// Collider::PlayerCollierData IsPlayerRockCollider(std::shared_ptr<Rock>
+// &rock){
+
+// float rock_low_y = othersPos.y - othersHalfHeight;
+// float rock_left = othersPos.x - othersHalfWidth;
+// float rock_right = othersPos.x + othersHalfWidth;
+// float player_low_y = playerPos.y + HalfHeight;
+// float player_left_x = playerPos.x - HalfWidth;
+// float player_right_x = playerPos.x + HalfWidth;
+
+// bool IsSmaePlatform =
+//     (6 >= rock_low_y - player_low_y) && (1 <= rock_low_y - player_low_y);
+
+// bool isHorizontalCollision =
+//     (((player_left_x < rock_left) && (player_right_x > rock_left)) ||
+//      ((player_right_x > rock_right) && (player_left_x < rock_right)));
+// if (isHorizontalCollision && IsSmaePlatform) {
+//   if ((player_left_x < rock_left) && (player_right_x > rock_left)) {
+//     return {true, "left"};
+//   } else {
+//     return {true, "right"};
+//   }
+// }
+// return {false, "none"};
+// };

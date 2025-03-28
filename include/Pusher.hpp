@@ -3,6 +3,7 @@
 
 #include "MGameObject.hpp"
 #include "WaterGirl.hpp"
+#include <glm/fwd.hpp>
 
 class Pusher : public MGameObject {
 public:
@@ -12,6 +13,10 @@ public:
                       float expect_x,
                       std::shared_ptr<MapBackground> &background, int level_id,
                       int a);
+
+  void CheckCollisionTest(glm::vec2 player, float expect_x,
+                          std::shared_ptr<MapBackground> &background,
+                          int level_id, int a);
   void Update(float deltaTime);
 
 private:

@@ -1,7 +1,9 @@
 #include "WaterGirl.hpp"
+
 #include "Elevation.hpp"
 #include "ElevationPurple.hpp"
 #include "MapBackground.hpp"
+
 #include "Util/Logger.hpp"
 #include <glm/fwd.hpp>
 #include <memory>
@@ -11,7 +13,6 @@ WaterGirl::WaterGirl() {
   m_Transform.scale = {0.4, 0.4f};
   SetVisible(true);
   SetZIndex(100);
-  // SetPosition({0, 0});
   SetPosition({-370, -223});
 }
 
@@ -27,16 +28,15 @@ void WaterGirl::SetImage(const std::string &ImagePath) {
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
 
-void WaterGirl::Update(
-    float deltaTime, std::shared_ptr<MapBackground> &map,
-    std::shared_ptr<Elevation> &elevation,
-    std::shared_ptr<ElevationPurple> &elevationResult_purple) {
+void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+                       std::shared_ptr<Elevation> &elevation,
+                       std::shared_ptr<ElevationPurple> &elevationResult_purple,
+                       std::shared_ptr<Rock> &rock) {
   glm::vec2 pos = GetPosition();
   auto elevationResult = elevation->IsPlayerOnElevation(pos, GetHalfHeight());
-
   auto elevationResultP =
       elevationResult_purple->IsPlayerOnElevation(pos, GetHalfHeight());
-
+  auto rockResult = rock->IsPlayerOnRock(pos, GetHalfHeight());
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
   }
@@ -44,7 +44,7 @@ void WaterGirl::Update(
   velocity.y += gravity * deltaTime;
   pos.y += velocity.y;
 
-  float poss = pos.x + GetHalfWidth() + 2;
+  float poss1 = pos.x;
   float test_y = pos.y - GetHalfHeight();
 
   bool check_init_x =
@@ -60,19 +60,23 @@ void WaterGirl::Update(
   bool onPlatform = false;
 
   if (elevationResult.isOnElevation || elevationResultP.isOnElevation) {
-
     float catch_value = elevationResult.isOnElevation
                             ? elevationResult.elevationY
                             : elevationResultP.elevationY;
     onElevation = true;
     nearestPlatformY = catch_value + 42.0f;
+    onPlatform = true;
+  }
 
+  else if (rockResult.isOnRock) {
+    onRock = true;
+    nearestPlatformY = rockResult.rock_top_y + 50;
     onPlatform = true;
   } else {
     onElevation = false;
-
+    onRock = false;
     for (const auto &platform : map->GetLevelData(0).platforms) {
-      if (poss >= platform.x1 && poss <= platform.x2) {
+      if (poss1 >= platform.x1 && poss1 <= platform.x2) {
         if (pos.y >= platform.y_high - 5.0f &&
             pos.y <= platform.y_high + 5.0f) {
           nearestPlatformY = platform.y_high;
@@ -87,13 +91,17 @@ void WaterGirl::Update(
     pos.y = nearestPlatformY;
     velocity.y = 0.0f;
     isJumping = false;
-    // LOG_DEBUG(onElevation ? "我在電梯" : "我在平台");
   } else if (pos.y <= groundLevel) {
     pos.y = groundLevel;
     velocity.y = 0.0f;
     isJumping = false;
-    // LOG_DEBUG("我在地板");
   }
 
   SetPosition(pos);
 }
+
+void WaterGirl::Die(bool IsOpen) {
+  if (IsOpen) {
+    SetVisible(false);
+  }
+};

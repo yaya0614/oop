@@ -11,6 +11,11 @@ public:
     bool IsPushed;
     std::string tag;
   };
+  struct PlayerCollierData {
+    bool tag;
+    std::string PushSide;
+  };
+
   std::string recent_tag = "left";
 
   bool IsOverLines(float expect_x, float expect_y,
