@@ -36,9 +36,16 @@ Rock::PlayerCollierData Rock::CheckCollision(glm::vec2 pos, float GetWidth,
   }
   return {false, "none"};
 };
-void Rock::Update(bool tag, std::string PushSide) {
-  if (tag) {
-    if (PushSide == "left") {
+void Rock::Update(bool tag_fire, bool tag_water, std::string PushSide_fire,
+                  std::string PushSide_water) {
+  if (tag_fire) {
+    if (PushSide_fire == "left") {
+      SetPosition({GetPosition().x + 2, GetPosition().y});
+    } else {
+      SetPosition({GetPosition().x - 2, GetPosition().y});
+    }
+  } else if (tag_water) {
+    if (PushSide_water == "left") {
       SetPosition({GetPosition().x + 2, GetPosition().y});
     } else {
       SetPosition({GetPosition().x - 2, GetPosition().y});

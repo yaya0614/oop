@@ -23,7 +23,8 @@ public:
 
   Rock::PlayerCollierData CheckCollision(glm::vec2 pos, float GetWidth,
                                          float GetHeight);
-  void Update(bool tag, std::string PushSide);
+  void Update(bool tag_fire, bool tag_water, std::string PushSide_fire,
+              std::string PushSide_water);
 
 private:
   float Rock_y;

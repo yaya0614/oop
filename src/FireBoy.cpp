@@ -19,7 +19,6 @@ FireBoy::FireBoy() {
 
 void FireBoy::Jump() {
   if (!isJumping) {
-    LOG_DEBUG("我在跳");
     velocity.y = 5.0f; // 設定跳躍初速度
     isJumping = true;
     jumpingBuffer = 0.1f; // 100ms 內不會進入 onPlatform 判定
@@ -30,12 +29,6 @@ void FireBoy::SetImage(const std::string &ImagePath) {
   m_ImagePath = ImagePath;
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
-
-void FireBoy::Setter(float new_roundLevel) { groundLevel = new_roundLevel; };
-
-float FireBoy::GetGround() { return groundLevel; };
-
-bool FireBoy::GetJump() { return isJumping; };
 
 FireBoy::BoolandValue
 FireBoy::IfFireFallIce(std::shared_ptr<MapBackground> &map) {
@@ -64,8 +57,14 @@ FireBoy::IfFireFallIce(std::shared_ptr<MapBackground> &map) {
 };
 
 void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
-                     std::shared_ptr<Elevation> &elevation) {
+                     std::shared_ptr<Elevation> &elevation,
+                     std::shared_ptr<ElevationPurple> &elevationResult_purple,
+                     std::shared_ptr<Rock> &rock) {
   glm::vec2 pos = GetPosition();
+  auto elevationResult = elevation->IsPlayerOnElevation(pos, GetHalfHeight());
+  auto elevationResultP =
+      elevationResult_purple->IsPlayerOnElevation(pos, GetHalfHeight());
+  auto rockResult = rock->IsPlayerOnRock(pos, GetHalfHeight());
 
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
@@ -75,16 +74,36 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
   pos.y += velocity.y;
 
   float poss = pos.x + GetHalfWidth() + 2;
+  float poss1 = pos.x;
   groundLevel = -270.0f;
 
   bool onPlatform = false;
   float nearestPlatformY = groundLevel;
-  for (const auto &platform : map->GetLevelData(0).platforms) {
-    if (poss >= platform.x1 && poss <= platform.x2) {
-      if (pos.y >= platform.y_high - 5.0f && pos.y <= platform.y_high + 5.0f) {
-        nearestPlatformY = platform.y_high;
-        onPlatform = true;
-        break;
+
+  if (elevationResult.isOnElevation || elevationResultP.isOnElevation) {
+    float catch_value = elevationResult.isOnElevation
+                            ? elevationResult.elevationY
+                            : elevationResultP.elevationY;
+    onElevation = true;
+    nearestPlatformY = catch_value + 42.0f;
+    onPlatform = true;
+  }
+
+  else if (rockResult.isOnRock) {
+    onRock = true;
+    nearestPlatformY = rockResult.rock_top_y + 50;
+    onPlatform = true;
+  } else {
+    onElevation = false;
+    onRock = false;
+    for (const auto &platform : map->GetLevelData(0).platforms) {
+      if (poss1 >= platform.x1 && poss1 <= platform.x2) {
+        if (pos.y >= platform.y_high - 5.0f &&
+            pos.y <= platform.y_high + 5.0f) {
+          nearestPlatformY = platform.y_high;
+          onPlatform = true;
+          break;
+        }
       }
     }
   }
@@ -93,19 +112,12 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
     pos.y = nearestPlatformY;
     velocity.y = 0.0f;
     isJumping = false;
-  } else if (IfFireFallIce(map).IsFall) {
-    if (fb_tag != IfFireFallIce(map).pair_tag) { // G掉
-      Die();
-    } else {
-      groundLevel = IfFireFallIce(map).current_fall_down_h;
-      pos.y = groundLevel;
-      isJumping = false;
-    }
   } else if (pos.y <= groundLevel) {
     pos.y = groundLevel;
     velocity.y = 0.0f;
     isJumping = false;
   }
+
   SetPosition(pos);
 }
 
@@ -113,3 +125,8 @@ void FireBoy::Die() {
   SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
   SetPosition(GetPosition());
 };
+
+// 用不到
+void FireBoy::Setter(float new_roundLevel) { groundLevel = new_roundLevel; };
+float FireBoy::GetGround() { return groundLevel; };
+bool FireBoy::GetJump() { return isJumping; };

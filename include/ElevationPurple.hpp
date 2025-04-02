@@ -14,7 +14,7 @@ public:
     float elevationY;
   };
   void SetImage(const std::string &ImagePath);
-  void Update(float delatime, std::string LeftOrRight);
+  void Update(float deltaTime, bool IsPressed);
   ElevationData IsPlayerOnElevation(const glm::vec2 &playerPos,
                                     float HalfHeight);
 

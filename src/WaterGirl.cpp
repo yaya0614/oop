@@ -37,6 +37,7 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
   auto elevationResultP =
       elevationResult_purple->IsPlayerOnElevation(pos, GetHalfHeight());
   auto rockResult = rock->IsPlayerOnRock(pos, GetHalfHeight());
+
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
   }
