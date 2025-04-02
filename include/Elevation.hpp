@@ -13,14 +13,17 @@ public:
     float elevationY;
   };
   void SetImage(const std::string &ImagePath);
-  void Update(float delatime, bool IsPressed);
+  void Update(float delatime, std::string LeftOrRight_fire,
+              std::string LeftOrRight_water, bool water_bool, bool fire_bool);
+
   ElevationData IsPlayerOnElevation(const glm::vec2 &playerPos,
                                     float HalfHeight);
 
 private:
   std::string m_ImagePath;
-  bool init_pressed = false;
-  float m_TargetY = -90;
+  std::string init_side = "right";
+  std::string recrod_side = "right";
+  float m_TargetY = -85;
   float m_OriginalY = -28;
   float m_Speed = 50.0f;
 };

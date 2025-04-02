@@ -65,8 +65,8 @@ bool Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
       (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
        ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)));
 
-  bool isStandingOnPlatform = (tt == button_y_high);
-
+  bool isStandingOnPlatform =
+      ((button_y_high - tt) >= 0) && ((button_y_high - tt) <= 1.5);
   return isHorizontalCollision && isStandingOnPlatform;
 };
 
@@ -83,45 +83,23 @@ Collider::IsPushedbool(float fb_expect_x,
   float pusher_right_x = background->GetLevelData(level_id).pushers[a].x2;
   float pusher_y_high = background->GetLevelData(level_id).pushers[a].y_high;
 
-  bool isStandingOnPlatform = (p_bottom_y == pusher_y_high);
+  bool isStandingOnPlatform =
+      (p_bottom_y - pusher_y_high >= 0.5) && (p_bottom_y - pusher_y_high <= 2);
 
   if (isStandingOnPlatform) {
-    // 玩家左邊接觸推桿左邊（從左邊推）
+
     if (p_right_x > pusher_left_x && p_left_x < pusher_left_x) {
       recent_tag = "right";
+      // LOG_DEBUG("1");
       return {true, "right"};
     }
 
     if (p_left_x < pusher_right_x && p_right_x > pusher_right_x) {
       recent_tag = "left";
+      // LOG_DEBUG("2");
       return {true, "left"};
     }
   }
+  // LOG_DEBUG("3");
   return {false, recent_tag};
 }
-
-// Collider::PlayerCollierData IsPlayerRockCollider(std::shared_ptr<Rock>
-// &rock){
-
-// float rock_low_y = othersPos.y - othersHalfHeight;
-// float rock_left = othersPos.x - othersHalfWidth;
-// float rock_right = othersPos.x + othersHalfWidth;
-// float player_low_y = playerPos.y + HalfHeight;
-// float player_left_x = playerPos.x - HalfWidth;
-// float player_right_x = playerPos.x + HalfWidth;
-
-// bool IsSmaePlatform =
-//     (6 >= rock_low_y - player_low_y) && (1 <= rock_low_y - player_low_y);
-
-// bool isHorizontalCollision =
-//     (((player_left_x < rock_left) && (player_right_x > rock_left)) ||
-//      ((player_right_x > rock_right) && (player_left_x < rock_right)));
-// if (isHorizontalCollision && IsSmaePlatform) {
-//   if ((player_left_x < rock_left) && (player_right_x > rock_left)) {
-//     return {true, "left"};
-//   } else {
-//     return {true, "right"};
-//   }
-// }
-// return {false, "none"};
-// };

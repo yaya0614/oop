@@ -58,8 +58,10 @@ void App::Start() {
 
   rock = std::make_shared<Rock>();
   m_Root.AddChild(rock);
+
   ele_purple = std::make_shared<ElevationPurple>();
   m_Root.AddChild(ele_purple);
+
   button = std::make_shared<Button>();
   m_Root.AddChild(button);
 

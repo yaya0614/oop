@@ -5,28 +5,23 @@
 
 Button::Button() {
   SetImage(GA_RESOURCE_DIR "/Button/purple_btn.png");
+  // original pos
+  // SetPosition({-140, -120});
   m_Transform.scale = {0.4, 0.32f};
-  SetPosition({-140, -120});
+  SetPosition({100, -35});
+
   SetZIndex(25);
 
-  m_OriginalY = GetPosition().y; // 記錄初始 Y 值
-  m_TargetY = m_OriginalY - 20;  // 下降 20 單位
+  m_OriginalY = GetPosition().y;
+  m_TargetY = m_OriginalY - 20;
 };
 void Button::SetImage(const std::string &ImagePath) {
   m_ImagePath = ImagePath;
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 };
-void Button::CheckCollision(const std::shared_ptr<FireBoy> &fireBoy,
-                            float expect_x, float expect_y,
-                            std::shared_ptr<MapBackground> &background,
-                            int level_id, int a) {
-  bool isPressed =
-      fireBoy->IsPressedButtonbool(expect_x, expect_y, background, 0, 0);
 
-  m_IsPressed = isPressed;
-}
-void Button::Update(float deltaTime) {
-  float targetY = m_IsPressed ? m_TargetY : m_OriginalY;
+void Button::Update(float deltaTime, bool IsPressed) {
+  float targetY = IsPressed ? m_TargetY : m_OriginalY;
   float currentY = GetPosition().y;
 
   if (currentY != targetY) {
@@ -40,7 +35,7 @@ void Button::Update(float deltaTime) {
 
     SetPosition({GetPosition().x, newY});
 
-    if (m_IsPressed) {
+    if (IsPressed) {
 
       SetZIndex(10);
     } else {

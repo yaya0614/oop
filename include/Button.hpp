@@ -1,6 +1,7 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
+#include "Collider.hpp"
 #include "FireBoy.hpp"
 #include "MGameObject.hpp"
 
@@ -12,7 +13,12 @@ public:
                       float expect_y,
                       std::shared_ptr<MapBackground> &background, int level_id,
                       int a);
-  void Update(float deltaTime);
+
+  void CheckCollisionTest(const std::shared_ptr<Collider> &player,
+                          float expect_x, float expect_y,
+                          std::shared_ptr<MapBackground> &background,
+                          int level_id, int a);
+  void Update(float deltaTime, bool IsPressed);
 
 private:
   std::string m_ImagePath;

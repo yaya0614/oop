@@ -36,13 +36,21 @@ Elevation::IsPlayerOnElevation(const glm::vec2 &playerPos, float HalfHeight) {
   return {flag, ele_y_top};
 };
 
-void Elevation::Update(float deltaTime, bool IsPressed) {
-  float targetY = IsPressed ? m_TargetY : m_OriginalY;
+void Elevation::Update(float delatime, std::string LeftOrRight_fire,
+                       std::string LeftOrRight_water, bool water_bool,
+                       bool fire_bool) {
+  if (water_bool) {
+    recrod_side = LeftOrRight_water;
+  } else if (fire_bool) {
+    recrod_side = LeftOrRight_fire;
+  }
+
+  float targetY = recrod_side == init_side ? m_OriginalY : m_TargetY;
   float currentY = GetPosition().y;
 
   if (currentY != targetY) {
     float direction = (targetY > currentY) ? 1.0f : -1.0f;
-    float newY = currentY + direction * m_Speed * deltaTime;
+    float newY = currentY + direction * m_Speed * delatime;
 
     if ((direction > 0 && newY > targetY) ||
         (direction < 0 && newY < targetY)) {
