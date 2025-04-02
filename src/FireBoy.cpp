@@ -67,7 +67,6 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
                      std::shared_ptr<Elevation> &elevation) {
   glm::vec2 pos = GetPosition();
 
-  // elevation->IsPlayerOnElevation(pos);
   if (jumpingBuffer > 0.0f) {
     jumpingBuffer -= deltaTime;
   }

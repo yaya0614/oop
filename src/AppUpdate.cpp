@@ -1,5 +1,6 @@
 #include "AnimatedCharacter.hpp"
 #include "App.hpp"
+#include <cstdlib>
 #include <iostream>
 
 #include "Collider.hpp"
@@ -9,6 +10,7 @@
 #include "WaterGirl.hpp"
 #include "elevation.hpp"
 #include <iostream>
+#include <memory>
 #include <string>
 using namespace std;
 
@@ -44,17 +46,22 @@ void App::Update() {
     water_girl->Jump();
   }
 
+  bool IsPress_w = water_girl->IsPressedButtonbool(
+      expect_x_water_girl, expect_y_water_girl, mapbackground, 0, 0);
+
   bool IsPress =
       fire_boy->IsPressedButtonbool(expect_x, expect_y, mapbackground, 0, 0);
-  button->CheckCollision(fire_boy, expect_x, expect_y, mapbackground, 0, 0);
-  button->Update(deltaTime);
 
-  auto IsPushed = water_girl->IsPushedbool(expect_x, mapbackground, 0, 0);
-  pusher->CheckCollision(water_girl, expect_x_water_girl, mapbackground, 0, 0);
-  pusher->Update(deltaTime);
+  button->Update(deltaTime, IsPress || IsPress_w);
 
-  ele_blue->Update(deltaTime, IsPress);
-  ele_purple->Update(deltaTime, IsPushed.tag);
+  auto WaterGirl_PushData =
+      water_girl->IsPushedbool(expect_x_water_girl, mapbackground, 0, 0);
+  auto FireBoy_PushData = fire_boy->IsPushedbool(expect_x, mapbackground, 0, 0);
+
+  ele_blue->Update(deltaTime, FireBoy_PushData.tag, WaterGirl_PushData.tag,
+                   WaterGirl_PushData.IsPushed, FireBoy_PushData.IsPushed);
+  pusher->Update(FireBoy_PushData.tag, WaterGirl_PushData.tag,
+                 WaterGirl_PushData.IsPushed, FireBoy_PushData.IsPushed);
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
     expect_x += 2;

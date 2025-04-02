@@ -36,5 +36,7 @@ public:
   IsPushedData IsPushedbool(float fb_expect_x,
                             std::shared_ptr<MapBackground> &background,
                             int level_id, int a);
+
+  std::string GetRecentTag() { return recent_tag; };
 };
 #endif // COLLIDER_HPP
