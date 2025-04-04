@@ -4,10 +4,13 @@
 #include "Collider.hpp"
 #include "FireBoy.hpp"
 #include "MGameObject.hpp"
+#include <memory>
+#include <string>
 
 class Button : public MGameObject {
 public:
   explicit Button();
+
   void SetImage(const std::string &ImagePath);
   void CheckCollision(const std::shared_ptr<FireBoy> &fireBoy, float expect_x,
                       float expect_y,
@@ -18,10 +21,12 @@ public:
                           float expect_x, float expect_y,
                           std::shared_ptr<MapBackground> &background,
                           int level_id, int a);
-  void Update(float deltaTime, bool IsPressed);
+  void Update(float deltaTime, bool IsPressed, int WaterGirl_num,
+              int FireBoy_num);
 
 private:
   std::string m_ImagePath;
+  int init_sel = 0;
   bool m_IsPressed = false; // 是否被按下
   float m_TargetY;          // 目標 Y 座標
   float m_OriginalY;        // 初始 Y 座標

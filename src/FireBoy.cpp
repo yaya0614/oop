@@ -121,9 +121,12 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
   SetPosition(pos);
 }
 
-void FireBoy::Die() {
-  SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
-  SetPosition(GetPosition());
+void FireBoy::Die(bool IsOpen) {
+  if (IsOpen) {
+    SetVisible(false);
+  }
+  // SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+  // SetPosition(GetPosition());
 };
 
 // 用不到

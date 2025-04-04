@@ -48,27 +48,67 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
 
   return isHorizontalCollision && isStandingOnPlatform;
 };
+Collider::PressedData
+Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
+                              std::shared_ptr<MapBackground> &background,
+                              int level_id, int a) {
+  bool tag = false;
+  int num = 100;
 
-bool Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
-                                   std::shared_ptr<MapBackground> &background,
-                                   int level_id, int a) {
   float fb_right_x = fb_expect_x + GetHalfWidth() - 10;
   float fb_left_x = fb_expect_x - GetHalfWidth() + 10;
+  float foot_y = fb_expect_y - GetHalfHeight(); // 改用預測位置的 y
 
-  float tt = GetPosition().y - GetHalfHeight();
+  LOG_CRITICAL("foot_y");
 
-  float button_left_x = background->GetLevelData(level_id).buttons[a].x1;
-  float button_right_x = background->GetLevelData(level_id).buttons[a].x2;
-  float button_y_high = background->GetLevelData(level_id).buttons[a].y_high;
+  LOG_CRITICAL(foot_y);
 
-  bool isHorizontalCollision =
-      (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
-       ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)));
+  for (int i = 0; i < background->GetLevelData(0).buttons.size(); i++) {
+    float button_left_x = background->GetLevelData(0).buttons[i].x1;
+    float button_right_x = background->GetLevelData(0).buttons[i].x2;
+    float button_y_high = background->GetLevelData(0).buttons[i].y_high;
 
-  bool isStandingOnPlatform =
-      ((button_y_high - tt) >= 0) && ((button_y_high - tt) <= 1.5);
-  return isHorizontalCollision && isStandingOnPlatform;
-};
+    bool isHorizontalCollision =
+        (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
+         ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)) ||
+         (fb_left_x >= button_left_x &&
+          fb_right_x <= button_right_x)); // 補中間直接在範圍內
+
+    bool isStandingOnPlatform =
+        ((button_y_high - foot_y) >= 0) && ((button_y_high - foot_y) <= 1.5);
+
+    if (isHorizontalCollision && isStandingOnPlatform) {
+      tag = true;
+      num = i;
+    }
+  }
+  if (tag) {
+    return {tag, num};
+  } else {
+    return {false, 100};
+  }
+
+  return {tag, num}; // 沒進 if 就維持預設 false + 100
+}
+
+// for (const auto &data : background->GetLevelData(level_id).buttons) {
+//   float button_left_x = data.x1;
+//   float button_right_x = data.x2;
+//   float button_y_high = data.y_high;
+
+//   bool isHorizontalCollision =
+//       (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
+//        ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)));
+
+//   bool isStandingOnPlatform =
+//       ((button_y_high - tt) >= 0) && ((button_y_high - tt) <= 1.5);
+//   if (isHorizontalCollision && isStandingOnPlatform) {
+//     return {
+//         isHorizontalCollision && isStandingOnPlatform,
+//     };
+//   }
+// }
+// };
 
 Collider::IsPushedData
 Collider::IsPushedbool(float fb_expect_x,

@@ -2,6 +2,7 @@
 #define APP_HPP
 
 #include "Button.hpp"
+#include "ButtonTop.hpp"
 #include "Elevation.hpp"
 #include "ElevationPurple.hpp"
 #include "FireBoy.hpp"
@@ -64,12 +65,15 @@ private:
   std::vector<std::shared_ptr<Character>> m_Doors;
   std::shared_ptr<Elevation> ele_blue;
   std::shared_ptr<ElevationPurple> ele_purple;
+
   std::shared_ptr<Button> button;
   std::shared_ptr<Pusher> pusher;
   std::shared_ptr<AnimatedCharacter> m_Bee;
   std::shared_ptr<AnimatedCharacter> m_Ball;
   std::shared_ptr<FireDoor> firedoor;
   std::shared_ptr<WaterDoor> waterdoor;
+
+  std::shared_ptr<ButtonTop> button_top;
 
   std::shared_ptr<AnimatedCharacter> ice_sea;
 

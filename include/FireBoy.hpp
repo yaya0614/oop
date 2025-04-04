@@ -34,7 +34,7 @@ public:
   float GetGround();
   bool GetJump();
   void ResetVelocityY();
-  void Die();
+  void Die(bool IsOpen);
   BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa);
 
 private:
