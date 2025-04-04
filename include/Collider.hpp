@@ -11,6 +11,10 @@ public:
     bool IsPushed;
     std::string tag;
   };
+  struct PressedData {
+    bool IsPushed;
+    int num;
+  };
   struct PlayerCollierData {
     bool tag;
     std::string PushSide;
@@ -30,9 +34,9 @@ public:
   bool IsPlatformOrSlope(float fb_expect_x, float fb_expect_y,
                          std::shared_ptr<MapBackground> &background);
 
-  bool IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
-                           std::shared_ptr<MapBackground> &background,
-                           int level_id, int a);
+  PressedData IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
+                                  std::shared_ptr<MapBackground> &background,
+                                  int level_id, int a);
   IsPushedData IsPushedbool(float fb_expect_x,
                             std::shared_ptr<MapBackground> &background,
                             int level_id, int a);

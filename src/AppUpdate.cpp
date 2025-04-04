@@ -1,17 +1,16 @@
 #include "AnimatedCharacter.hpp"
 #include "App.hpp"
-#include <cstdlib>
-#include <iostream>
-
 #include "Collider.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "WaterGirl.hpp"
 #include "elevation.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>
+
 using namespace std;
 
 void App::Update() {
@@ -30,7 +29,7 @@ void App::Update() {
   }
 
   float deltaTime = 1.0 / 60.0f;
-  fire_boy->Update(deltaTime, mapbackground, ele_blue);
+  fire_boy->Update(deltaTime, mapbackground, ele_blue, ele_purple, rock);
   water_girl->Update(deltaTime, mapbackground, ele_blue, ele_purple, rock);
 
   float expect_x = fire_boy->GetPosition().x;
@@ -46,14 +45,18 @@ void App::Update() {
     water_girl->Jump();
   }
 
-  bool IsPress_w = water_girl->IsPressedButtonbool(
+  auto IsPress_w = water_girl->IsPressedButtonbool(
       expect_x_water_girl, expect_y_water_girl, mapbackground, 0, 0);
 
-  bool IsPress =
+  auto IsPress =
       fire_boy->IsPressedButtonbool(expect_x, expect_y, mapbackground, 0, 0);
 
-  button->Update(deltaTime, IsPress || IsPress_w);
+  button->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed,
+                 IsPress_w.num, IsPress.num);
 
+  button_top->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed,
+                     IsPress_w.num, IsPress.num);
+  ele_purple->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed);
   auto WaterGirl_PushData =
       water_girl->IsPushedbool(expect_x_water_girl, mapbackground, 0, 0);
   auto FireBoy_PushData = fire_boy->IsPushedbool(expect_x, mapbackground, 0, 0);
@@ -112,18 +115,27 @@ void App::Update() {
     }
   }
 
-  bool tag = firedoor->IsWaterInto(water_girl, water_girl->GetHalfHeight());
-  firedoor->Update(tag);
-  water_girl->Die(firedoor->GetIsOpen());
+  bool tag_fb = firedoor->IsWaterInto(water_girl, water_girl->GetHalfHeight());
+  firedoor->Update(tag_fb);
 
-  auto data = rock->CheckCollision(water_girl->GetPosition(),
-                                   water_girl->GetHalfWidth(),
-                                   water_girl->GetHalfHeight());
-  rock->Update(data.tag, data.PushSide);
+  bool tag_wt = waterdoor->IsWaterInto(fire_boy, fire_boy->GetHalfHeight());
+  waterdoor->Update(tag_wt);
+  water_girl->Die(firedoor->GetIsOpen());
+  fire_boy->Die(waterdoor->GetIsOpen());
+
+  auto water_rock = rock->CheckCollision(water_girl->GetPosition(),
+                                         water_girl->GetHalfWidth(),
+                                         water_girl->GetHalfHeight());
+  auto fire_rock =
+      rock->CheckCollision(fire_boy->GetPosition(), fire_boy->GetHalfWidth(),
+                           fire_boy->GetHalfHeight());
+  rock->Update(fire_rock.tag, water_rock.tag, fire_rock.PushSide,
+               water_rock.PushSide);
 
   if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE) ||
       Util::Input::IfExit()) {
     m_CurrentState = State::END;
   }
+
   m_Root.Update();
 }

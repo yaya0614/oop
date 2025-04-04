@@ -7,7 +7,6 @@
 ElevationPurple::ElevationPurple() {
   SetImage(GA_RESOURCE_DIR "/Elevation/ele_purple.png");
   SetPosition({360, 35});
-  // SetPosition({-358, -108});
 
   m_Transform.scale = {0.415, 0.4f};
   SetVisible(true);
@@ -23,7 +22,7 @@ ElevationPurple::ElevationData
 ElevationPurple::IsPlayerOnElevation(const glm::vec2 &playerPos,
                                      float HalfHeight) {
   float player_x = playerPos.x;
-  float player_y_low = playerPos.y - HalfHeight; // Get是拿最下面的y
+  float player_y_low = playerPos.y - HalfHeight;
   bool flag = false;
   int ele_x_left = 312;
   int ele_x_right = 404;
@@ -39,10 +38,10 @@ ElevationPurple::IsPlayerOnElevation(const glm::vec2 &playerPos,
   return {flag, ele_y_top};
 };
 
-void ElevationPurple::Update(float deltaTime, std::string LeftOrRight) {
-  float targetY = LeftOrRight == init_side ? m_OriginalY : m_TargetY;
-  float currentY = GetPosition().y;
+void ElevationPurple::Update(float deltaTime, bool IsPressed) {
 
+  float targetY = IsPressed ? m_TargetY : m_OriginalY;
+  float currentY = GetPosition().y;
   if (currentY != targetY) {
     float direction = (targetY > currentY) ? 1.0f : -1.0f;
     float newY = currentY + direction * m_Speed * deltaTime;
@@ -51,7 +50,6 @@ void ElevationPurple::Update(float deltaTime, std::string LeftOrRight) {
         (direction < 0 && newY < targetY)) {
       newY = targetY;
     }
-
     SetPosition({GetPosition().x, newY});
   }
 }

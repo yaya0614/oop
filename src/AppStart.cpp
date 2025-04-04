@@ -2,6 +2,7 @@
 #include "App.hpp"
 
 #include "Button.hpp"
+#include "ButtonTop.hpp"
 #include "Character.hpp"
 #include "Elevation.hpp"
 #include "ElevationPurple.hpp"
@@ -61,6 +62,9 @@ void App::Start() {
 
   ele_purple = std::make_shared<ElevationPurple>();
   m_Root.AddChild(ele_purple);
+
+  button_top = std::make_shared<ButtonTop>();
+  m_Root.AddChild(button_top);
 
   button = std::make_shared<Button>();
   m_Root.AddChild(button);

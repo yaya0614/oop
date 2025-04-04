@@ -3,8 +3,10 @@
 
 #include "Collider.hpp"
 #include "Elevation.hpp"
+#include "ElevationPurple.hpp"
 #include "MGameObject.hpp"
 #include "MapBackground.hpp"
+#include "Rock.hpp"
 #include "Util/GameObject.hpp"
 #include <imgui.h>
 #include <memory>
@@ -23,12 +25,16 @@ public:
   void SetImage(const std::string &ImagePath);
   void Jump();
   void Update(float deltaTime, std::shared_ptr<MapBackground> &map,
-              std::shared_ptr<Elevation> &elevation); // 更新位置
+              std::shared_ptr<Elevation> &elevation,
+              std::shared_ptr<ElevationPurple> &elevationResult_purple,
+              std::shared_ptr<Rock> &rock); // 更新位置
+  // void Update(float deltaTime, std::shared_ptr<MapBackground> &map,
+  // std::shared_ptr<Elevation> &elevation); // 更新位置
   void Setter(float groundLevel);
   float GetGround();
   bool GetJump();
   void ResetVelocityY();
-  void Die();
+  void Die(bool IsOpen);
   BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa);
 
 private:
@@ -40,6 +46,9 @@ private:
   std::string m_ImagePath;
   float jumpingBuffer;
   std::string fb_tag = "fire";
+  float elevationBuffer = 0.3f;
+  bool onElevation = false;
+  bool onRock = false;
 };
 
 #endif // FIREBOY_HPP
