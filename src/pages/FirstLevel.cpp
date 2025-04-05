@@ -1,24 +1,61 @@
-#include "AnimatedCharacter.hpp"
-#include "App.hpp"
-#include "Collider.hpp"
+#include "pages/FirstLevel.hpp"
 #include "Util/Input.hpp"
-#include "Util/Keycode.hpp"
-#include "Util/Logger.hpp"
-#include "WaterGirl.hpp"
-#include "elevation.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <memory>
-#include <string>
 
-using namespace std;
+void FirstLevel::Start() {
+  fire_boy = std::make_shared<FireBoy>();
+  fire_boy->m_Transform.scale = {0.4, 0.41f};
+  m_Root.AddChild(fire_boy);
 
-void App::Update() {
-  glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  water_girl = std::make_shared<WaterGirl>();
+  water_girl->m_Transform.scale = {0.4, 0.41f};
+  m_Root.AddChild(water_girl);
 
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
+  ice_sea = std::make_shared<AnimatedCharacter>(std::vector<std::string>{
+      GA_RESOURCE_DIR "/IceGirl/ice_small/water_1.png",
+      GA_RESOURCE_DIR "/IceGirl/ice_small/water_2.png",
+      GA_RESOURCE_DIR "/IceGirl/ice_small/water_3.png",
+      GA_RESOURCE_DIR "/IceGirl/ice_small/water_4.png",
+      GA_RESOURCE_DIR "/IceGirl/ice_small/water_5.png",
+  });
+  ice_sea->SetPosition({20, -310});
+  ice_sea->SetZIndex(100);
+  ice_sea->m_Transform.scale = {0.7, 0.43};
+  ice_sea->SetVisible(true);
+  m_Root.AddChild(ice_sea);
+
+  m_fireSea = std::make_shared<FireSea>();
+  m_Root.AddChild(m_fireSea);
+
+  ele_blue = std::make_shared<Elevation>();
+  m_Root.AddChild(ele_blue);
+
+  rock = std::make_shared<Rock>();
+  m_Root.AddChild(rock);
+
+  ele_purple = std::make_shared<ElevationPurple>();
+  m_Root.AddChild(ele_purple);
+
+  button_top = std::make_shared<ButtonTop>();
+  m_Root.AddChild(button_top);
+
+  button = std::make_shared<Button>();
+  m_Root.AddChild(button);
+
+  pusher = std::make_shared<Pusher>();
+  m_Root.AddChild(pusher);
+
+  firedoor = std::make_shared<FireDoor>();
+  m_Root.AddChild(firedoor);
+
+  waterdoor = std::make_shared<WaterDoor>();
+  m_Root.AddChild(waterdoor);
+
+  mapbackground = std::make_shared<MapBackground>();
+  m_Root.AddChild(mapbackground);
+
+  m_CurrentState = State::UPDATE;
+};
+void FirstLevel::Update() {
 
   if (!ice_sea->IsLooping()) {
     ice_sea->SetLooping(true);
@@ -132,10 +169,17 @@ void App::Update() {
   rock->Update(fire_rock.tag, water_rock.tag, fire_rock.PushSide,
                water_rock.PushSide);
 
+  if (firedoor->GetIsOpen() && waterdoor->GetIsOpen()) {
+    LOG_CRITICAL("遊戲結束");
+  }
+
   if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE) ||
       Util::Input::IfExit()) {
     m_CurrentState = State::END;
   }
 
   m_Root.Update();
-}
+};
+void FirstLevel::End(){
+
+};
