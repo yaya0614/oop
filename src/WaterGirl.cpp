@@ -18,7 +18,7 @@ WaterGirl::WaterGirl() {
 
 void WaterGirl::Jump() {
   if (!isJumping) {
-    velocity.y = 5.0f; // 設定跳躍初速度
+    velocity.y = 4.8f; // 設定跳躍初速度
     isJumping = true;
     jumpingBuffer = 0.1f; // 100ms 內不會進入 onPlatform 判定
   }

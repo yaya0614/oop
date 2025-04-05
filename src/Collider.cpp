@@ -59,10 +59,6 @@ Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
   float fb_left_x = fb_expect_x - GetHalfWidth() + 10;
   float foot_y = fb_expect_y - GetHalfHeight(); // 改用預測位置的 y
 
-  LOG_CRITICAL("foot_y");
-
-  LOG_CRITICAL(foot_y);
-
   for (int i = 0; i < background->GetLevelData(0).buttons.size(); i++) {
     float button_left_x = background->GetLevelData(0).buttons[i].x1;
     float button_right_x = background->GetLevelData(0).buttons[i].x2;
