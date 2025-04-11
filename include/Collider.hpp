@@ -41,6 +41,8 @@ public:
                             std::shared_ptr<MapBackground> &background,
                             int level_id, int a);
 
+  bool IsCollidingWith(const MGameObject &other);
+
   std::string GetRecentTag() { return recent_tag; };
 };
 #endif // COLLIDER_HPP

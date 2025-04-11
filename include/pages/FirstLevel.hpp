@@ -6,6 +6,7 @@
 #include "Button.hpp"
 #include "ButtonTop.hpp"
 #include "Character.hpp"
+#include "Diamond.hpp"
 #include "FireBoy.hpp"
 
 #include "FireDoor.hpp"
@@ -41,7 +42,7 @@ public:
   std::shared_ptr<ButtonTop> button_top;
 
   std::shared_ptr<AnimatedCharacter> ice_sea;
-
+  std::vector<std::shared_ptr<Diamond>> diamonds;
   std::shared_ptr<FireSea> m_fireSea;
   std::shared_ptr<Rock> rock;
 };
