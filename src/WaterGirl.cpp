@@ -28,6 +28,35 @@ void WaterGirl::SetImage(const std::string &ImagePath) {
   m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
 
+WaterGirl::BoolandValue
+WaterGirl::IfWaterFallFire(std::shared_ptr<MapBackground> &map) {
+  float current_fb_x = GetPosition().x;
+  float current_fb_y = GetPosition().y - GetHalfHeight();
+  bool isTure = false;
+  std::string pair_tag;
+  float current_fall_down_h;
+
+  for (auto pool : map->GetLevelData(0).pools) {
+    bool check_range =
+        ((current_fb_x >= pool.x1) && (current_fb_x <= pool.x2)) &&
+        (((current_fb_y - pool.y_high) > 0.01 &&
+          (current_fb_y - pool.y_high) < 1.5) ||
+         (current_fb_y < pool.y_high - 5));
+
+    if (check_range) {
+      isTure = true;
+
+      pair_tag = pool.tag;
+      current_fall_down_h = pool.expect_fall_down_h;
+    }
+  }
+
+  if (isTure) {
+    return {true, current_fall_down_h, pair_tag};
+  }
+  return {false, current_fall_down_h, "no"};
+};
+
 void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
                        std::shared_ptr<Elevation> &elevation,
                        std::shared_ptr<ElevationPurple> &elevationResult_purple,
@@ -73,6 +102,16 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
     onRock = true;
     nearestPlatformY = rockResult.rock_top_y + 50;
     onPlatform = true;
+  } else if (IfWaterFallFire(map).IsFall) {
+
+    if (wg_tag != IfWaterFallFire(map).pair_tag) { // G掉
+      IsFallPool = true;
+    } else {
+      IsFallPool = false;
+      groundLevel = IfWaterFallFire(map).current_fall_down_h;
+      pos.y = groundLevel;
+      isJumping = false;
+    }
   } else {
     onElevation = false;
     onRock = false;
@@ -104,5 +143,9 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
 void WaterGirl::Die(bool IsOpen) {
   if (IsOpen) {
     SetVisible(false);
+  }
+  if (IsFallPool) {
+    SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+    SetPosition(GetPosition());
   }
 };

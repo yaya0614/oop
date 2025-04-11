@@ -49,6 +49,7 @@ private:
   float elevationBuffer = 0.3f;
   bool onElevation = false;
   bool onRock = false;
+  bool IsFallPool = false;
 };
 
 #endif // FIREBOY_HPP

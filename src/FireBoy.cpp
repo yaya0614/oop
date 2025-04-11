@@ -41,7 +41,9 @@ FireBoy::IfFireFallIce(std::shared_ptr<MapBackground> &map) {
   for (auto pool : map->GetLevelData(0).pools) {
     bool check_range =
         ((current_fb_x >= pool.x1) && (current_fb_x <= pool.x2)) &&
-        ((current_fb_y == pool.y_high) || (current_fb_y < pool.y_high - 5));
+        (((current_fb_y - pool.y_high) > 0.01 &&
+          (current_fb_y - pool.y_high) < 1.5) ||
+         (current_fb_y < pool.y_high - 5));
 
     if (check_range) {
       isTure = true;
@@ -93,6 +95,15 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
     onRock = true;
     nearestPlatformY = rockResult.rock_top_y + 50;
     onPlatform = true;
+  } else if (IfFireFallIce(map).IsFall) {
+    if (fb_tag != IfFireFallIce(map).pair_tag) { // G掉
+      IsFallPool = true;
+    } else {
+      IsFallPool = false;
+      groundLevel = IfFireFallIce(map).current_fall_down_h;
+      pos.y = groundLevel;
+      isJumping = false;
+    }
   } else {
     onElevation = false;
     onRock = false;
@@ -125,8 +136,10 @@ void FireBoy::Die(bool IsOpen) {
   if (IsOpen) {
     SetVisible(false);
   }
-  // SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
-  // SetPosition(GetPosition());
+  if (IsFallPool) {
+    SetImage(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+    SetPosition(GetPosition());
+  }
 };
 
 // 用不到

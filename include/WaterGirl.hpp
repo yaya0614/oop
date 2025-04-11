@@ -19,7 +19,8 @@ public:
 
   struct BoolandValue {
     bool IsFall;
-    float value;
+    float current_fall_down_h;
+    std::string pair_tag;
   };
 
   struct Platform {
@@ -39,8 +40,7 @@ public:
   float GetMaxJumpHeight();
   void ResetVelocityY();
   void Die(bool IsOpen);
-  BoolandValue IfFireFallIce(std::shared_ptr<MapBackground> &mpa,
-                             float deltaTime);
+  BoolandValue IfWaterFallFire(std::shared_ptr<MapBackground> &mpa);
   glm::vec2 GetVelocity();
 
 private:
@@ -49,7 +49,7 @@ private:
   bool isJumping = false;            // 是否正在跳躍
   bool onPlatform = false;
   float groundLevel = -184.0f;
-  // float groundLevel = -270.0f;
+  std::string wg_tag = "ice";
   std::string m_ImagePath;
   int countD = 0;
   int countA = 0;
@@ -57,6 +57,7 @@ private:
   float elevationBuffer = 0.3f;
   bool onElevation = false;
   bool onRock = false;
+  bool IsFallPool = false;
 
   Platform init_stand_platform = {-401.0f, -142, -199, -224};
 };
