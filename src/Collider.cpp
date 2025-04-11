@@ -87,25 +87,13 @@ Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
   return {tag, num}; // 沒進 if 就維持預設 false + 100
 }
 
-// for (const auto &data : background->GetLevelData(level_id).buttons) {
-//   float button_left_x = data.x1;
-//   float button_right_x = data.x2;
-//   float button_y_high = data.y_high;
+bool Collider::IsCollidingWith(const MGameObject &other) {
+  glm::vec2 pos1 = GetPosition();
+  glm::vec2 pos2 = other.GetPosition();
 
-//   bool isHorizontalCollision =
-//       (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
-//        ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)));
-
-//   bool isStandingOnPlatform =
-//       ((button_y_high - tt) >= 0) && ((button_y_high - tt) <= 1.5);
-//   if (isHorizontalCollision && isStandingOnPlatform) {
-//     return {
-//         isHorizontalCollision && isStandingOnPlatform,
-//     };
-//   }
-// }
-// };
-
+  float distance = glm::distance(pos1, pos2);
+  return distance < 40.0f;
+};
 Collider::IsPushedData
 Collider::IsPushedbool(float fb_expect_x,
                        std::shared_ptr<MapBackground> &background, int level_id,

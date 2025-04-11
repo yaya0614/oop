@@ -50,6 +50,35 @@ void FirstLevel::Start() {
   waterdoor = std::make_shared<WaterDoor>();
   m_Root.AddChild(waterdoor);
 
+  // {-22, 65, -322, -309, -276.2f, "ice"},
+  // {122, 212, -322, -309, -276.2f, "fire"}},
+  std::vector<glm::vec2> redDiamondPositions = {
+      {167, -260},
+      {-250, 20},
+      {-175, 250},
+      {0, 200},
+
+  };
+
+  std::vector<glm::vec2> waterDiamondPositions = {
+      {20, -260},
+      {200, -20},
+      {-380, 190},
+      {100, 200},
+
+  };
+  for (auto &pos : redDiamondPositions) {
+    auto diamond = std::make_shared<Diamond>(pos, "fire");
+    diamonds.push_back(diamond);
+    m_Root.AddChild(diamond);
+  }
+
+  for (auto &pos : waterDiamondPositions) {
+    auto diamond = std::make_shared<Diamond>(pos, "water");
+    diamonds.push_back(diamond);
+    m_Root.AddChild(diamond);
+  }
+
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
 
@@ -168,6 +197,23 @@ void FirstLevel::Update() {
                            fire_boy->GetHalfHeight());
   rock->Update(fire_rock.tag, water_rock.tag, fire_rock.PushSide,
                water_rock.PushSide);
+
+  for (auto &diamond : diamonds) {
+    if (diamond->IsCollected())
+      continue;
+
+    if (diamond->tag == "fire" && fire_boy->IsCollidingWith(*diamond)) {
+      diamond->SetVisible(false);
+      diamond->isCollected = true;
+      diamond->DisableShow();
+    }
+
+    if (diamond->tag == "water" && water_girl->IsCollidingWith(*diamond)) {
+      diamond->SetVisible(false);
+      diamond->isCollected = true;
+      diamond->DisableShow();
+    }
+  }
 
   if (firedoor->GetIsOpen() && waterdoor->GetIsOpen()) {
     LOG_CRITICAL("遊戲結束");
