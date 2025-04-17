@@ -77,6 +77,22 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
   float poss1 = pos.x;
   float test_y = pos.y - GetHalfHeight();
 
+  if (velocity.y > 0.0f) {
+    float head_y = pos.y + GetHalfHeight();
+    for (const auto &platform : map->GetLevelData(0).platforms) {
+      bool isBetweenX = (poss1 >= platform.x1 && poss1 <= platform.x2);
+      bool isCloseAbove =
+          (head_y >= platform.y_low - 2.0f && head_y <= platform.y_low + 2.0f);
+      if (isBetweenX && isCloseAbove) {
+        velocity.y = 0.0f;
+        LOG_DEBUG(platform.y_low);
+        LOG_CRITICAL(platform.y_high);
+        pos.y = platform.y_low - 20;
+        break;
+      }
+    }
+  }
+
   bool check_init_x =
       (pos.x >= init_stand_platform.x1) && (pos.x <= init_stand_platform.x2);
   bool check_init_y = (test_y - init_stand_platform.y_high > 0.5) &&
@@ -103,22 +119,30 @@ void WaterGirl::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
     nearestPlatformY = rockResult.rock_top_y + 50;
     onPlatform = true;
   } else if (IfWaterFallFire(map).IsFall) {
-
-    if (wg_tag != IfWaterFallFire(map).pair_tag) { // G掉
+    if (wg_tag != IfWaterFallFire(map).pair_tag) {
       IsFallPool = true;
+
     } else {
+
       IsFallPool = false;
       groundLevel = IfWaterFallFire(map).current_fall_down_h;
-      pos.y = groundLevel;
-      isJumping = false;
+
+      if (!isJumping && jumpingBuffer <= 0.0f) {
+        pos.y = groundLevel;
+        velocity.y = 0.0f;
+        isJumping = false;
+      }
     }
+
   } else {
+
     onElevation = false;
     onRock = false;
     for (const auto &platform : map->GetLevelData(0).platforms) {
       if (poss1 >= platform.x1 && poss1 <= platform.x2) {
         if (pos.y >= platform.y_high - 5.0f &&
             pos.y <= platform.y_high + 5.0f) {
+
           nearestPlatformY = platform.y_high;
           onPlatform = true;
           break;

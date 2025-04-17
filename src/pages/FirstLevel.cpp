@@ -199,6 +199,9 @@ void FirstLevel::Update() {
                water_rock.PushSide);
 
   for (auto &diamond : diamonds) {
+    if (!diamond->IsCollected()) {
+      diamond->Update(); // ⭐ 加這行來更新閃爍效果
+    }
     if (diamond->IsCollected())
       continue;
 

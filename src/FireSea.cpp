@@ -5,7 +5,7 @@
 FireSea::FireSea() {
   SetPosition({170, -310});
   SetZIndex(100);
-  m_Transform.scale = {0.7, 0.43};
+  m_Transform.scale = {0.6, 0.43};
   SetVisible(true);
   m_Drawable =
       std::make_shared<Util::Animation>(AnimationPaths, false, 200, false, 0);

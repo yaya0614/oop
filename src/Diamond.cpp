@@ -16,7 +16,7 @@ Diamond::Diamond(glm::vec2 pos, std::string tag) {
   SetVisible(true);
   SetZIndex(90);
 
-  m_Transform.scale = {0.32, 0.32};
+  m_Transform.scale = {target_size, target_size};
   isCollected = false;
 }
 
@@ -28,6 +28,17 @@ void Diamond::Collect() {
 void Diamond::DisableShow() {
   if (isCollected) {
     SetVisible(false);
+  }
+};
+
+void Diamond::Update() {
+
+  scaleTimer += 0.05f;
+
+  if (scaleTimer >= 0.4f) {
+    scaleIndex = (scaleIndex + 1) % dim_size.size();
+    m_Transform.scale = {dim_size[scaleIndex], dim_size[scaleIndex]};
+    scaleTimer = 0.0f; // 重設 timer
   }
 };
 

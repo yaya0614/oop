@@ -68,11 +68,6 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
       elevationResult_purple->IsPlayerOnElevation(pos, GetHalfHeight());
   auto rockResult = rock->IsPlayerOnRock(pos, GetHalfHeight());
 
-  if (jumpingBuffer > 0.0f) {
-    jumpingBuffer -= deltaTime;
-  }
-
-  velocity.y += gravity * deltaTime;
   pos.y += velocity.y;
 
   float poss = pos.x + GetHalfWidth() + 2;
@@ -81,6 +76,28 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
 
   bool onPlatform = false;
   float nearestPlatformY = groundLevel;
+
+  if (jumpingBuffer > 0.0f) {
+    jumpingBuffer -= deltaTime;
+  }
+
+  velocity.y += gravity * deltaTime;
+  if (velocity.y > 0.0f) {
+    float head_y = pos.y + GetHalfHeight();
+    for (const auto &platform : map->GetLevelData(0).platforms) {
+
+      bool isBetweenX = (poss1 >= platform.x1 && poss1 <= platform.x2);
+      bool isCloseAbove =
+          (head_y >= platform.y_low - 2.0f && head_y <= platform.y_low + 2.0f);
+      if (isBetweenX && isCloseAbove) {
+        velocity.y = 0.0f;
+        LOG_DEBUG(platform.y_low);
+        LOG_CRITICAL(platform.y_high);
+        pos.y = platform.y_low - 20;
+        break;
+      }
+    }
+  }
 
   if (elevationResult.isOnElevation || elevationResultP.isOnElevation) {
     float catch_value = elevationResult.isOnElevation
@@ -96,14 +113,21 @@ void FireBoy::Update(float deltaTime, std::shared_ptr<MapBackground> &map,
     nearestPlatformY = rockResult.rock_top_y + 50;
     onPlatform = true;
   } else if (IfFireFallIce(map).IsFall) {
-    if (fb_tag != IfFireFallIce(map).pair_tag) { // G掉
+    if (fb_tag != IfFireFallIce(map).pair_tag) {
       IsFallPool = true;
     } else {
+      LOG_DEBUG("在這");
+
       IsFallPool = false;
       groundLevel = IfFireFallIce(map).current_fall_down_h;
-      pos.y = groundLevel;
-      isJumping = false;
+
+      if (!isJumping && jumpingBuffer <= 0.0f) {
+        pos.y = groundLevel;
+        velocity.y = 0.0f;
+        isJumping = false;
+      }
     }
+
   } else {
     onElevation = false;
     onRock = false;

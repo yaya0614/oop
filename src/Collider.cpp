@@ -48,6 +48,7 @@ bool Collider::IsCollider(float fb_expect_x, float fb_expect_y,
 
   return isHorizontalCollision && isStandingOnPlatform;
 };
+
 Collider::PressedData
 Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
                               std::shared_ptr<MapBackground> &background,
@@ -67,8 +68,7 @@ Collider::IsPressedButtonbool(float fb_expect_x, float fb_expect_y,
     bool isHorizontalCollision =
         (((fb_left_x < button_left_x) && (fb_right_x > button_left_x)) ||
          ((fb_right_x > button_right_x) && (fb_left_x < button_right_x)) ||
-         (fb_left_x >= button_left_x &&
-          fb_right_x <= button_right_x)); // 補中間直接在範圍內
+         (fb_left_x >= button_left_x && fb_right_x <= button_right_x));
 
     bool isStandingOnPlatform =
         ((button_y_high - foot_y) >= 0) && ((button_y_high - foot_y) <= 1.5);
@@ -110,20 +110,20 @@ Collider::IsPushedbool(float fb_expect_x,
   bool isStandingOnPlatform =
       (p_bottom_y - pusher_y_high >= 0.5) && (p_bottom_y - pusher_y_high <= 2);
 
+  const float leverPushMargin = 8.0f;
+
   if (isStandingOnPlatform) {
 
-    if (p_right_x > pusher_left_x && p_left_x < pusher_left_x) {
+    if (p_right_x - 5 > pusher_left_x && p_left_x < pusher_left_x - 5) {
       recent_tag = "right";
-      // LOG_DEBUG("1");
       return {true, "right"};
     }
 
-    if (p_left_x < pusher_right_x && p_right_x > pusher_right_x) {
+    if (p_left_x - 5 < pusher_right_x + leverPushMargin &&
+        p_right_x - 5 > pusher_right_x - leverPushMargin) {
       recent_tag = "left";
-      // LOG_DEBUG("2");
       return {true, "left"};
     }
   }
-  // LOG_DEBUG("3");
   return {false, recent_tag};
 }

@@ -23,7 +23,7 @@ private:
   std::string m_ImagePath;
   std::string init_side = "right";
   std::string recrod_side = "right";
-  float m_TargetY = -85;
+  float m_TargetY = -100;
   float m_OriginalY = -28;
   float m_Speed = 50.0f;
 };

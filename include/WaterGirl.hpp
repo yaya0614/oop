@@ -58,6 +58,7 @@ private:
   bool onElevation = false;
   bool onRock = false;
   bool IsFallPool = false;
+  bool IsLeave = true;
 
   Platform init_stand_platform = {-401.0f, -142, -199, -224};
 };
