@@ -4,6 +4,7 @@
 #include "enum.hpp"
 #include "pages/FirstLevel.hpp"
 #include "pages/IntroductionPage.hpp"
+#include "pages/SecondLevel.hpp"
 
 #include <memory>
 #include <vector>
@@ -16,6 +17,7 @@ int main(int, char **) {
 
   phases.push_back(std::make_shared<IntroductionPage>(IntroductionPage()));
   phases.push_back(std::make_shared<FirstLevel>(FirstLevel()));
+  phases.push_back(std::make_shared<SecondLevel>(SecondLevel()));
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
