@@ -35,8 +35,8 @@ public:
   virtual void OnCollideX() {}
   virtual void OnCollideY() {}
 
-  // 判斷是否與某個平台相交
-  bool IsCollidingWithPlatform(const MapBackground::Platform &platform);
+  bool IsCollidingWithPlatform(
+      const MapBackground::Platform &platform); // 判斷是否與某個平台相交
 
 protected:
   // NewFireBoy.hpp class 內新增成員：

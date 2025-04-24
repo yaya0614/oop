@@ -5,16 +5,18 @@
 
 bool NewCharacter::IsCollidingWithPlatform(
     const MapBackground::Platform &platform) {
+
   glm::vec2 tag = {position.x, position.y + offest};
   float left = tag.x - size.x / 2;
   float right = tag.x + size.x / 2;
   float top = tag.y + size.y / 2;
-
   float bottom = tag.y - size.y / 2;
-  LOG_DEBUG(bottom);
+  // LOG_DEBUG(bottom);
+  const int epsilon = 1;
 
-  return (right >= platform.x1 && left <= platform.x2 &&
-          bottom <= platform.y_high && top >= platform.y_low);
+  return (right >= platform.x1 - epsilon && left <= platform.x2 + epsilon &&
+          bottom <= platform.y_high + epsilon &&
+          top >= platform.y_low - epsilon);
 }
 
 void NewCharacter::MoveX(
@@ -49,12 +51,26 @@ void NewCharacter::MoveY(
   while (move != 0) {
     position.y += dir;
 
+    glm::vec2 tag = {position.x, position.y + offest};
+    float top = tag.y + size.y / 2;
+    float bottom = tag.y - size.y / 2;
+
     for (const auto &p : platforms) {
       if (IsCollidingWithPlatform(p)) {
-        position.y -= dir * 2;
-        remainder.y = 0;
-        OnCollideY();
-        return;
+        if (dir > 0 && bottom <= p.y_high && bottom >= p.y_high - 5.0f) {
+          position.y = p.y_high - size.y / 2 - offest;
+          remainder.y = 0;
+          return;
+        } else if (dir < 0 && top >= p.y_low && top <= p.y_low + 5.0f) {
+          position.y = p.y_low - size.y / 2 - offest;
+          remainder.y = 0;
+          return;
+        } else {
+          position.y -= dir * 2;
+          remainder.y = 0;
+          OnCollideY();
+          return;
+        }
       }
     }
     move -= dir;

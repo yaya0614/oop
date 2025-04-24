@@ -3,7 +3,9 @@
 
 #include "../App.hpp"
 #include "Character.hpp"
+#include "Stage.hpp"
 #include "actors/NewFireBoy.hpp"
+#include <memory>
 
 class SecondLevel : public App {
 public:
@@ -15,6 +17,7 @@ public:
 
   std::shared_ptr<Character> Background;
   std::shared_ptr<NewFireBoy> fireboy;
+  std::shared_ptr<Stage> m_stage;
   std::shared_ptr<MapBackground> mapbackground;
 };
 
