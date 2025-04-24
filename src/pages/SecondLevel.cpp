@@ -1,6 +1,7 @@
 #include "pages/SecondLevel.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
+#include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "actors/NewFireBoy.hpp"
@@ -16,6 +17,9 @@ void SecondLevel::Start() {
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(0, -254));
   m_Root.AddChild(fireboy);
   mapbackground = std::make_shared<MapBackground>();
+
+  // m_stage = std::make_shared<Stage>();
+  // m_Root.AddChild(m_stage);
   // m_Root.AddChild(mapbackground);
   m_CurrentState = State::UPDATE;
 };
