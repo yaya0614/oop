@@ -2,6 +2,11 @@
 #include "Util/Input.hpp"
 
 void FirstLevel::Start() {
+  Background = std::make_shared<Character>(GA_RESOURCE_DIR
+                                           "/Image/Background/Level1.png");
+  Background->SetVisible(true);
+  Background->SetZIndex(10);
+  m_Root.AddChild(Background);
   fire_boy = std::make_shared<FireBoy>();
   fire_boy->m_Transform.scale = {0.4, 0.41f};
   m_Root.AddChild(fire_boy);

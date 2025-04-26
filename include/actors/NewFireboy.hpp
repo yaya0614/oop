@@ -13,13 +13,13 @@ public:
   const float jumpSpeed = 200.0f; // 跳起來是正的（速度往上推）
   const float targethigh = 9;
 
-  NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos) {
+  NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos, -4) {
     m_Drawable =
         std::make_shared<Util::Image>(GA_RESOURCE_DIR "/FireBoy/boy/boy_1.png");
     SetVisible(true);
     SetZIndex(90);
 
-    m_Transform.scale = {0.36, 0.36};
+    m_Transform.scale = {0.34, 0.34};
     SetPosition(startPos);
     AddChild(boxImage);
   }
@@ -36,10 +36,10 @@ public:
     const float epsilon = 0.9; // 誤差
 
     for (const auto &p : platforms) {
-      LOG_DEBUG(p.x1);
+      // LOG_DEBUG(p.x1);
       if (position.x + size.x / 2 >= p.x1 && position.x - size.x / 2 <= p.x2 &&
           bottom - p.y_high >= 1 && bottom - p.y_high <= 2) {
-        LOG_DEBUG("我在true");
+        // LOG_DEBUG("我在true");
         return true;
       }
     }

@@ -3,6 +3,16 @@
 #include <cmath>
 #include <glm/fwd.hpp>
 
+NewCharacter::NewCharacter(glm::vec2 startPos, int offsetValue)
+    : position(startPos), velocity(0.0f), remainder(0.0f), offest(offsetValue) {
+  boxImage = std::make_shared<MGameObject>();
+  boxImage->SetDrawable(
+      std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Test/Rectangle 113.png"));
+  boxImage->m_Transform.scale = size;
+  boxImage->SetZIndex(100);
+  boxImage->SetPosition({position.x, position.y});
+}
+
 bool NewCharacter::IsCollidingWithPlatform(
     const MapBackground::Platform &platform) {
 
@@ -25,6 +35,15 @@ void NewCharacter::MoveX(
   int move = std::round(remainder.x);
   remainder.x -= move;
   int dir = (move > 0) ? 1 : -1;
+  dir_out = (move > 0) ? 1 : -1;
+  if (move > 0) {
+    dir_out = 1;
+
+  } else if (move == 0) {
+    dir_out = 0;
+  } else {
+    dir_out = -1;
+  }
 
   while (move != 0) {
     position.x += dir;
@@ -54,6 +73,7 @@ void NewCharacter::MoveY(
     glm::vec2 tag = {position.x, position.y + offest};
     float top = tag.y + size.y / 2;
     float bottom = tag.y - size.y / 2;
+    // LOG_DEBUG(bottom);
 
     for (const auto &p : platforms) {
       if (IsCollidingWithPlatform(p)) {
