@@ -27,6 +27,7 @@ public:
   std::shared_ptr<WaterGirl> water_girl;
   std::shared_ptr<Character> m_Chest;
   std::shared_ptr<MapBackground> mapbackground;
+  std::shared_ptr<Character> Background;
 
   std::vector<std::shared_ptr<Character>> m_Doors;
   std::shared_ptr<Elevation> ele_blue;
