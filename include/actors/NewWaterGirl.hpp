@@ -2,6 +2,7 @@
 #define NEWWATERGIRL_HPP
 #include "actors/NewCharacter.hpp"
 #include "actors/NewRock.hpp"
+#include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
 #include <glm/fwd.hpp>
@@ -21,12 +22,14 @@ public:
   void
   SetElevators(const std::vector<std::shared_ptr<NewElevator>> &elevatorsList);
   void SetRock(const std::shared_ptr<NewRock> &rocks);
+  void SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door);
   void SetPool(const std::vector<std::shared_ptr<NewPool>> &pools) {
     pool = pools;
   }
 
 private:
   std::vector<std::shared_ptr<NewElevator>> elevators;
+  std::vector<std::shared_ptr<NewDoor>> doors;
   std::vector<std::shared_ptr<NewPool>> pool;
   std::shared_ptr<NewRock> rocks;
   bool isOnElevator = true;

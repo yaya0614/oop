@@ -10,13 +10,6 @@ bool NewMachine::IsCollidingWithMachine(
   int character_right = pos.x + character->size.x / 2;
   int character_bottom = pos.y - character->size.y / 2;
 
-  // LOG_DEBUG("character_bottom");
-  // LOG_DEBUG(character_bottom);
-  // LOG_DEBUG("pos_y");
-  // LOG_DEBUG(startPos.y - size.y);
-  // LOG_DEBUG("y-axio");
-  // LOG_DEBUG(character_bottom - (startPos.y - size.y) >= 0.5 &&
-  //           character_bottom - (startPos.y - size.y) <= 2);
   return (character_right >= (startPos.x - size.x) &&
           character_left <= (startPos.x + size.x) &&
           character_bottom - (startPos.y - size.y) >= 0.5 &&
