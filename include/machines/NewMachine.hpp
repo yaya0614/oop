@@ -12,11 +12,14 @@ public:
     this->size = size;
     this->startPos = startPos;
   };
+
   bool IsCollidingWithMachine(
       std::shared_ptr<NewCharacter> character); // 判斷是否與某個平台相交
+  bool IsCharacterOnElevator(std::shared_ptr<NewCharacter> character);
+
 protected:
   bool Activate = false;
-
+  std::string color;
   glm::vec2 startPos;
   glm::vec2 size;
 };

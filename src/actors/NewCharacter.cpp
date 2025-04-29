@@ -1,16 +1,19 @@
 #include "actors/NewCharacter.hpp"
+#include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 #include <cmath>
 #include <glm/fwd.hpp>
+#include <memory>
 
-NewCharacter::NewCharacter(glm::vec2 startPos, int offsetValue)
-    : position(startPos), velocity(0.0f), remainder(0.0f), offest(offsetValue) {
+NewCharacter::NewCharacter(glm::vec2 startPos, int offest)
+    : MGameObject(), Colliders(startPos, size), position(startPos),
+      velocity(0.0f), remainder(0.0f), offest(offest) {
   boxImage = std::make_shared<MGameObject>();
   boxImage->SetDrawable(
       std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Test/Rectangle 113.png"));
   boxImage->m_Transform.scale = size;
   boxImage->SetZIndex(100);
-  boxImage->SetPosition({position.x, position.y});
+  boxImage->SetPosition({position.x, position.y + offest});
 }
 
 bool NewCharacter::IsCollidingWithPlatform(

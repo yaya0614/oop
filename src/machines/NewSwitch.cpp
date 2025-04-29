@@ -23,58 +23,125 @@ NewSwitch::NewSwitch(glm::vec2 startpos, glm::vec2 size, std::string color,
 };
 
 void NewSwitch::ActivateElevator(
-    float dealtatime, bool activate,
-    std::vector<std::shared_ptr<NewElevator>> elevators) {
+    float dealtatime, std::vector<std::shared_ptr<NewElevator>> elevators) {
   for (auto ele : elevators) {
     if (color == ele->GetColor()) {
       if (current_lever_dir != 0) { // 有推桿才移動
-        ele->UpdateActivate(current_lever_dir, true, dealtatime);
+        ele->UpdateActivate(current_lever_dir, dealtatime);
       }
     }
   }
 }
 
-void NewSwitch::IsCollider(std::shared_ptr<NewCharacter> character1,
-                           std::shared_ptr<NewCharacter> character2,
-                           std::vector<std::shared_ptr<NewElevator>> elevators,
-                           float dealtatime) {
+// void NewSwitch::IsCollider(std::shared_ptr<NewCharacter> character1,
+//                            std::shared_ptr<NewCharacter> character2,
+//                            std::vector<std::shared_ptr<NewElevator>>
+//                            elevators, float dealtatime) {
+//   if (IsButton) {
+//     bool isColliding = IsCollidingWithMachine(character1) ||
+//                        IsCollidingWithMachine(character2);
+
+//     if (isColliding) {
+//       record = isColliding;
+//       m_Drawable = std::make_shared<Util::Image>(
+//           GA_RESOURCE_DIR "/Button/btn_" + color + "1.png");
+
+//     } else {
+//       record = isColliding;
+//       m_Drawable = std::make_shared<Util::Image>(
+//           GA_RESOURCE_DIR "/Button/btn_" + color + ".png");
+//     }
+//   } else { // Lever
+
+//     bool character1_trigger = (IsCollidingWithMachine(character1) &&
+//                                (character1->dir_out != current_lever_dir));
+//     bool character2_trigger = (IsCollidingWithMachine(character2) &&
+//                                (character2->dir_out != current_lever_dir));
+
+//     if (character1_trigger || character2_trigger) {
+//       current_lever_dir =
+//           (character1_trigger) ? character1->dir_out : character2->dir_out;
+
+//       ChangeLeverImage(current_lever_dir);
+//       record = false;
+//     } else {
+//       record = false;
+//     }
+//   }
+//   if (record) {
+//     ActivateElevator(dealtatime, record, elevators);
+//   } else {
+//     ActivateElevator(dealtatime, record, elevators);
+//   }
+// }
+
+// void NewSwitch::ChangeButtonImage() {
+//   if (activated) {
+//     SetVisible(false);
+//   } else {
+//     SetVisible(true);
+//   }
+// };
+void NewSwitch::UpdateSwitchState(
+    std::shared_ptr<NewCharacter> c1, std::shared_ptr<NewCharacter> c2,
+    float deltaTime, std::vector<std::shared_ptr<NewElevator>> elevators) {
+  bool isColliding = IsCollidingWithMachine(c1) || IsCollidingWithMachine(c2);
+
   if (IsButton) {
-    if (IsCollidingWithMachine(character1) ||
-        IsCollidingWithMachine(character2)) {
-      LOG_DEBUG("有壓到 Button");
-      activated = true;
-      ChangeButtonImage();
+    isPressed = isColliding;
+
+  } else {
+    // 拉桿：即時更新 current_lever_dir
+    if (isColliding) {
+      bool c1_trigger =
+          (IsCollidingWithMachine(c1) && (c1->dir_out != current_lever_dir));
+      bool c2_trigger =
+          (IsCollidingWithMachine(c2) && (c2->dir_out != current_lever_dir));
+
+      if (c1_trigger || c2_trigger) {
+        current_lever_dir = (c1_trigger) ? c1->dir_out : c2->dir_out;
+        ChangeLeverImage(current_lever_dir);
+      }
     }
-    activated = false;
-  } else { // Lever
-
-    bool character1_trigger = (IsCollidingWithMachine(character1) &&
-                               (character1->dir_out != current_lever_dir));
-    bool character2_trigger = (IsCollidingWithMachine(character2) &&
-                               (character2->dir_out != current_lever_dir));
-
-    if (character1_trigger || character2_trigger) {
-      current_lever_dir =
-          (character1_trigger) ? character1->dir_out : character2->dir_out;
-      // LOG_CRITICAL("current_lever_dir");
-      // LOG_CRITICAL(current_lever_dir);
-
-      ChangeLeverImage(current_lever_dir);
-      activated = true;
-    } else {
-      activated = false;
-    }
+    ActivateElevator(deltaTime, elevators);
   }
-  ActivateElevator(dealtatime, activated, elevators);
 }
 
-void NewSwitch::ChangeButtonImage() {
-  if (activated) {
-    SetVisible(false);
-  } else {
-    SetVisible(true);
-  }
-};
+// if (IsButton) {
+//   // 按鈕部分
+//   if (isColliding) {
+//     isPressed = true;
+//     releaseTimer = 0.0f;
+//   } else {
+//     if (isPressed) {
+//       releaseTimer += deltaTime;
+//       if (releaseTimer > releaseThreshold) {
+//         isPressed = false;
+//       }
+//     }
+//   }
+// } else {
+//   // 拉桿部分
+//   if (isColliding) {
+//     bool c1_trigger =
+//         (IsCollidingWithMachine(c1) && (c1->dir_out != current_lever_dir));
+//     bool c2_trigger =
+//         (IsCollidingWithMachine(c2) && (c2->dir_out != current_lever_dir));
+
+//     if (c1_trigger || c2_trigger) {
+//       current_lever_dir = (c1_trigger) ? c1->dir_out : c2->dir_out;
+//       ChangeLeverImage(current_lever_dir);
+//     }
+//   }
+//   ActivateElevator(deltaTime, elevators);
+//   // 這裡 **不直接呼叫ActivateElevator**
+// }
+
+bool NewSwitch::IsPressed() const { return isPressed; }
+
+std::string NewSwitch::GetColor() const { return color; }
+
+bool NewSwitch::IsButtonType() const { return IsButton; }
 
 void NewSwitch::ChangeLeverImage(int dir) {
 
