@@ -3,10 +3,12 @@
 
 #include "../App.hpp"
 #include "Character.hpp"
+#include "Diamond.hpp"
 #include "Stage.hpp"
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewRock.hpp"
 #include "actors/NewWaterGirl.hpp"
+#include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
 #include "machines/NewSwitch.hpp"
@@ -26,11 +28,14 @@ public:
   std::shared_ptr<NewWaterGirl> Girl;
   std::shared_ptr<NewRock> Rock;
   std::shared_ptr<NewPool> Pool;
+  std::shared_ptr<Stage> stages;
 
   std::shared_ptr<NewElevator> elevator;
   std::vector<std::shared_ptr<NewPool>> Pools;
   std::vector<std::shared_ptr<NewElevator>> elevators;
   std::vector<std::shared_ptr<NewSwitch>> switches;
+  std::vector<std::shared_ptr<NewDoor>> doors;
+  std::vector<std::shared_ptr<Diamond>> diamonds;
 
   std::shared_ptr<Stage> m_stage;
   std::shared_ptr<MapBackground> mapbackground;

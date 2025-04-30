@@ -21,6 +21,9 @@ int main(int, char **) {
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
+    if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+      context->SetExit(true);
+    }
     if (phase && (phase->GetPhase() != currentPhase)) {
       currentPhase = phase->GetPhase();
       continue;

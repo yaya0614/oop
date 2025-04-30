@@ -32,9 +32,11 @@ public:
   virtual void OnCollideX() {}
   virtual void OnCollideY() {}
 
+  bool IsCollidingWith(const MGameObject &other);
   bool IsCollidingWithPlatform(
       const MapBackground::Platform &platform); // 判斷是否與某個平台相交
   virtual void ChangeStatus(std::string status){};
+  std::string GetStatus();
 
 protected:
   std::string status;

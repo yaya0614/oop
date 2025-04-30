@@ -9,6 +9,22 @@ public:
     m_Transform.translation = Position;
   }
 
+  MGameObject(){};
+
+  MGameObject(const std::shared_ptr<Core::Drawable> &drawable,
+              const float zIndex, const glm::vec2 &pivot = {0, 0},
+              const bool visible = true,
+              const std::vector<std::shared_ptr<GameObject>> &children =
+                  std::vector<std::shared_ptr<GameObject>>()) {
+    SetDrawable(drawable);
+    for (auto child : children) {
+      AddChild(child);
+    }
+    SetZIndex(zIndex);
+    SetVisible(visible);
+    SetPivot(pivot);
+  };
+
   const glm::vec2 &GetPosition() const { return m_Transform.translation; }
 
   const float GetHeight() { return GetScaledSize().y + GetScaledSize().y / 2; };

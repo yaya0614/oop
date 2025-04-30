@@ -23,6 +23,7 @@ public:
                          std::shared_ptr<NewCharacter> c2, float deltaTime,
                          std::vector<std::shared_ptr<NewElevator>> elevators);
   bool IsPressed() const;
+  void ButtonPlayAnimation();
   std::string GetColor() const;
   bool IsButtonType() const;
   int GetLeverDir() { return current_lever_dir; }
@@ -34,12 +35,10 @@ private:
   const float releaseThreshold = 0.2f; // 按鈕放開延遲0.2秒
   std::string color;
 
-  // private:
-  //   bool activated = false;
   //   bool record;
   int current_lever_dir = 0;
   bool record;
-
+  bool IsPressedw = false;
   bool IsButton; // 判斷該元件是btn還是lever
                  //   std::string color;
   //   int current_lever_dir = 0; // 預設current_lever_dir在右邊所以是1

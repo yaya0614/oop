@@ -8,6 +8,15 @@
 
 class NewMachine : public MGameObject {
 public:
+  bool IsLooping() const {
+    return std::dynamic_pointer_cast<Util::Animation>(m_Drawable)->GetLooping();
+  }
+
+  void SetLooping(bool looping) {
+    auto temp = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
+    temp->SetLooping(looping);
+    temp->Play();
+  }
   NewMachine(glm::vec2 startPos, glm::vec2 size, std::string color) {
     this->size = size;
     this->startPos = startPos;

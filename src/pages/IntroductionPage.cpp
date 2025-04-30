@@ -1,6 +1,7 @@
 #include "pages/IntroductionPage.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
+#include "NewButton.hpp"
 #include "Util/Input.hpp"
 #include <memory>
 
@@ -11,12 +12,14 @@ void IntroductionPage::Start() {
   Background->SetZIndex(50);
   m_Root.AddChild(Background);
 
+  // button = std::make_shared<NewButton>(glm::vec2(0, 0), "main");
+
+  // m_Root.AddChild(button);
   start_btn = std::make_shared<Character>(GA_RESOURCE_DIR
                                           "/Image/Background/start_btn.png");
   start_btn->SetPosition({0, -180});
   start_btn->SetZIndex(55);
   m_Root.AddChild(start_btn);
-
   m_CurrentState = State::UPDATE;
 };
 
@@ -33,6 +36,8 @@ void IntroductionPage::Update() {
       }
     }
   }
+
+  button->Update();
   m_Root.Update();
 };
 

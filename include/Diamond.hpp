@@ -11,10 +11,12 @@ public:
   void DisableShow();
   bool IsCollected() const;
   void Update();
+  int GetDiamondAmonut();
   std::string tag;
   bool isCollected;
 
 private:
+  int diamond_amount = 0;
   float target_size = 0.4f;
   int scaleIndex = 0;      // 目前正在用哪個 scale
   float scaleTimer = 0.0f; // 用來計時更新間隔

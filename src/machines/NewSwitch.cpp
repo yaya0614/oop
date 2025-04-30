@@ -107,42 +107,20 @@ void NewSwitch::UpdateSwitchState(
   }
 }
 
-// if (IsButton) {
-//   // 按鈕部分
-//   if (isColliding) {
-//     isPressed = true;
-//     releaseTimer = 0.0f;
-//   } else {
-//     if (isPressed) {
-//       releaseTimer += deltaTime;
-//       if (releaseTimer > releaseThreshold) {
-//         isPressed = false;
-//       }
-//     }
-//   }
-// } else {
-//   // 拉桿部分
-//   if (isColliding) {
-//     bool c1_trigger =
-//         (IsCollidingWithMachine(c1) && (c1->dir_out != current_lever_dir));
-//     bool c2_trigger =
-//         (IsCollidingWithMachine(c2) && (c2->dir_out != current_lever_dir));
-
-//     if (c1_trigger || c2_trigger) {
-//       current_lever_dir = (c1_trigger) ? c1->dir_out : c2->dir_out;
-//       ChangeLeverImage(current_lever_dir);
-//     }
-//   }
-//   ActivateElevator(deltaTime, elevators);
-//   // 這裡 **不直接呼叫ActivateElevator**
-// }
-
 bool NewSwitch::IsPressed() const { return isPressed; }
 
 std::string NewSwitch::GetColor() const { return color; }
 
 bool NewSwitch::IsButtonType() const { return IsButton; }
-
+void NewSwitch::ButtonPlayAnimation() {
+  if (isPressed) {
+    m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Button/btn_" +
+                                               color + "1.png");
+  } else {
+    m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Button/btn_" +
+                                               color + ".png");
+  }
+};
 void NewSwitch::ChangeLeverImage(int dir) {
 
   if (dir < 0) {

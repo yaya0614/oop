@@ -36,6 +36,10 @@ void NewWaterGirl::SetRock(const std::shared_ptr<NewRock> &rock) {
   rocks = rock;
 };
 
+void NewWaterGirl::SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door) {
+  doors = door;
+};
+
 bool NewWaterGirl::IsOnGround(
     const std::vector<MapBackground::Platform> &platforms) {
   glm::vec2 tag = {position.x, position.y + offest};
@@ -53,7 +57,10 @@ bool NewWaterGirl::IsOnGround(
 
 void NewWaterGirl::Update(
     float deltaTime, const std::vector<MapBackground::Platform> &platforms) {
-
+  if ((status == "InDoor" ||
+       status == "Die")) { // 如果進門裡或是死掉，角色就不能再移動了!!!!
+    return;
+  }
   bool onElevator = false;
   for (auto &ele : elevators) {
     if (ele->IsCharacterOnElevator(shared_from_this())) {
@@ -72,6 +79,11 @@ void NewWaterGirl::Update(
       } else {
         status = "Alive";
       }
+    }
+  }
+  for (auto door : doors) {
+    if (door->IsCharacterMatch(shared_from_this())) {
+      status = "InDoor";
     }
   }
   ChangeStatus(status);
@@ -131,5 +143,7 @@ void NewWaterGirl::ChangeStatus(std::string status) {
   if (status == "Die") {
     m_Drawable =
         std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+  } else if (status == "InDoor") {
+    SetVisible(false);
   }
 };

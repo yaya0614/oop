@@ -16,6 +16,8 @@ NewCharacter::NewCharacter(glm::vec2 startPos, int offest)
   boxImage->SetPosition({position.x, position.y + offest});
 }
 
+bool IsCollidingWith(const MGameObject &other);
+
 bool NewCharacter::IsCollidingWithPlatform(
     const MapBackground::Platform &platform) {
 
@@ -99,6 +101,16 @@ void NewCharacter::MoveY(
     move -= dir;
   }
 }
+
+bool NewCharacter::IsCollidingWith(const MGameObject &other) {
+  glm::vec2 pos1 = GetPosition();
+  glm::vec2 pos2 = other.GetPosition();
+
+  float distance = glm::distance(pos1, pos2);
+  return distance < 40.0f;
+};
+
+std::string NewCharacter::GetStatus() { return status; };
 
 void NewCharacter::Update(
     float deltaTime, const std::vector<MapBackground::Platform> &platforms) {

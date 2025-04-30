@@ -3,6 +3,7 @@
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "actors/NewRock.hpp"
+#include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
 
@@ -11,6 +12,12 @@
 
 class NewFireBoy : public NewCharacter,
                    public std::enable_shared_from_this<NewFireBoy> {
+private:
+  std::vector<std::shared_ptr<NewDoor>> doors;
+  std::vector<std::shared_ptr<NewElevator>> elevators;
+  std::shared_ptr<NewRock> rocks;
+  std::vector<std::shared_ptr<NewPool>> pools;
+
 public:
   NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos, -4) {
     tag = "fire";
@@ -23,6 +30,10 @@ public:
     SetPosition(startPos);
     AddChild(boxImage);
   }
+
+  void SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door) {
+    doors = door;
+  };
 
   void Jump() {
     if (!isJumping) {
@@ -55,11 +66,18 @@ public:
     if (status == "Die") {
       m_Drawable =
           std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+
+    } else if (status == "InDoor") {
+      velocity.x = 0;
+      velocity.y = 0;
+      SetVisible(false);
     }
   };
   void Update(float deltaTime,
               const std::vector<MapBackground::Platform> &platforms) {
-
+    if ((status == "InDoor" || status == "Die")) {
+      return;
+    }
     for (auto &pool : pools) {
       if (pool->IsCharacterFall(shared_from_this()) != "no") {
         if (pool->IsCharacterFall(shared_from_this()) != tag) {
@@ -67,6 +85,11 @@ public:
         } else {
           status = "Alive";
         }
+      }
+    }
+    for (auto door : doors) {
+      if (door->IsCharacterMatch(shared_from_this())) {
+        status = "InDoor";
       }
     }
     ChangeStatus(status);
@@ -136,9 +159,4 @@ public:
     velocity.y = 0;
     isJumping = false; // 重設跳躍狀態
   }
-
-private:
-  std::vector<std::shared_ptr<NewElevator>> elevators;
-  std::shared_ptr<NewRock> rocks;
-  std::vector<std::shared_ptr<NewPool>> pools;
 };
