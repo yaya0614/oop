@@ -20,16 +20,16 @@ Diamond::Diamond(glm::vec2 pos, std::string tag) {
   isCollected = false;
 }
 
-void Diamond::Collect() {
-  isCollected = true;
-  SetVisible(false);
-}
+void Diamond::Collect() { isCollected = true; }
 
 void Diamond::DisableShow() {
   if (isCollected) {
+    diamond_amount += 1;
+
     SetVisible(false);
   }
 };
+int Diamond::GetDiamondAmonut() { return diamond_amount; };
 
 void Diamond::Update() {
 

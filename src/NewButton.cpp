@@ -28,18 +28,12 @@ void NewButton::Update() {
       mousePos.x >= pos.x - size.x / 2 && mousePos.x <= pos.x + size.x / 2 &&
       mousePos.y >= pos.y - size.y / 2 && mousePos.y <= pos.y + size.y / 2;
 
-  bool isPressed = Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB);
-
   if (isInside) {
     m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Button/" +
                                                imagePath + "_btn1.png");
-    if (isPressed) {
-    }
-
+    isPressed = Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB);
   } else {
     m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Button/" +
                                                imagePath + "_btn.png");
   }
-
-  wasPressedLastFrame = isPressed;
 }

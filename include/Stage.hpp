@@ -3,20 +3,25 @@
 
 #include "MGameObject.hpp"
 #include "NewButton.hpp"
+#include "Text.hpp"
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
 
 #include <memory>
+#include <vector>
 
 class Stage : public MGameObject {
 public:
+  // int RedDiamondAmount, int WaterDiamondAmount
   explicit Stage();
-  void Update();
+  void Update(int RedDiamondAmount, int WaterDiamondAmount);
   void SetImage(const std::string &ImagePath);
 
   void SetGemCounts(int blue, int red);
   void SetVisible(bool visible);
   void SetCallback(std::function<void()> retryCb, std::function<void()> menuCb);
+  std::shared_ptr<NewButton> GetRetryButton() { return retryButton; };
+  std::shared_ptr<NewButton> GetMainButton() { return menuButton; };
 
 private:
   std::shared_ptr<Util::Image> background;
@@ -24,14 +29,13 @@ private:
   std::shared_ptr<NewButton> retryButton;
   std::shared_ptr<NewButton> menuButton;
 
-  std::shared_ptr<Util::Image> blueGemIcon;
-  std::shared_ptr<Util::Image> redGemIcon;
-
-  std::shared_ptr<Util::Text> blueGemCount;
-  std::shared_ptr<Util::Text> redGemCount;
+  std::shared_ptr<Text> blueGemCount;
+  std::shared_ptr<Text> redGemCount;
 
   int blueCount = 0;
   int redCount = 0;
+  int RedDiamondAmount;
+  int WaterDiamondAmount;
   std::string m_ImagePath;
 };
 

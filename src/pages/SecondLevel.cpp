@@ -29,7 +29,7 @@ void SecondLevel::Start() {
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(-50, -256));
   m_Root.AddChild(fireboy);
   // x:-100
-  Girl = std::make_shared<NewWaterGirl>(glm::vec2(280, -174));
+  Girl = std::make_shared<NewWaterGirl>(glm::vec2(-100, -174));
   m_Root.AddChild(Girl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -170,7 +170,7 @@ void SecondLevel::Update() {
 
   for (auto &diamond : diamonds) {
     if (!diamond->IsCollected()) {
-      diamond->Update(); // ⭐ 加這行來更新閃爍效果
+      diamond->Update();
     }
     if (diamond->IsCollected())
       continue;
@@ -191,8 +191,17 @@ void SecondLevel::Update() {
   if ((fireboy->GetStatus() == "InDoor" && Girl->GetStatus() == "InDoor") ||
       (fireboy->GetStatus() == "Die" || Girl->GetStatus() == "Die")) {
     m_Root.AddChild(stages);
+
+    stages->Update(diamonds[0]->GetDiamondAmonut(),
+                   diamonds[1]->GetDiamondAmonut());
+    if (stages->GetRetryButton()->GetIsPressed()) {
+      NavigationTo(Enum::PhaseEnum::FirstLevel);
+    }
+    if (stages->GetMainButton()->GetIsPressed()) {
+      NavigationTo(Enum::PhaseEnum::FirstLevel);
+    }
   }
-  stages->Update();
+
   m_Root.Update();
 };
 
