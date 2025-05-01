@@ -39,7 +39,7 @@ public:
   std::string GetStatus();
 
 protected:
-  std::string status;
+  std::string status = "Alive";
   bool isJumping = false;
   float jumpingBuffer = 0.0f;
   const float gravity = -300.0f;

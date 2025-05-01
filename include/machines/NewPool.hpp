@@ -8,7 +8,8 @@
 #include <string>
 class NewPool : public NewMachine {
 public:
-  NewPool(glm::vec2 startpos, glm::vec2 size, std::string color);
+  NewPool(glm::vec2 startpos, glm::vec2 size, std::string color,
+          glm::vec2 scale);
 
   std::string IsCharacterFall(std::shared_ptr<NewCharacter> c1);
 

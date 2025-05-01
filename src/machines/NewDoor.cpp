@@ -57,12 +57,13 @@ bool NewDoor::IsCharacterInto(std::shared_ptr<NewCharacter> c1,
                               std::shared_ptr<NewCharacter> c2) {
 
   if (IsCollidingWithMachine(c1) && (c1->tag == self_tag)) {
-    IsOpen = true;
-    PlayAnimation();
-
-  } else if (IsCollidingWithMachine(c2) && (c2->tag == self_tag)) {
+    // LOG_DEBUG("rup49x");
     IsOpen = true;
     PlayAnimation();
   }
+  // else if (IsCollidingWithMachine(c2) && (c2->tag == self_tag)) {
+  //   IsOpen = true;
+  //   PlayAnimation();
+  // }
   IsOpen = false;
 };

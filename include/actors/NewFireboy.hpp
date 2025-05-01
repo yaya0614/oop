@@ -78,8 +78,10 @@ public:
     if ((status == "InDoor" || status == "Die")) {
       return;
     }
+
     for (auto &pool : pools) {
-      if (pool->IsCharacterFall(shared_from_this()) != "no") {
+
+      if (pool && pool->IsCharacterFall(shared_from_this()) != "no") {
         if (pool->IsCharacterFall(shared_from_this()) != tag) {
           status = "Die";
         } else {
@@ -88,13 +90,13 @@ public:
       }
     }
     for (auto door : doors) {
-      if (door->IsCharacterMatch(shared_from_this())) {
+      if (door && door->IsCharacterMatch(shared_from_this())) {
         status = "InDoor";
       }
     }
     ChangeStatus(status);
 
-    if (rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
+    if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
       onRock = true;
       position.y = rocks->GetPosition().y + 25 + size.y / 2;
       velocity.y = 0.0f;
@@ -105,7 +107,7 @@ public:
 
     bool onElevator = false;
     for (auto &ele : elevators) {
-      if (ele->IsCharacterOnElevator(shared_from_this())) {
+      if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
         onElevator = true;
         position.y = ele->GetPosition().y + 15 + size.y / 2;
         velocity.y = 0.0f;
