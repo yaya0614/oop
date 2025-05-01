@@ -2,9 +2,11 @@
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 #include "machines/NewMachine.hpp"
+#include <glm/fwd.hpp>
 #include <memory>
 
-NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color)
+NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color,
+                 glm::vec2 scale)
     : NewMachine(startpos, size, color) {
   this->color = color;
   self_tag = color;
@@ -15,10 +17,11 @@ NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color)
       GA_RESOURCE_DIR "/Pool/" + color + "/" + color + "_2.png",
       GA_RESOURCE_DIR "/Pool/" + color + "/" + color + "_3.png",
       GA_RESOURCE_DIR "/Pool/" + color + "/" + color + "_4.png",
-      GA_RESOURCE_DIR "/Pool/" + color + "/" + color + "_5.png"};
+
+  };
   SetPosition(startpos);
-  SetZIndex(100);
-  m_Transform.scale = {0.6, 0.36};
+  SetZIndex(80);
+  m_Transform.scale = {scale.x, scale.y};
   SetVisible(true);
   //   m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Pool/" +
   //   color +
@@ -30,7 +33,6 @@ NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color)
 std::string NewPool::IsCharacterFall(std::shared_ptr<NewCharacter> c1) {
   // 先判斷是否有碰撞
   bool IsColliderC1 = IsCollidingWithMachine(c1);
-  //   bool IsColliderC2 = IsCollidingWithMachine(c2);
 
   if (IsColliderC1) {
     return self_tag;

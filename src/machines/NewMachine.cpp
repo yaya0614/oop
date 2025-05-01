@@ -9,6 +9,32 @@ bool NewMachine::IsCollidingWithMachine(
   int character_left = pos.x - character->size.x / 2;
   int character_right = pos.x + character->size.x / 2;
   int character_bottom = pos.y - character->size.y / 2;
+  // LOG_DEBUG("character_left");
+  // LOG_DEBUG(character_left);
+  // LOG_DEBUG("character_right");
+  // LOG_DEBUG(character_right);
+  // LOG_ERROR("startPos.x - size.x");
+  // LOG_ERROR(startPos.x - size.x);
+  // LOG_ERROR("startPos.x + size.x");
+  // LOG_ERROR(startPos.x + size.x);
+  // LOG_CRITICAL(character_right >= (startPos.x - size.x) &&
+  //              character_left <= (startPos.x + size.x));
+  // bool y = character_bottom - (startPos.y - size.y) >= 0.5 &&
+  //          character_bottom - (startPos.y - size.y) <= 2;
+  // LOG_DEBUG("character_bottom");
+  // LOG_DEBUG(character_bottom);
+  // LOG_ERROR("startPos.y - size.y");
+  // LOG_ERROR(startPos.y - size.y);
+  // LOG_WARN("y");
+  // LOG_WARN(y);
+  // LOG_DEBUG("character_right");
+  // LOG_DEBUG(character_right);
+  // LOG_DEBUG("character_left");
+  // LOG_DEBUG(character_left);
+  // LOG_DEBUG("startPos.x + size.x");
+  // LOG_DEBUG(startPos.x + size.x);
+  // LOG_DEBUG("startPos.x - size.x");
+  // LOG_DEBUG(startPos.x - size.x);
 
   return (character_right >= (startPos.x - size.x) &&
           character_left <= (startPos.x + size.x) &&

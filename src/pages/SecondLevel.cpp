@@ -36,15 +36,17 @@ void SecondLevel::Start() {
   m_Root.AddChild(Rock);
 
   // pools
-  Pools.push_back(std::make_shared<NewPool>(glm::vec2(20, -292),
-                                            glm::vec2(30, -7), "water"));
-  Pools.push_back(std::make_shared<NewPool>(glm::vec2(150, -292),
-                                            glm::vec2(30, -7), "fire"));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(20, -292), glm::vec2(30, -7), "water", glm::vec2(0.6, 0.36)));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(150, -292), glm::vec2(30, -7), "fire", glm::vec2(0.6, 0.36)));
   // elevatorselevators
-  elevators.push_back(std::make_shared<NewElevator>(
-      glm::vec2(-340, -26), glm::vec2(20, 2), "blue", -90));
-  elevators.push_back(std::make_shared<NewElevator>(
-      glm::vec2(340, 58), glm::vec2(16, 16), "purple", -30));
+  elevators.push_back(
+      std::make_shared<NewElevator>(glm::vec2(-340, -26), glm::vec2(20, 2),
+                                    "blue", -90, glm::vec2(0.4, 0.34), "Y"));
+  elevators.push_back(
+      std::make_shared<NewElevator>(glm::vec2(340, 58), glm::vec2(16, 16),
+                                    "purple", -30, glm::vec2(0.4, 0.34), "Y"));
   // switchs
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-100, -115), glm::vec2(20, 5), "blue", false)); // lever
@@ -139,9 +141,9 @@ void SecondLevel::Update() {
   for (auto ele : elevators) {
     std::string eleColor = ele->GetColor();
 
-    bool anyButtonPressed = false; // 只收集Button
-    bool allButtonReleased = true; // 只收集Button
-    int lever_dir = 0;             // 只收集Lever
+    bool anyButtonPressed = false;
+    bool allButtonReleased = true;
+    int lever_dir = 0;
 
     for (auto s : switches) {
       if (s->GetColor() == eleColor && s->IsButtonType()) {
@@ -198,7 +200,7 @@ void SecondLevel::Update() {
       NavigationTo(Enum::PhaseEnum::FirstLevel);
     }
     if (stages->GetMainButton()->GetIsPressed()) {
-      NavigationTo(Enum::PhaseEnum::FirstLevel);
+      NavigationTo(Enum::PhaseEnum::ThirdLevel);
     }
   }
 
