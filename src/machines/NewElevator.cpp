@@ -38,11 +38,9 @@ void NewElevator::UpdateBtnActivate(bool Activate, float deltaTime) {
           (direction < 0 && newY < targetY)) {
         newY = targetY;
       }
-      LOG_DEBUG("1");
 
       SetPosition({GetPosition().x, newY});
     } else {
-      LOG_DEBUG("2");
 
       // 靠近目標高度就直接貼上去
       SetPosition({GetPosition().x, targetY});
@@ -69,10 +67,8 @@ void NewElevator::UpdateActivate(int dir, float deltaTime) {
 
   if ((dir != record_dir)) {
     if (dir == 1) {
-      LOG_DEBUG(1);
       targetY = m_OriginalY;
     } else {
-      LOG_DEBUG(2);
       targetY = m_TargetY;
     }
     record_dir = dir;

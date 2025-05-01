@@ -26,10 +26,10 @@ void SecondLevel::Start() {
 
   // watergirl(終點比較上面) fireboy
   //-256 -174
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-50, -256));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-50, 96));
   m_Root.AddChild(fireboy);
   // x:-100
-  Girl = std::make_shared<NewWaterGirl>(glm::vec2(-100, -174));
+  Girl = std::make_shared<NewWaterGirl>(glm::vec2(-100, 96));
   m_Root.AddChild(Girl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -45,7 +45,7 @@ void SecondLevel::Start() {
       std::make_shared<NewElevator>(glm::vec2(-340, -26), glm::vec2(20, 2),
                                     "blue", -90, glm::vec2(0.4, 0.34), "Y"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(340, 58), glm::vec2(16, 16),
+      std::make_shared<NewElevator>(glm::vec2(340, 56), glm::vec2(16, 2),
                                     "purple", -30, glm::vec2(0.4, 0.34), "Y"));
   // switchs
   switches.push_back(std::make_shared<NewSwitch>(
@@ -57,10 +57,10 @@ void SecondLevel::Start() {
       glm::vec2(250, 74), glm::vec2(5, 7), "purple", true));
 
   // doors
-  doors.push_back(std::make_shared<NewDoor>(glm::vec2(250, 200),
-                                            glm::vec2(30, 30), "fire"));
+  doors.push_back(
+      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(0, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(320, 200),
-                                            glm::vec2(30, 30), "water"));
+                                            glm::vec2(0, 30), "water"));
   std::vector<glm::vec2> redDiamondPositions = {
       {150, -260},
       {-250, 20},

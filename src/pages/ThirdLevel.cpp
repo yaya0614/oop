@@ -26,9 +26,9 @@ void ThirdLevel::Start() {
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(70, -277), glm::vec2(55, -7), "fire", glm::vec2(1, 0.36)));
   Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(-152, -17), glm::vec2(70, -7), "green", glm::vec2(0.6, 0.36)));
+      glm::vec2(-152, -17), glm::vec2(60, -7), "green", glm::vec2(0.6, 0.36)));
   Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(182, -17), glm::vec2(70, -7), "green", glm::vec2(0.62, 0.36)));
+      glm::vec2(182, -17), glm::vec2(60, -7), "green", glm::vec2(0.62, 0.36)));
 
   elevators.push_back(
       std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(30, 2),
