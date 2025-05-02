@@ -1,4 +1,5 @@
 #include "machines/NewDoor.hpp"
+#include "Util/Animation.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 #include "machines/NewMachine.hpp"
@@ -38,12 +39,17 @@ bool NewDoor::IsCollider(std::shared_ptr<NewCharacter> c1) {
   glm::vec2 pos = {c1->position.x, c1->position.y + c1->offest};
   int character_middle = pos.x;
   int character_bottom = pos.y - c1->size.y / 2;
+  LOG_DEBUG("character_bottom");
+  LOG_DEBUG(character_bottom);
+  LOG_DEBUG("startpos.y - size.y");
+  LOG_DEBUG(startpos.y - size.y);
   return (character_middle >= (startpos.x - size.x) &&
           character_middle <= (startpos.x + size.x) &&
           character_bottom - (startpos.y - size.y) >= 0.5 &&
           character_bottom - (startpos.y - size.y) <= 2);
 };
 bool NewDoor::IsCharacterMatch(std::shared_ptr<NewCharacter> c1) {
+
   if (IsCollider(c1)) {
     if (c1->tag == self_tag) {
       return true;

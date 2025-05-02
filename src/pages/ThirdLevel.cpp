@@ -1,73 +1,50 @@
 #include "pages/ThirdLevel.hpp"
+#include "MapBackground.hpp"
+#include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include <glm/fwd.hpp>
+#include <memory>
 
 void ThirdLevel::Start() {
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
-                                           "/Image/Background/NewLevel2.png");
+                                           "/Image/Background/NewLevel3.png");
   Background->SetVisible(true);
   Background->SetZIndex(50);
-  m_Root.AddChild(Background);
-
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(240, -100));
+  mapbackground = std::make_shared<MapBackground>();
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, -254));
   m_Root.AddChild(fireboy);
   // y = -240
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(300, 200));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, -254));
   m_Root.AddChild(watergirl);
-  stages = std::make_shared<Stage>();
 
   Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(-160, -216), glm::vec2(55, -7), "fire", glm::vec2(1, 0.36)));
+      glm::vec2(-165, -292), glm::vec2(55, -7), "fire", glm::vec2(1, 0.36)));
   Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(70, -216), glm::vec2(55, -7), "water", glm::vec2(1, 0.36)));
-  Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(-160, -277), glm::vec2(55, -7), "water", glm::vec2(1, 0.36)));
-  Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(70, -277), glm::vec2(55, -7), "fire", glm::vec2(1, 0.36)));
-  Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(-152, -17), glm::vec2(60, -7), "green", glm::vec2(0.6, 0.36)));
-  Pools.push_back(std::make_shared<NewPool>(
-      glm::vec2(182, -17), glm::vec2(60, -7), "green", glm::vec2(0.62, 0.36)));
+      glm::vec2(165, -292), glm::vec2(55, -7), "water", glm::vec2(1, 0.36)));
 
-  elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(30, 2),
-                                    "yellow", 15, glm::vec2(0.55, 0.36), "x"));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(-255, -190), glm::vec2(40, -7), "water", glm::vec2(0.7, 0.36)));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(255, -190), glm::vec2(40, -7), "fire", glm::vec2(0.7, 0.36)));
 
-  switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(170, 197), glm::vec2(20, 5), "yellow",
-      true)); // button(每個switch都要調y的觸發點，才可以準確觸發碰撞項)
-  switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(-100, 197), glm::vec2(20, 5), "yellow", true)); // button
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(-138, 5), glm::vec2(30, -7), "fire", glm::vec2(0.62, 0.36)));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(119, 5), glm::vec2(30, -7), "water", glm::vec2(0.62, 0.36)));
 
-  // doors
-  doors.push_back(std::make_shared<NewDoor>(glm::vec2(-310, 221),
+  doors.push_back(std::make_shared<NewDoor>(glm::vec2(-140, -51),
                                             glm::vec2(0, 30), "fire"));
-  doors.push_back(std::make_shared<NewDoor>(glm::vec2(-240, 221),
+  doors.push_back(std::make_shared<NewDoor>(glm::vec2(125, -51),
                                             glm::vec2(0, 30), "water"));
-  for (auto &s : switches) {
-    m_Root.AddChild(s);
-  }
-  for (auto &ele : elevators) {
-    m_Root.AddChild(ele);
-  }
-
-  for (auto &pool : Pools) {
-    m_Root.AddChild(pool);
-  }
-  for (auto &door : doors) {
-    m_Root.AddChild(door);
-  }
 
   std::vector<glm::vec2> redDiamondPositions = {
-      {-190, -175}, {-128, -175}, {35, -240}, {105, -240},
-      {192, -88},   {-110, -54},  {-15, 30},  {-15, 186},
-
-  };
+      {-190, -258}, {-130, -258}, {232, -161}, {275, -130}, {197, -41},
+      {366, 3},     {213, 51},    {358, 155},  {134, 215},  {140, 126}};
 
   std::vector<glm::vec2> waterDiamondPositions = {
-      {-190, -240}, {-128, -240}, {35, -175}, {105, -175},
-      {107, -58},   {-210, -87},  {33, 30},   {33, 186},
+      {138, -258}, {198, -258}, {-232, -161}, {-275, -130}, {-339, 1},
+      {-227, 97},  {-353, 132}, {-191, 211},  {-131, 112}
 
   };
   for (auto &pos : redDiamondPositions) {
@@ -82,72 +59,35 @@ void ThirdLevel::Start() {
     m_Root.AddChild(diamond);
   }
 
-  mapbackground = std::make_shared<MapBackground>();
-  m_Root.AddChild(mapbackground);
+  for (auto pool : Pools) {
+    m_Root.AddChild(pool);
+  }
+  for (auto door : doors) {
+    m_Root.AddChild(door);
+  }
+  m_Root.AddChild(Background);
+  stages = std::make_shared<Stage>();
   m_CurrentState = State::UPDATE;
 };
 
 void ThirdLevel::Update() {
-
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
+
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
   for (auto &pool : Pools) {
     if (!pool->IsLooping()) {
       pool->SetLooping(true);
     }
   }
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
-  fireboy->SetElevators(elevators);
-  watergirl->SetElevators(elevators);
   fireboy->SetDoor(doors);
-  watergirl->SetDoor(doors);
   fireboy->SetPool(Pools);
+  watergirl->SetDoor(doors);
   watergirl->SetPool(Pools);
-
-  for (auto door : doors) {
-    if (!door->GetIsOpen()) {
-      door->IsCharacterInto(fireboy, watergirl);
-    }
-  }
 
   fireboy->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
   watergirl->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
-
-  for (auto s : switches) {
-    s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
-  }
-  for (auto ele : elevators) {
-    std::string eleColor = ele->GetColor();
-
-    bool anyButtonPressed = false;
-    bool allButtonReleased = true;
-    int lever_dir = 0;
-
-    for (auto s : switches) {
-      if (s->GetColor() == eleColor && s->IsButtonType()) {
-        if (s->IsPressed()) {
-          s->ButtonPlayAnimation();
-          anyButtonPressed = true;
-          allButtonReleased = false;
-        }
-        s->ButtonPlayAnimation();
-      }
-    }
-
-    for (auto s : switches) {
-      if (s->GetColor() == eleColor && !s->IsButtonType()) {
-        lever_dir = s->GetLeverDir();
-      }
-    }
-    if (anyButtonPressed) {
-      ele->UpdateBtnActivate(true, deltaTime);
-    } else if (lever_dir != 0) {
-      ele->UpdateActivate(lever_dir, deltaTime);
-    } else if (allButtonReleased) {
-      ele->UpdateBtnActivate(false, deltaTime);
-    }
-  }
   for (auto &diamond : diamonds) {
     if (!diamond->IsCollected()) {
       diamond->Update();

@@ -8,8 +8,7 @@ MapBackground::MapBackground(int level_id) : level_id(level_id) {
     this->level_id = 0;
   }
   SetZIndex(20);
-  SetImage(levels[this->level_id].ImagePath);
-}
+};
 
 void MapBackground::SetImage(const std::string &ImagePath) {
   m_ImagePath = ImagePath;
@@ -23,5 +22,5 @@ MapBackground::Level MapBackground::GetLevelData(int level_num) {
 };
 
 int MapBackground::GetLevelSize(int level_num) {
-  return levels[level_num].tag.size();
+  return levels[level_num].platforms.size();
 }
