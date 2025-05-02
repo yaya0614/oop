@@ -25,20 +25,17 @@ public:
 
   std::shared_ptr<Character> Background;
   std::shared_ptr<NewFireBoy> fireboy;
-  std::shared_ptr<NewWaterGirl> Girl;
-  std::shared_ptr<NewRock> Rock;
-  std::shared_ptr<NewPool> Pool;
-  std::shared_ptr<Stage> stages;
-
-  std::shared_ptr<NewElevator> elevator;
+  std::shared_ptr<NewWaterGirl> watergirl;
   std::vector<std::shared_ptr<NewPool>> Pools;
   std::vector<std::shared_ptr<NewElevator>> elevators;
   std::vector<std::shared_ptr<NewSwitch>> switches;
   std::vector<std::shared_ptr<NewDoor>> doors;
   std::vector<std::shared_ptr<Diamond>> diamonds;
+  std::shared_ptr<Stage> stages;
 
-  std::shared_ptr<Stage> m_stage;
   std::shared_ptr<MapBackground> mapbackground;
+
+  float deltaTime = 1.0 / 60.0f;
 };
 
 #endif // SECONDLEVEL_HPP

@@ -32,7 +32,7 @@ void IntroductionPage::Update() {
       int y = start_btn->GetPosition().y;
       if (mousePos.x - x < 30 && mousePos.y - y < 30) {
         start_btn.reset();
-        NavigationTo(Enum::PhaseEnum::FirstLevel);
+        NavigationTo(Enum::PhaseEnum::SecondLevel);
       }
     }
   }

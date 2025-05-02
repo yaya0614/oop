@@ -1,4 +1,5 @@
 #include "machines/NewPool.hpp"
+#include "Util/Animation.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 #include "machines/NewMachine.hpp"
@@ -32,6 +33,7 @@ NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color,
 
 std::string NewPool::IsCharacterFall(std::shared_ptr<NewCharacter> c1) {
   // 先判斷是否有碰撞
+  // LOG_DEBUG("test");
   bool IsColliderC1 = IsCollidingWithMachine(c1);
 
   if (IsColliderC1) {

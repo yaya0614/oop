@@ -1,74 +1,77 @@
 #include "pages/FirstLevel.hpp"
+#include "Character.hpp"
+#include "Enum.hpp"
+#include "Stage.hpp"
 #include "Util/Input.hpp"
+#include "Util/Logger.hpp"
+#include "actors/NewFireBoy.hpp"
+#include "actors/NewRock.hpp"
+#include "actors/NewWaterGirl.hpp"
+#include "machines/NewDoor.hpp"
+#include "machines/NewElevator.hpp"
+#include "machines/NewPool.hpp"
+#include "machines/NewSwitch.hpp"
+#include <glm/fwd.hpp>
+#include <memory>
+#include <vector>
 
 void FirstLevel::Start() {
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
-                                           "/Image/Background/Level1.png");
+                                           "/Image/Background/NewLevel1.png");
   Background->SetVisible(true);
-  Background->SetZIndex(10);
+  Background->SetZIndex(50);
   m_Root.AddChild(Background);
-  fire_boy = std::make_shared<FireBoy>();
-  fire_boy->m_Transform.scale = {0.4, 0.41f};
-  m_Root.AddChild(fire_boy);
+  stages = std::make_shared<Stage>();
 
-  water_girl = std::make_shared<WaterGirl>();
-  water_girl->m_Transform.scale = {0.4, 0.41f};
-  m_Root.AddChild(water_girl);
+  // watergirl(終點比較上面) fireboy
+  //-256 -174
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-50, -260));
+  m_Root.AddChild(fireboy);
+  // x:-100
+  Girl = std::make_shared<NewWaterGirl>(glm::vec2(-100, 96));
+  m_Root.AddChild(Girl);
 
-  ice_sea = std::make_shared<AnimatedCharacter>(std::vector<std::string>{
-      GA_RESOURCE_DIR "/IceGirl/ice_small/water_1.png",
-      GA_RESOURCE_DIR "/IceGirl/ice_small/water_2.png",
-      GA_RESOURCE_DIR "/IceGirl/ice_small/water_3.png",
-      GA_RESOURCE_DIR "/IceGirl/ice_small/water_4.png",
-      GA_RESOURCE_DIR "/IceGirl/ice_small/water_5.png",
-  });
-  ice_sea->SetPosition({20, -310});
-  ice_sea->SetZIndex(100);
-  ice_sea->m_Transform.scale = {0.7, 0.43};
-  ice_sea->SetVisible(true);
-  m_Root.AddChild(ice_sea);
+  Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
+  m_Root.AddChild(Rock);
 
-  m_fireSea = std::make_shared<FireSea>();
-  m_Root.AddChild(m_fireSea);
+  // pools
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(20, -292), glm::vec2(30, -7), "water", glm::vec2(0.6, 0.36)));
+  Pools.push_back(std::make_shared<NewPool>(
+      glm::vec2(150, -292), glm::vec2(30, -7), "fire", glm::vec2(0.6, 0.36)));
+  // elevatorselevators
+  elevators.push_back(
+      std::make_shared<NewElevator>(glm::vec2(-340, -26), glm::vec2(20, 2),
+                                    "blue", -90, glm::vec2(0.4, 0.34), "Y"));
+  elevators.push_back(
+      std::make_shared<NewElevator>(glm::vec2(340, 56), glm::vec2(16, 2),
+                                    "purple", -30, glm::vec2(0.4, 0.34), "Y"));
+  // switchs
+  switches.push_back(std::make_shared<NewSwitch>(
+      glm::vec2(-100, -115), glm::vec2(20, 5), "blue", false)); // lever
 
-  ele_blue = std::make_shared<Elevation>();
-  m_Root.AddChild(ele_blue);
+  switches.push_back(std::make_shared<NewSwitch>(
+      glm::vec2(200, -32), glm::vec2(5, 7), "purple", true));
+  switches.push_back(std::make_shared<NewSwitch>(
+      glm::vec2(250, 74), glm::vec2(5, 7), "purple", true));
 
-  rock = std::make_shared<Rock>();
-  m_Root.AddChild(rock);
-
-  ele_purple = std::make_shared<ElevationPurple>();
-  m_Root.AddChild(ele_purple);
-
-  button_top = std::make_shared<ButtonTop>();
-  m_Root.AddChild(button_top);
-
-  button = std::make_shared<Button>();
-  m_Root.AddChild(button);
-
-  pusher = std::make_shared<Pusher>();
-  m_Root.AddChild(pusher);
-
-  firedoor = std::make_shared<FireDoor>();
-  m_Root.AddChild(firedoor);
-
-  waterdoor = std::make_shared<WaterDoor>();
-  m_Root.AddChild(waterdoor);
-
-  // {-22, 65, -322, -309, -276.2f, "ice"},
-  // {122, 212, -322, -309, -276.2f, "fire"}},
+  // doors
+  doors.push_back(
+      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(0, 30), "fire"));
+  doors.push_back(std::make_shared<NewDoor>(glm::vec2(320, 200),
+                                            glm::vec2(0, 30), "water"));
   std::vector<glm::vec2> redDiamondPositions = {
-      {167, -260},
+      {150, -260},
       {-250, 20},
-      {-175, 250},
+      {-155, 250},
       {0, 200},
 
   };
 
   std::vector<glm::vec2> waterDiamondPositions = {
       {20, -260},
-      {200, -20},
-      {-380, 190},
+      {132, -18},
+      {-350, 190},
       {100, 200},
 
   };
@@ -83,157 +86,124 @@ void FirstLevel::Start() {
     diamonds.push_back(diamond);
     m_Root.AddChild(diamond);
   }
-
+  for (auto &pool : Pools) {
+    m_Root.AddChild(pool);
+  }
+  for (auto &s : switches) {
+    m_Root.AddChild(s);
+  }
+  for (auto &e : elevators) {
+    m_Root.AddChild(e);
+  }
+  for (auto &door : doors) {
+    m_Root.AddChild(door);
+  }
   mapbackground = std::make_shared<MapBackground>();
-  m_Root.AddChild(mapbackground);
 
   m_CurrentState = State::UPDATE;
 };
+
 void FirstLevel::Update() {
+  glm::vec2 mousePos = Util::Input::GetCursorPosition();
 
-  if (!ice_sea->IsLooping()) {
-    ice_sea->SetLooping(true);
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
   }
-
-  if (!m_fireSea->IsLooping()) {
-    m_fireSea->SetLooping(true);
+  // Pool Setting
+  for (auto &pool : Pools) {
+    if (!pool->IsLooping()) {
+      pool->SetLooping(true);
+    }
   }
 
   float deltaTime = 1.0 / 60.0f;
-  fire_boy->Update(deltaTime, mapbackground, ele_blue, ele_purple, rock);
-  water_girl->Update(deltaTime, mapbackground, ele_blue, ele_purple, rock);
+  fireboy->SetElevators(elevators);
+  fireboy->SetRock(Rock);
+  fireboy->SetPool(Pools);
+  fireboy->SetDoor(doors);
+  Girl->SetElevators(elevators);
+  Girl->SetPool(Pools);
+  Girl->SetRock(Rock);
+  Girl->SetDoor(doors);
 
-  float expect_x = fire_boy->GetPosition().x;
-  float expect_y = fire_boy->GetPosition().y;
-
-  float expect_x_water_girl = water_girl->GetPosition().x;
-  float expect_y_water_girl = water_girl->GetPosition().y;
-  if (Util::Input::IsKeyDown(Util::Keycode::W)) {
-    fire_boy->Jump();
+  for (auto door : doors) {
+    if (!door->GetIsOpen()) {
+      door->IsCharacterInto(fireboy, Girl);
+    }
   }
+  fireboy->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
+  Girl->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
 
-  if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
-    water_girl->Jump();
+  for (auto s : switches) {
+    s->UpdateSwitchState(fireboy, Girl, deltaTime, elevators);
   }
+  for (auto ele : elevators) {
+    std::string eleColor = ele->GetColor();
 
-  auto IsPress_w = water_girl->IsPressedButtonbool(
-      expect_x_water_girl, expect_y_water_girl, mapbackground, 0, 0);
+    bool anyButtonPressed = false;
+    bool allButtonReleased = true;
+    int lever_dir = 0;
 
-  auto IsPress =
-      fire_boy->IsPressedButtonbool(expect_x, expect_y, mapbackground, 0, 0);
-
-  button->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed,
-                 IsPress_w.num, IsPress.num);
-
-  button_top->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed,
-                     IsPress_w.num, IsPress.num);
-  ele_purple->Update(deltaTime, IsPress.IsPushed || IsPress_w.IsPushed);
-  auto WaterGirl_PushData =
-      water_girl->IsPushedbool(expect_x_water_girl, mapbackground, 0, 0);
-  auto FireBoy_PushData = fire_boy->IsPushedbool(expect_x, mapbackground, 0, 0);
-
-  ele_blue->Update(deltaTime, FireBoy_PushData.tag, WaterGirl_PushData.tag,
-                   WaterGirl_PushData.IsPushed, FireBoy_PushData.IsPushed);
-  pusher->Update(FireBoy_PushData.tag, WaterGirl_PushData.tag,
-                 WaterGirl_PushData.IsPushed, FireBoy_PushData.IsPushed);
-
-  if (Util::Input::IsKeyPressed(Util::Keycode::D)) { // 右
-    expect_x += 2;
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::A)) { // 左
-    expect_x -= 2;
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT)) { // 左
-    expect_x_water_girl += 2;
-  }
-  if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) { // 右
-    expect_x_water_girl -= 2;
-  }
-
-  if (!fire_boy->IsOverLines(expect_x, expect_y, mapbackground)) {
-    bool collided = false;
-    int collidedPlatformIndex = -1;
-    for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
-      if (fire_boy->IsCollider(expect_x, expect_y, mapbackground, 0, i)) {
-        collided = true;
-        collidedPlatformIndex = i;
-        break;
+    for (auto s : switches) {
+      if (s->GetColor() == eleColor && s->IsButtonType()) {
+        if (s->IsPressed()) {
+          s->ButtonPlayAnimation();
+          anyButtonPressed = true;
+          allButtonReleased = false;
+        }
+        s->ButtonPlayAnimation();
       }
     }
 
-    if (!collided) {
-      fire_boy->SetPosition({expect_x, expect_y});
-    } else {
-    }
-  }
-
-  if (!water_girl->IsOverLines(expect_x_water_girl, expect_y_water_girl,
-                               mapbackground)) {
-    bool collided = false;
-    int collidedPlatformIndex = -1;
-    for (int i = 0; i < mapbackground->GetLevelData(0).platforms.size(); i++) {
-      if (water_girl->IsCollider(expect_x_water_girl, expect_y_water_girl,
-                                 mapbackground, 0, i)) {
-        collided = true;
-        collidedPlatformIndex = i;
-        break;
+    for (auto s : switches) {
+      if (s->GetColor() == eleColor && !s->IsButtonType()) {
+        lever_dir = s->GetLeverDir();
       }
     }
-
-    if (!collided) {
-      water_girl->SetPosition({expect_x_water_girl, expect_y_water_girl});
-    } else {
+    if (anyButtonPressed) {
+      ele->UpdateBtnActivate(true, deltaTime);
+    } else if (lever_dir != 0) {
+      ele->UpdateActivate(lever_dir, deltaTime);
+    } else if (allButtonReleased) {
+      ele->UpdateBtnActivate(false, deltaTime);
     }
   }
-
-  bool tag_fb = firedoor->IsWaterInto(water_girl, water_girl->GetHalfHeight());
-  firedoor->Update(tag_fb);
-
-  bool tag_wt = waterdoor->IsWaterInto(fire_boy, fire_boy->GetHalfHeight());
-  waterdoor->Update(tag_wt);
-  water_girl->Die(firedoor->GetIsOpen());
-  fire_boy->Die(waterdoor->GetIsOpen());
-
-  auto water_rock = rock->CheckCollision(water_girl->GetPosition(),
-                                         water_girl->GetHalfWidth(),
-                                         water_girl->GetHalfHeight());
-  auto fire_rock =
-      rock->CheckCollision(fire_boy->GetPosition(), fire_boy->GetHalfWidth(),
-                           fire_boy->GetHalfHeight());
-  rock->Update(fire_rock.tag, water_rock.tag, fire_rock.PushSide,
-               water_rock.PushSide);
 
   for (auto &diamond : diamonds) {
     if (!diamond->IsCollected()) {
-      diamond->Update(); // ⭐ 加這行來更新閃爍效果
+      diamond->Update();
     }
     if (diamond->IsCollected())
       continue;
 
-    if (diamond->tag == "fire" && fire_boy->IsCollidingWith(*diamond)) {
+    if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
       diamond->SetVisible(false);
       diamond->isCollected = true;
       diamond->DisableShow();
     }
 
-    if (diamond->tag == "water" && water_girl->IsCollidingWith(*diamond)) {
+    if (diamond->tag == "water" && Girl->IsCollidingWith(*diamond)) {
       diamond->SetVisible(false);
       diamond->isCollected = true;
       diamond->DisableShow();
     }
   }
+  Rock->Update(fireboy, Girl);
+  if ((fireboy->GetStatus() == "InDoor" && Girl->GetStatus() == "InDoor") ||
+      (fireboy->GetStatus() == "Die" || Girl->GetStatus() == "Die")) {
+    m_Root.AddChild(stages);
 
-  if (firedoor->GetIsOpen() && waterdoor->GetIsOpen()) {
-    LOG_CRITICAL("遊戲結束");
-  }
-
-  if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE) ||
-      Util::Input::IfExit()) {
-    m_CurrentState = State::END;
+    stages->Update(diamonds[0]->GetDiamondAmonut(),
+                   diamonds[1]->GetDiamondAmonut());
+    if (stages->GetRetryButton()->GetIsPressed()) {
+      NavigationTo(Enum::PhaseEnum::SecondLevel);
+    }
+    // if (stages->GetMainButton()->GetIsPressed()) {
+    //   NavigationTo(Enum::PhaseEnum::ThirdLevel);
+    // }
   }
 
   m_Root.Update();
 };
-void FirstLevel::End(){
 
-};
+void FirstLevel::End(){};

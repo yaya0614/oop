@@ -2,6 +2,7 @@
 #define NEWMACHINE_HPP
 
 #include "../MGameObject.hpp"
+#include "Util/Animation.hpp"
 #include "actors/NewCharacter.hpp"
 #include <glm/fwd.hpp>
 #include <string>

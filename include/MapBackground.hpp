@@ -2,7 +2,6 @@
 #define MAPBACKGROUND_HPP
 
 #include "MGameObject.hpp"
-#include "elevation.hpp"
 #include <Util/GameObject.hpp>
 #include <glm/fwd.hpp>
 #include <string>
@@ -17,42 +16,42 @@ public:
     float x1, x2, y_low, y_high;
   };
 
-  struct Slope {
-    float x1, x2, y_low, y_high;
-  };
-  struct Button {
-    float x1, x2, y_low, y_high;
-  };
+  // struct Slope {
+  //   float x1, x2, y_low, y_high;
+  // };
+  // struct Button {
+  //   float x1, x2, y_low, y_high;
+  // };
 
   // 之後做優化的時候，合併所有機關包括：按鈕跟推桿=>
   // 用機關的英文做宣告然後在Collier共用一個function個用tag做區別
-  struct Push {
-    float x1, x2, y_high;
-  };
+  // struct Push {
+  //   float x1, x2, y_high;
+  // };
 
-  struct Wall {
-    float x1, y1;
-  };
+  // struct Wall {
+  //   float x1, y1;
+  // };
 
-  struct Pool {
-    float x1, x2, y_low, y_high, expect_fall_down_h;
-    std::string tag;
-  };
+  // struct Pool {
+  //   float x1, x2, y_low, y_high, expect_fall_down_h;
+  //   std::string tag;
+  // };
 
-  struct Elevation {
-    float x1, x2, y_low, y_high;
-  };
+  // struct Elevation {
+  //   float x1, x2, y_low, y_high;
+  // };
 
   struct Level {
     std::vector<Platform> platforms;
-    std::vector<Slope> slopes;
-    std::vector<Button> buttons;
-    std::vector<Push> pushers;
-    std::vector<Elevation> elevations;
-    std::vector<Pool> pools;
-    std::vector<Wall> walls;
-    std::vector<std::string> tag;
-    std::string ImagePath;
+    // std::vector<Slope> slopes;
+    // std::vector<Button> buttons;
+    // std::vector<Push> pushers;
+    // std::vector<Elevation> elevations;
+    // std::vector<Pool> pools;
+    // std::vector<Wall> walls;
+    // std::vector<std::string> tag;
+    // std::string ImagePath;
   };
 
   struct Boundry {
@@ -71,40 +70,7 @@ private:
   std::vector<std::string> tag;
   int level_id;
   std::vector<Level> levels{
-      {
-          {
-              {-401.0f, -350, -322, -308.13},
-              {360.0f, 440, -309, -210.0},
-              {0.0f, 330, -192.0, -143.0},
-              {-401.0f, -25, -148, -100.2},
-              {-311.0f, 50, -30, 14},
-              {52, 450, -40, -10},
-              {220, 360, -28, 100},
-              {30, 220, 100, 145},
-              {-250, 30, 61, 100},
-              {-401.0f, -295, 61, 180},
-              {-206, -120, 198, 230},
-              {-119, 403, 198, 205},
 
-          },
-          {{-54, -11, -259, -103.0}},
-          {{95, 104, -38, -48}, {222, 278, 50, 61.87}},
-          {{-162, -118, -140}},
-          // pusher original {95, 104, -48.95},
-          {{
-              -401,
-              -312,
-              -119,
-              -99,
-          }},
-          {{-22, 65, -322, -309, -276.2f, "ice"},
-           {130, 170, -322, -309, -276.2f, "fire"}},
-          {{337.0f, -232.8f}},
-          {
-              "wall",
-          },
-          // {GA_RESOURCE_DIR "/Image/Background/Level1.png"},
-      },
       {
           {{{-380, 380, -295, -286}, // 底部平台
             {-380, 380, 270, 280},   // 上方平台（增加厚度）
@@ -157,7 +123,29 @@ private:
           }
 
           },
-      }
+      },
+      {{
+          {-380, 380, -295, -286}, // 底部平台
+          {-380, 380, 270, 280},   // 上方平台（增加厚度）
+          {-380, -380, -300, 300}, // 左牆（防掉出左邊）
+          {380, 380, -300, 300},    {-90, 94, -286, -230},
+          {-380, -175, -203, -184}, // 左邊第一個平台
+          {175, 380, -203, -184},   // 右邊第一個平台
+          {-380, -318, -184, -124}, // 左邊第一個方平台
+          {318, 380, -184, -124},   // 右邊第一個方平台
+          {-255, 241, -101, -82},   // 中間第一個
+          {-200, -183, -78, 167},   // 左邊第一個高築
+          {165, 181, -78, 167},     // 右邊第一個高築
+          {-380, -305, -16, -27},   {312, 380, -16, -30},
+          {-256, -198, 20, 35},     {-380, -323, 80, 98},
+          {-267, -201, 138, 152},   {-232, -97, 169, 187},
+          {-45, 15, 38, 105},       {-20, -6, -78, 36},
+          {-155, -117, 66, 83},     {85, 123, 66, 84},
+          {182, 253, 14, 31},       {328, 380, 76, 93},
+          {184, 253, 136, 152},     {328, 380, 76, 93},
+          {80, 208, 170, 188},      {-182, -91, -7, 10},
+          {75, 165, -7, 10},
+      }}
 
   };
 };
