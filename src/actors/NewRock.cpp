@@ -7,7 +7,7 @@
 #include <memory>
 
 NewRock::NewRock(glm::vec2 startpos, glm::vec2 size)
-    : NewCharacter(startpos, -4) {
+    : NewCharacter(startpos, "rock", -4) {
   m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Rock.png");
   SetPosition(startpos);
   m_Transform.scale = {0.3, 0.3};

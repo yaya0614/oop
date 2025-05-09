@@ -28,6 +28,8 @@ private:
 
   float m_Speed = 50.0f;
   float targetY;
+  std::shared_ptr<MGameObject> boxImage;
+
   float targetX;
 };
 

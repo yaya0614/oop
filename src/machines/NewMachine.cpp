@@ -9,32 +9,6 @@ bool NewMachine::IsCollidingWithMachine(
   int character_left = pos.x - character->size.x / 2;
   int character_right = pos.x + character->size.x / 2;
   int character_bottom = pos.y - character->size.y / 2;
-  // LOG_DEBUG("character_left");
-  // LOG_DEBUG(character_left);
-  // LOG_DEBUG("character_right");
-  // LOG_DEBUG(character_right);
-  // LOG_ERROR("startPos.x - size.x");
-  // LOG_ERROR(startPos.x - size.x);
-  // LOG_ERROR("startPos.x + size.x");
-  // LOG_ERROR(startPos.x + size.x);
-  // LOG_CRITICAL(character_right >= (startPos.x - size.x) &&
-  //              character_left <= (startPos.x + size.x));
-  // bool y = character_bottom - (startPos.y - size.y) >= 0.5 &&
-  //          character_bottom - (startPos.y - size.y) <= 2;
-  // LOG_DEBUG("character_bottom");
-  // LOG_DEBUG(character_bottom);
-  // LOG_ERROR("startPos.y - size.y");
-  // LOG_ERROR(startPos.y - size.y);
-  // LOG_WARN("y");
-  // LOG_WARN(y);
-  // LOG_DEBUG("character_right");
-  // LOG_DEBUG(character_right);
-  // LOG_DEBUG("character_left");
-  // LOG_DEBUG(character_left);
-  // LOG_DEBUG("startPos.x + size.x");
-  // LOG_DEBUG(startPos.x + size.x);
-  // LOG_DEBUG("startPos.x - size.x");
-  // LOG_DEBUG(startPos.x - size.x);
 
   return (character_right >= (startPos.x - size.x) &&
           character_left <= (startPos.x + size.x) &&
@@ -53,7 +27,7 @@ bool NewMachine::IsCharacterOnElevator(
   float ele_right = GetPosition().x + size.x;
   float ele_high = GetPosition().y + size.y;
 
-  const float epsilon = 2.0f; // 允許小誤差（防止浮點數問題）
+  const float epsilon = 12.0f;
 
   bool x_overlap = (char_right >= ele_left) && (char_left <= ele_right);
 
