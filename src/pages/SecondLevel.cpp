@@ -8,14 +8,15 @@ void SecondLevel::Start() {
   Background->SetVisible(true);
   Background->SetZIndex(50);
   m_Root.AddChild(Background);
+  stages = std::make_shared<Stage>("stage");
+  stages_over = std::make_shared<Stage>("stage_over");
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(240, -100));
+  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(240, -100));
   m_Root.AddChild(fireboy);
   // y = -240
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(300, 200));
+  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(300, 200));
   m_Root.AddChild(watergirl);
-  stages = std::make_shared<Stage>();
-
+  BasicAddStash();
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(-160, -216), glm::vec2(55, -7), "fire", glm::vec2(1, 0.36)));
   Pools.push_back(std::make_shared<NewPool>(
@@ -46,16 +47,20 @@ void SecondLevel::Start() {
                                             glm::vec2(0, 30), "water"));
   for (auto &s : switches) {
     m_Root.AddChild(s);
+    stash.push_back(s);
   }
   for (auto &ele : elevators) {
     m_Root.AddChild(ele);
+    stash.push_back(ele);
   }
 
   for (auto &pool : Pools) {
     m_Root.AddChild(pool);
+    stash.push_back(pool);
   }
   for (auto &door : doors) {
     m_Root.AddChild(door);
+    stash.push_back(door);
   }
 
   std::vector<glm::vec2> redDiamondPositions = {
@@ -73,12 +78,14 @@ void SecondLevel::Start() {
     auto diamond = std::make_shared<Diamond>(pos, "fire");
     diamonds.push_back(diamond);
     m_Root.AddChild(diamond);
+    stash.push_back(diamond);
   }
 
   for (auto &pos : waterDiamondPositions) {
     auto diamond = std::make_shared<Diamond>(pos, "water");
     diamonds.push_back(diamond);
     m_Root.AddChild(diamond);
+    stash.push_back(diamond);
   }
 
   mapbackground = std::make_shared<MapBackground>();
@@ -116,37 +123,8 @@ void SecondLevel::Update() {
   for (auto s : switches) {
     s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
   }
-  for (auto ele : elevators) {
-    std::string eleColor = ele->GetColor();
+  TriggerBtnOrLever();
 
-    bool anyButtonPressed = false;
-    bool allButtonReleased = true;
-    int lever_dir = 0;
-
-    for (auto s : switches) {
-      if (s->GetColor() == eleColor && s->IsButtonType()) {
-        if (s->IsPressed()) {
-          s->ButtonPlayAnimation();
-          anyButtonPressed = true;
-          allButtonReleased = false;
-        }
-        s->ButtonPlayAnimation();
-      }
-    }
-
-    for (auto s : switches) {
-      if (s->GetColor() == eleColor && !s->IsButtonType()) {
-        lever_dir = s->GetLeverDir();
-      }
-    }
-    if (anyButtonPressed) {
-      ele->UpdateBtnActivate(true, deltaTime);
-    } else if (lever_dir != 0) {
-      ele->UpdateActivate(lever_dir, deltaTime);
-    } else if (allButtonReleased) {
-      ele->UpdateBtnActivate(false, deltaTime);
-    }
-  }
   for (auto &diamond : diamonds) {
     if (!diamond->IsCollected()) {
       diamond->Update();
@@ -157,30 +135,20 @@ void SecondLevel::Update() {
     if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
       diamond->SetVisible(false);
       diamond->isCollected = true;
+
       diamond->DisableShow();
+      counter_fire++;
     }
 
     if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
       diamond->SetVisible(false);
       diamond->isCollected = true;
       diamond->DisableShow();
+      counter_water++;
     }
   }
 
-  if ((fireboy->GetStatus() == "InDoor" &&
-       watergirl->GetStatus() == "InDoor") ||
-      (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die")) {
-    m_Root.AddChild(stages);
-
-    stages->Update(diamonds[0]->GetDiamondAmonut(),
-                   diamonds[1]->GetDiamondAmonut());
-    if (stages->GetRetryButton()->GetIsPressed()) {
-      NavigationTo(Enum::PhaseEnum::ThirdLevel);
-    }
-    if (stages->GetMainButton()->GetIsPressed()) {
-      NavigationTo(Enum::PhaseEnum::ThirdLevel);
-    }
-  }
+  TriggerStage(counter_fire, counter_water);
   m_Root.Update();
 };
 

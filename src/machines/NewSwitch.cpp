@@ -93,6 +93,7 @@ void NewSwitch::UpdateSwitchState(
   } else {
     // 拉桿：即時更新 current_lever_dir
     if (isColliding) {
+
       bool c1_trigger =
           (IsCollidingWithMachine(c1) && (c1->dir_out != current_lever_dir));
       bool c2_trigger =

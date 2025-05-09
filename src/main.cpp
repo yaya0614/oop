@@ -3,6 +3,7 @@
 #include "Core/Context.hpp"
 #include "enum.hpp"
 #include "pages/FirstLevel.hpp"
+#include "pages/FourthLevel.hpp"
 #include "pages/IntroductionPage.hpp"
 #include "pages/SecondLevel.hpp"
 #include "pages/ThirdLevel.hpp"
@@ -20,6 +21,7 @@ int main(int, char **) {
   phases.push_back(std::make_shared<FirstLevel>(FirstLevel()));
   phases.push_back(std::make_shared<SecondLevel>(SecondLevel()));
   phases.push_back(std::make_shared<ThirdLevel>(ThirdLevel()));
+  phases.push_back(std::make_shared<FourthLevel>(FourthLevel()));
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];

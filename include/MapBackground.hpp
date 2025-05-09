@@ -16,42 +16,8 @@ public:
     float x1, x2, y_low, y_high;
   };
 
-  // struct Slope {
-  //   float x1, x2, y_low, y_high;
-  // };
-  // struct Button {
-  //   float x1, x2, y_low, y_high;
-  // };
-
-  // 之後做優化的時候，合併所有機關包括：按鈕跟推桿=>
-  // 用機關的英文做宣告然後在Collier共用一個function個用tag做區別
-  // struct Push {
-  //   float x1, x2, y_high;
-  // };
-
-  // struct Wall {
-  //   float x1, y1;
-  // };
-
-  // struct Pool {
-  //   float x1, x2, y_low, y_high, expect_fall_down_h;
-  //   std::string tag;
-  // };
-
-  // struct Elevation {
-  //   float x1, x2, y_low, y_high;
-  // };
-
   struct Level {
     std::vector<Platform> platforms;
-    // std::vector<Slope> slopes;
-    // std::vector<Button> buttons;
-    // std::vector<Push> pushers;
-    // std::vector<Elevation> elevations;
-    // std::vector<Pool> pools;
-    // std::vector<Wall> walls;
-    // std::vector<std::string> tag;
-    // std::string ImagePath;
   };
 
   struct Boundry {
@@ -145,6 +111,23 @@ private:
           {184, 253, 136, 152},     {328, 380, 76, 93},
           {80, 208, 170, 188},      {-182, -91, -7, 10},
           {75, 165, -7, 10},
+      }},
+      {{
+          {-370, 370, -288, -270}, // 底部平台
+          {-370, 370, 270, 270},   // 上方平台（增加厚度）
+          {-370, -370, -270, 270}, // 左牆（防掉出左邊）
+          {370, 370, -270, 270},   // 右牆（防掉出右邊）
+          {-186, -106, -170, -155}, {-186, -106, -45, -31},
+          {-186, -106, 77, 92},     {-61, 48, 136, 154},
+          {98, 177, -171, -155},    {98, 177, -44, -30},
+          {98, 177, 75, 90},        {-254, -146, 158, 175},
+          {132, 240, 158, 175},     {-360, -326, -181, -138},
+          {-276, -209, -110, -91},  {-276, -209, -22, -6},
+          {201, 266, -124, -107},   {201, 266, -28, -14},
+          {-211, -187, -268, 158},  {176, 199, -268, 158},
+          {-8, 3, -271, -236},      {-8, 3, -217, -110},
+          {-8, 3, -88, 10},         {-8, 3, 28, 135},
+
       }}
 
   };

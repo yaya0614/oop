@@ -18,24 +18,20 @@
 class SecondLevel : public App {
 public:
   explicit SecondLevel() { phase = Enum::PhaseEnum::SecondLevel; }
-
   void Start() override;
   void Update() override;
   void End() override;
 
-  std::shared_ptr<Character> Background;
-  std::shared_ptr<NewFireBoy> fireboy;
-  std::shared_ptr<NewWaterGirl> watergirl;
-  std::vector<std::shared_ptr<NewPool>> Pools;
-  std::vector<std::shared_ptr<NewElevator>> elevators;
-  std::vector<std::shared_ptr<NewSwitch>> switches;
-  std::vector<std::shared_ptr<NewDoor>> doors;
-  std::vector<std::shared_ptr<Diamond>> diamonds;
-  std::shared_ptr<Stage> stages;
+private:
+  std::vector<glm::vec2> redDiamondPositions = {
+      {-190, -175}, {-128, -175}, {35, -240}, {105, -240},
+      {192, -88},   {-110, -54},  {-15, 30},  {-15, 186},
+  };
 
-  std::shared_ptr<MapBackground> mapbackground;
-
-  float deltaTime = 1.0 / 60.0f;
+  std::vector<glm::vec2> waterDiamondPositions = {
+      {-190, -240}, {-128, -240}, {35, -175}, {105, -175},
+      {107, -58},   {-210, -87},  {33, 30},   {33, 186},
+  };
 };
 
 #endif // SECONDLEVEL_HPP

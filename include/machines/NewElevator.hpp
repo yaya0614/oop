@@ -25,8 +25,10 @@ private:
   float m_OriginalY;
   float m_TargetX;
   float m_OriginalX;
+
   float m_Speed = 50.0f;
   float targetY;
+  float targetX;
 };
 
 #endif

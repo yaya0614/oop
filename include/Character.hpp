@@ -5,9 +5,9 @@
 
 #include "PhaseResourceManger.hpp"
 
-#include "Util/GameObject.hpp"
+#include "MGameObject.hpp"
 
-class Character : public Util::GameObject {
+class Character : public MGameObject {
 public:
   explicit Character(const std::string &ImagePath);
 

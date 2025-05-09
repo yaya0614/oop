@@ -81,11 +81,15 @@ void NewWaterGirl::Update(
       }
     }
   }
-  for (auto door : doors) {
-    if (door && door->IsCharacterMatch(shared_from_this())) {
-      status = "InDoor";
+
+  for (auto &door : doors) {
+    if (door->GetIsOpen()) {
+      if (door->GetCurrentAnimation() == 6 && door->GetSelTag() == tag) {
+        status = "InDoor";
+      }
     }
   }
+
   ChangeStatus(status);
 
   if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
@@ -97,8 +101,10 @@ void NewWaterGirl::Update(
   }
 
   velocity.x = 0.0f;
-  if (Util::Input::IsKeyPressed(Util::Keycode::A))
+  if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
     velocity.x -= 80.0f;
+  }
+
   if (Util::Input::IsKeyPressed(Util::Keycode::D))
     velocity.x += 80.0f;
 
@@ -126,7 +132,7 @@ void NewWaterGirl::Update(
     velocity.y += gravity * deltaTime;
   }
 
-  MoveX(velocity.x * deltaTime, platforms);
+  MoveX(velocity.x * deltaTime, platforms, tag);
   MoveY(velocity.y * deltaTime, platforms);
   SetPosition(position);
   boxImage->SetPosition({position.x, position.y + offest});
