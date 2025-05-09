@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-NewCharacter::NewCharacter(glm::vec2 startPos, int offest)
+NewCharacter::NewCharacter(glm::vec2 startPos, std::string tag, int offest)
     : MGameObject(), Colliders(startPos, size), position(startPos),
       velocity(0.0f), remainder(0.0f), offest(offest) {
   boxImage = std::make_shared<MGameObject>();
@@ -16,6 +16,14 @@ NewCharacter::NewCharacter(glm::vec2 startPos, int offest)
   boxImage->m_Transform.scale = size;
   boxImage->SetZIndex(100);
   boxImage->SetPosition({position.x, position.y + offest});
+  this->tag = tag;
+  if (tag == "fire") {
+    animation_walk = std::make_shared<Util::Animation>(FireBoyAnimationPaths,
+                                                       true, 80, true, 80);
+  } else if (tag == "water") {
+    animation_walk = std::make_shared<Util::Animation>(WaterGirlAnimationPaths,
+                                                       true, 50, true, 50);
+  }
 }
 
 bool IsCollidingWith(const MGameObject &other);
@@ -36,21 +44,6 @@ bool NewCharacter::IsCollidingWithPlatform(
           top >= platform.y_low - epsilon);
 }
 
-// void NewCharacter::PlayAnimation(std::string tag, std::string s) {
-//   auto AnimationPaths = {
-//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_2.png",
-//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_3.png",
-//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_4.png",
-//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_5.png",
-//   };
-//   auto animation =
-//       std::make_shared<Util::Animation>(AnimationPaths, false, 300, false,
-//       0);
-
-//   animation->Play();
-//   SetDrawable(animation);
-// };
-
 void NewCharacter::MoveX(float amount,
                          const std::vector<MapBackground::Platform> &platforms,
                          std::string tag) {
@@ -63,15 +56,17 @@ void NewCharacter::MoveX(float amount,
   dir_out = (move > 0) ? 1 : -1;
   if (move > 0) {
     dir_out = 1;
-    m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/" + tag + "/" +
-                                               s + "_2.png");
+    SetDrawable(animation_walk);
+    m_Transform.scale = glm::vec2{0.34, 0.34};
+
   } else if (move == 0) {
     dir_out = 0;
     m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/" + tag + "/" +
                                                s + "_1.png");
-
   } else {
     dir_out = -1;
+    SetDrawable(animation_walk);
+    m_Transform.scale = glm::vec2{-0.34, 0.34};
   }
 
   while (move != 0) {
@@ -102,7 +97,6 @@ void NewCharacter::MoveY(
     glm::vec2 tag = {position.x, position.y + offest};
     float top = tag.y + size.y / 2;
     float bottom = tag.y - size.y / 2;
-    // LOG_DEBUG(bottom);
 
     for (const auto &p : platforms) {
       if (IsCollidingWithPlatform(p)) {

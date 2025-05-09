@@ -16,6 +16,15 @@ NewElevator::NewElevator(glm::vec2 startpos, glm::vec2 size, std::string color,
   m_TargetX = targetpos;
   m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Elevation/ele_" +
                                              color + ".png");
+  boxImage = std::make_shared<MGameObject>();
+  boxImage->SetDrawable(
+      std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Test/Rectangle 113.png"));
+  boxImage->m_Transform.scale = {size.x * 4, size.y * 4};
+
+  boxImage->SetZIndex(100);
+  boxImage->SetPosition({startpos.x, startpos.y + 1});
+
+  AddChild(boxImage);
   SetPosition(startpos);
   SetZIndex(90);
   m_Transform.scale = {scale.x, scale.y};

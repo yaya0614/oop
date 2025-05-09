@@ -38,13 +38,13 @@ void FourthLevel::Start() {
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(-290, -277), glm::vec2(45, -7), "water", glm::vec2(1.2, 0.36)));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-34, -225), glm::vec2(14, 2),
+      std::make_shared<NewElevator>(glm::vec2(-34, -225), glm::vec2(20, 2),
                                     "yellow", 30, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(30, -97), glm::vec2(14, 2),
+      std::make_shared<NewElevator>(glm::vec2(30, -97), glm::vec2(20, 2),
                                     "green", -34, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(14, 2),
+      std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(20, 2),
                                     "blue", 30, glm::vec2(0.35, 0.36), "x"));
 
   // doors

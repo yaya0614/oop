@@ -20,8 +20,7 @@ private:
   std::vector<std::shared_ptr<NewPool>> pools;
 
 public:
-  NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos, -4) {
-    tag = "fire";
+  NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos, "fire", -4) {
     m_Drawable =
         std::make_shared<Util::Image>(GA_RESOURCE_DIR "/FireBoy/boy/boy_1.png");
     SetVisible(true);
@@ -76,12 +75,19 @@ public:
   };
   void Update(float deltaTime,
               const std::vector<MapBackground::Platform> &platforms) {
-    if ((status == "InDoor" || status == "Die")) {
+    if ((status == "InDoor" ||
+         status == "Die")) { // 如果進門裡或是死掉，角色就不能再移動了!!!!
       return;
     }
-
+    bool onElevator = false;
+    for (auto &ele : elevators) {
+      if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
+        onElevator = true;
+        break;
+      }
+    }
+    // 判斷是否進入河
     for (auto &pool : pools) {
-
       if (pool && pool->IsCharacterFall(shared_from_this()) != "no") {
         if (pool->IsCharacterFall(shared_from_this()) != tag) {
           status = "Die";
@@ -90,6 +96,7 @@ public:
         }
       }
     }
+
     for (auto &door : doors) {
       if (door->GetIsOpen()) {
         if (door->GetCurrentAnimation() == 6 && door->GetSelTag() == tag) {
@@ -102,41 +109,28 @@ public:
 
     if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
       onRock = true;
-      position.y = rocks->GetPosition().y + 25 + size.y / 2;
-      velocity.y = 0.0f;
     } else {
       onRock = false;
     }
 
-    bool onElevator = false;
-    for (auto &ele : elevators) {
-      if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
-        onElevator = true;
-        position.y = ele->GetPosition().y + 15 + size.y / 2;
-        velocity.y = 0.0f;
-        break;
-      }
+    velocity.x = 0.0f;
+    if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) {
+      velocity.x -= 80.0f;
     }
 
-    velocity.x = 0.0f;
-    if (Util::Input::IsKeyPressed(Util::Keycode::LEFT))
-      velocity.x -= 80.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT))
       velocity.x += 80.0f;
 
+    // 加入保護：這一秒是否剛跳起來
     bool justJumped = false;
 
-    if (Util::Input::IsKeyPressed(Util::Keycode::UP)) {
-      // LOG_CRITICAL(onRock);
-      if ((!isJumping)) {
+    if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
+      if ((!isJumping && (IsOnGround(platforms))) ||
+          (isOnElevator && !isJumping)) {
         Jump();
+        LOG_DEBUG("sjwd");
         justJumped = true;
       }
-      // if ((!isJumping && (IsOnGround(platforms))) ||
-      //     (isOnElevator && !isJumping) || (onRock && !isJumping)) {
-      //   Jump();
-      //   justJumped = true;
-      // }
     }
 
     if (jumpingBuffer > 0.0f) {
@@ -145,7 +139,7 @@ public:
 
     bool grounded = IsOnGround(platforms);
 
-    if ((grounded && !justJumped) || onElevator || onRock) {
+    if ((grounded || onElevator || onRock) && !justJumped) {
       isJumping = false;
       velocity.y = 0;
     } else {

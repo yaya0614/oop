@@ -1,6 +1,7 @@
 #pragma once
 #include "../MapBackground.hpp"
 #include "MGameObject.hpp"
+#include "Util/Animation.hpp"
 #include "Util/Image.hpp"
 #include "collider/Colliders.hpp"
 #include <glm/glm.hpp>
@@ -16,10 +17,11 @@ public:
 
   glm::vec2 position;
   glm::vec2 velocity;
-
+  void Animation();
   glm::vec2 size = {30, 40};
   glm::vec2 remainder;
-  NewCharacter(glm::vec2 startPos, int offest = -1); // 加上參數
+  NewCharacter(glm::vec2 startPos, std::string tag,
+               int offest = -1); // 加上參數
   virtual ~NewCharacter() = default;
 
   // 加入人物的tag，以改變跑步時候的狀態
@@ -54,4 +56,17 @@ protected:
 
   std::shared_ptr<MGameObject> boxImage;
   float collisionTimer = 0.0f;
+  std::shared_ptr<Util::Animation> animation_walk;
+  const std::vector<std::string> FireBoyAnimationPaths = {
+      GA_RESOURCE_DIR "/fire/boy_2.png",
+      GA_RESOURCE_DIR "/fire/boy_3.png",
+      GA_RESOURCE_DIR "/fire/boy_4.png",
+      GA_RESOURCE_DIR "/fire/boy_5.png",
+  };
+  const std::vector<std::string> WaterGirlAnimationPaths = {
+      GA_RESOURCE_DIR "/water/girl_3.png", GA_RESOURCE_DIR "/water/girl_4.png",
+      GA_RESOURCE_DIR "/water/girl_5.png", GA_RESOURCE_DIR "/water/girl_6.png",
+      GA_RESOURCE_DIR "/water/girl_7.png", GA_RESOURCE_DIR "/water/girl_8.png",
+      GA_RESOURCE_DIR "/water/girl_9.png",
+  };
 };
