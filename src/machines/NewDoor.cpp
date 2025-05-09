@@ -26,23 +26,20 @@ NewDoor::NewDoor(glm::vec2 startpos, glm::vec2 size, std::string color)
       GA_RESOURCE_DIR "/DoorAnimation/" + color + "_door/" + "door_6.png",
       GA_RESOURCE_DIR "/DoorAnimation/" + color + "_door/" + "door_7.png",
   };
+  animation =
+      std::make_shared<Util::Animation>(AnimationPaths, false, 300, false, 0);
 };
 
 void NewDoor::PlayAnimation() {
-  auto animation =
-      std::make_shared<Util::Animation>(AnimationPaths, false, 300, false, 0);
-  animation->Play();
-  SetDrawable(animation);
+  this->animation->Play();
+  SetDrawable(this->animation);
 };
 
 bool NewDoor::IsCollider(std::shared_ptr<NewCharacter> c1) {
   glm::vec2 pos = {c1->position.x, c1->position.y + c1->offest};
   int character_middle = pos.x;
   int character_bottom = pos.y - c1->size.y / 2;
-  LOG_DEBUG("character_bottom");
-  LOG_DEBUG(character_bottom);
-  LOG_DEBUG("startpos.y - size.y");
-  LOG_DEBUG(startpos.y - size.y);
+
   return (character_middle >= (startpos.x - size.x) &&
           character_middle <= (startpos.x + size.x) &&
           character_bottom - (startpos.y - size.y) >= 0.5 &&
@@ -59,17 +56,17 @@ bool NewDoor::IsCharacterMatch(std::shared_ptr<NewCharacter> c1) {
 };
 
 //
-bool NewDoor::IsCharacterInto(std::shared_ptr<NewCharacter> c1,
+void NewDoor::IsCharacterInto(std::shared_ptr<NewCharacter> c1,
                               std::shared_ptr<NewCharacter> c2) {
-
-  if (IsCollidingWithMachine(c1) && (c1->tag == self_tag)) {
-    // LOG_DEBUG("rup49x");
-    IsOpen = true;
-    PlayAnimation();
+  if ((IsCollider(c1) && c1->tag == self_tag) ||
+      (IsCollider(c2) && c2->tag == self_tag)) {
+    if (!IsOpen) {
+      IsOpen = true;
+      PlayAnimation();
+    }
   }
-  // else if (IsCollidingWithMachine(c2) && (c2->tag == self_tag)) {
-  //   IsOpen = true;
-  //   PlayAnimation();
-  // }
-  IsOpen = false;
+}
+
+int NewDoor::GetCurrentAnimation() {
+  return this->animation->GetCurrentFrameIndex();
 };

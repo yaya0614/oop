@@ -22,8 +22,11 @@ public:
   NewCharacter(glm::vec2 startPos, int offest = -1); // 加上參數
   virtual ~NewCharacter() = default;
 
+  // 加入人物的tag，以改變跑步時候的狀態
+  void PlayAnimation(std::string tag, std::string s);
   virtual void MoveX(float amount,
-                     const std::vector<MapBackground::Platform> &platforms);
+                     const std::vector<MapBackground::Platform> &platforms,
+                     std::string tag);
   virtual void MoveY(float amount,
                      const std::vector<MapBackground::Platform> &platforms);
   virtual void Update(float deltaTime,

@@ -1,9 +1,11 @@
 #include "actors/NewCharacter.hpp"
+#include "Util/Animation.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 #include <cmath>
 #include <glm/fwd.hpp>
 #include <memory>
+#include <string>
 
 NewCharacter::NewCharacter(glm::vec2 startPos, int offest)
     : MGameObject(), Colliders(startPos, size), position(startPos),
@@ -34,8 +36,26 @@ bool NewCharacter::IsCollidingWithPlatform(
           top >= platform.y_low - epsilon);
 }
 
-void NewCharacter::MoveX(
-    float amount, const std::vector<MapBackground::Platform> &platforms) {
+// void NewCharacter::PlayAnimation(std::string tag, std::string s) {
+//   auto AnimationPaths = {
+//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_2.png",
+//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_3.png",
+//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_4.png",
+//       GA_RESOURCE_DIR "/" + tag + "/" + s + "_5.png",
+//   };
+//   auto animation =
+//       std::make_shared<Util::Animation>(AnimationPaths, false, 300, false,
+//       0);
+
+//   animation->Play();
+//   SetDrawable(animation);
+// };
+
+void NewCharacter::MoveX(float amount,
+                         const std::vector<MapBackground::Platform> &platforms,
+                         std::string tag) {
+  std::string s = (tag == "fire") ? "boy" : "girl";
+
   remainder.x += amount;
   int move = std::round(remainder.x);
   remainder.x -= move;
@@ -43,9 +63,13 @@ void NewCharacter::MoveX(
   dir_out = (move > 0) ? 1 : -1;
   if (move > 0) {
     dir_out = 1;
-
+    m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/" + tag + "/" +
+                                               s + "_2.png");
   } else if (move == 0) {
     dir_out = 0;
+    m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/" + tag + "/" +
+                                               s + "_1.png");
+
   } else {
     dir_out = -1;
   }
@@ -115,6 +139,6 @@ std::string NewCharacter::GetStatus() { return status; };
 void NewCharacter::Update(
     float deltaTime, const std::vector<MapBackground::Platform> &platforms) {
   velocity.y += 0.3f; // gravity
-  MoveX(velocity.x * deltaTime, platforms);
+  MoveX(velocity.x * deltaTime, platforms, tag);
   MoveY(velocity.y * deltaTime, platforms);
 }

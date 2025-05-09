@@ -8,6 +8,7 @@
 #include "machines/NewPool.hpp"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 class NewFireBoy : public NewCharacter,
@@ -89,11 +90,14 @@ public:
         }
       }
     }
-    for (auto door : doors) {
-      if (door && door->IsCharacterMatch(shared_from_this())) {
-        status = "InDoor";
+    for (auto &door : doors) {
+      if (door->GetIsOpen()) {
+        if (door->GetCurrentAnimation() == 6 && door->GetSelTag() == tag) {
+          status = "InDoor";
+        }
       }
     }
+
     ChangeStatus(status);
 
     if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
@@ -103,7 +107,6 @@ public:
     } else {
       onRock = false;
     }
-    // LOG_DEBUG(onRock);
 
     bool onElevator = false;
     for (auto &ele : elevators) {
@@ -149,7 +152,7 @@ public:
       velocity.y += gravity * deltaTime;
     }
 
-    MoveX(velocity.x * deltaTime, platforms);
+    MoveX(velocity.x * deltaTime, platforms, tag);
     MoveY(velocity.y * deltaTime, platforms);
     SetPosition(position);
     boxImage->SetPosition({position.x, position.y + offest});

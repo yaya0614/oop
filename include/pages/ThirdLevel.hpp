@@ -4,7 +4,9 @@
 #include "../App.hpp"
 #include "Character.hpp"
 #include "Diamond.hpp"
+#include "MGameObject.hpp"
 #include "Stage.hpp"
+#include "Util/GameObject.hpp"
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewRock.hpp"
 #include "actors/NewWaterGirl.hpp"
@@ -19,21 +21,20 @@ class ThirdLevel : public App {
 public:
   explicit ThirdLevel() { phase = Enum::PhaseEnum::ThirdLevel; }
 
-  std::shared_ptr<Character> Background;
-  std::shared_ptr<NewFireBoy> fireboy;
-  std::shared_ptr<NewWaterGirl> watergirl;
-  std::vector<std::shared_ptr<NewPool>> Pools;
-  std::vector<std::shared_ptr<NewDoor>> doors;
-  std::vector<std::shared_ptr<Diamond>> diamonds;
-
-  std::shared_ptr<Stage> stages;
-  std::shared_ptr<MapBackground> mapbackground;
-
-  float deltaTime = 1.0 / 60.0f;
-
   void Start() override;
   void Update() override;
   void End() override;
+
+private:
+  std::vector<glm::vec2> redDiamondPositions = {
+      {-190, -258}, {-130, -258}, {232, -161}, {275, -130}, {197, -41},
+      {366, 3},     {213, 51},    {358, 155},  {134, 215},  {140, 126}};
+
+  std::vector<glm::vec2> waterDiamondPositions = {
+      {138, -258}, {198, -258}, {-232, -161}, {-275, -130}, {-339, 1},
+      {-227, 97},  {-353, 132}, {-191, 211},  {-131, 112}
+
+  };
 };
 
 #endif
