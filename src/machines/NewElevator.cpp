@@ -23,6 +23,7 @@ NewElevator::NewElevator(glm::vec2 startpos, glm::vec2 size, std::string color,
 
   boxImage->SetZIndex(100);
   boxImage->SetPosition({startpos.x, startpos.y + 1});
+  boxImage->SetVisible(false);
 
   AddChild(boxImage);
   SetPosition(startpos);
