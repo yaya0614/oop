@@ -16,6 +16,7 @@ NewCharacter::NewCharacter(glm::vec2 startPos, std::string tag, int offest)
   boxImage->m_Transform.scale = size;
   boxImage->SetZIndex(100);
   boxImage->SetPosition({position.x, position.y + offest});
+  boxImage->SetVisible(false);
   this->tag = tag;
   if (tag == "fire") {
     animation_walk = std::make_shared<Util::Animation>(FireBoyAnimationPaths,
