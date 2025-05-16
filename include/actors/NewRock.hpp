@@ -14,6 +14,9 @@ public:
   void Update(std::shared_ptr<NewCharacter> character1,
               std::shared_ptr<NewCharacter> character2);
   void Move(std::shared_ptr<NewCharacter> character);
+  glm::vec2 GetSize() { return size; };
+  void Test(float deltaTime,
+            const std::vector<MapBackground::Platform> &platforms);
 
 private:
   glm::vec2 size;
