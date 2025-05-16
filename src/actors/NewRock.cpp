@@ -47,12 +47,11 @@ bool NewRock::IsCollidingWithCharacter(std::shared_ptr<NewCharacter> character,
 
 void NewRock::Move(std::shared_ptr<NewCharacter> character) {
   glm::vec2 RockPos = GetPosition();
-  if (character->dir_out == -1) { // 往左拖
+  if (character->dir_out == -1 && RockPos.x - 2 >= -270) { // 往左拖
     SetPosition({RockPos.x - 2, RockPos.y});
-    // LOG_DEBUG("left");
-  } else if (character->dir_out == 1) {
+
+  } else if (character->dir_out == 1 && RockPos.x - 2 <= -2) {
     SetPosition({RockPos.x + 2, RockPos.y});
-    // LOG_DEBUG("right");
   }
 }
 
