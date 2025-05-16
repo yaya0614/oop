@@ -14,7 +14,6 @@
 #include <glm/fwd.hpp>
 #include <memory>
 #include <vector>
-
 void FourthLevel::Start() {
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel4.png");
@@ -46,6 +45,9 @@ void FourthLevel::Start() {
   elevators.push_back(
       std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(20, 2),
                                     "blue", 30, glm::vec2(0.35, 0.36), "x"));
+  elevators.push_back(
+      std::make_shared<NewElevator>(glm::vec2(330, 123), glm::vec2(20, 2),
+                                    "orange", -90, glm::vec2(0.4, 0.34), "Y"));
 
   // doors
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-245, -60),
@@ -60,6 +62,9 @@ void FourthLevel::Start() {
       glm::vec2(143, -23), glm::vec2(3, 7), "green", false));
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-143, 100), glm::vec2(3, 7), "blue", false));
+  switches.push_back(std::make_shared<NewSwitch>(
+      glm::vec2(-341, -130), glm::vec2(5, 7), "orange", true));
+
   for (auto &pool : Pools) {
     m_Root.AddChild(pool);
     stash.push_back(pool);
@@ -97,6 +102,7 @@ void FourthLevel::Start() {
 };
 
 void FourthLevel::Update() {
+
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
@@ -112,19 +118,18 @@ void FourthLevel::Update() {
   watergirl->SetElevators(elevators);
   fireboy->SetDoor(doors);
   watergirl->SetDoor(doors);
+  fireboy->SetPool(Pools);
+  watergirl->SetPool(Pools);
 
-  fireboy->SetElevators(elevators);
-  watergirl->SetElevators(elevators);
   for (auto pool : Pools) {
     if (!pool->IsLooping()) {
       pool->SetLooping(true);
     }
   }
+
   for (auto s : switches) {
     s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
   }
-  fireboy->SetPool(Pools);
-  watergirl->SetPool(Pools);
   TriggerBtnOrLever();
 
   for (auto &diamond : diamonds) {

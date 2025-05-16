@@ -32,56 +32,6 @@ void NewSwitch::ActivateElevator(
     }
   }
 }
-
-// void NewSwitch::IsCollider(std::shared_ptr<NewCharacter> character1,
-//                            std::shared_ptr<NewCharacter> character2,
-//                            std::vector<std::shared_ptr<NewElevator>>
-//                            elevators, float dealtatime) {
-//   if (IsButton) {
-//     bool isColliding = IsCollidingWithMachine(character1) ||
-//                        IsCollidingWithMachine(character2);
-
-//     if (isColliding) {
-//       record = isColliding;
-//       m_Drawable = std::make_shared<Util::Image>(
-//           GA_RESOURCE_DIR "/Button/btn_" + color + "1.png");
-
-//     } else {
-//       record = isColliding;
-//       m_Drawable = std::make_shared<Util::Image>(
-//           GA_RESOURCE_DIR "/Button/btn_" + color + ".png");
-//     }
-//   } else { // Lever
-
-//     bool character1_trigger = (IsCollidingWithMachine(character1) &&
-//                                (character1->dir_out != current_lever_dir));
-//     bool character2_trigger = (IsCollidingWithMachine(character2) &&
-//                                (character2->dir_out != current_lever_dir));
-
-//     if (character1_trigger || character2_trigger) {
-//       current_lever_dir =
-//           (character1_trigger) ? character1->dir_out : character2->dir_out;
-
-//       ChangeLeverImage(current_lever_dir);
-//       record = false;
-//     } else {
-//       record = false;
-//     }
-//   }
-//   if (record) {
-//     ActivateElevator(dealtatime, record, elevators);
-//   } else {
-//     ActivateElevator(dealtatime, record, elevators);
-//   }
-// }
-
-// void NewSwitch::ChangeButtonImage() {
-//   if (activated) {
-//     SetVisible(false);
-//   } else {
-//     SetVisible(true);
-//   }
-// };
 void NewSwitch::UpdateSwitchState(
     std::shared_ptr<NewCharacter> c1, std::shared_ptr<NewCharacter> c2,
     float deltaTime, std::vector<std::shared_ptr<NewElevator>> elevators) {
