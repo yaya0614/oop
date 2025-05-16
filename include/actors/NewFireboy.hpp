@@ -83,6 +83,7 @@ public:
     for (auto &ele : elevators) {
       if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
         onElevator = true;
+        position.y = ele->GetPosition().y + ele->GetSize().y + 30;
         break;
       }
     }
@@ -121,14 +122,12 @@ public:
     if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT))
       velocity.x += 80.0f;
 
-    // 加入保護：這一秒是否剛跳起來
     bool justJumped = false;
 
     if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
       if ((!isJumping && (IsOnGround(platforms))) ||
           (isOnElevator && !isJumping)) {
         Jump();
-        LOG_DEBUG("sjwd");
         justJumped = true;
       }
     }
@@ -141,7 +140,9 @@ public:
 
     if ((grounded || onElevator || onRock) && !justJumped) {
       isJumping = false;
-      velocity.y = 0;
+      if (velocity.y < 0) {
+        velocity.y = 0;
+      }
     } else {
       velocity.y += gravity * deltaTime;
     }
