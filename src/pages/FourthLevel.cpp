@@ -7,6 +7,7 @@
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewRock.hpp"
 #include "actors/NewWaterGirl.hpp"
+#include "enum.hpp"
 #include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
@@ -15,17 +16,20 @@
 #include <memory>
 #include <vector>
 void FourthLevel::Start() {
+  music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
+                                      "/Fireboy and Watergirl Theme.mp3");
+
+  music->SetVolume(64);
+  music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel4.png");
   Background->SetVisible(true);
   Background->SetZIndex(50);
   m_Root.AddChild(Background);
   mapbackground = std::make_shared<MapBackground>();
-  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-145, 190));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
   m_Root.AddChild(fireboy);
-  //   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(113, 190));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
   m_Root.AddChild(watergirl);
 
   Pools.push_back(std::make_shared<NewPool>(
@@ -43,7 +47,7 @@ void FourthLevel::Start() {
       std::make_shared<NewElevator>(glm::vec2(30, -97), glm::vec2(20, 2),
                                     "green", -34, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(20, 2),
+      std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(20, 3),
                                     "blue", 30, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
       std::make_shared<NewElevator>(glm::vec2(330, 123), glm::vec2(20, 2),
@@ -153,9 +157,18 @@ void FourthLevel::Update() {
       counter_water++;
     }
   }
-  TriggerStage(counter_fire, counter_water);
-
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
+               stash);
   m_Root.Update();
 };
-
-void FourthLevel::End(){};
+void FourthLevel::End() {
+  if (music)
+    music->FadeOut(50);
+  phase = Enum::PhaseEnum::FourthLevel;
+  RetryAnything();
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  music.reset();
+  m_CurrentState = App::State::START;
+};

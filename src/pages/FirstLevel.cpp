@@ -1,4 +1,5 @@
 #include "pages/FirstLevel.hpp"
+#include "App.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
 #include "Stage.hpp"
@@ -7,6 +8,7 @@
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewRock.hpp"
 #include "actors/NewWaterGirl.hpp"
+#include "enum.hpp"
 #include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
@@ -16,6 +18,11 @@
 #include <vector>
 
 void FirstLevel::Start() {
+  music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
+                                      "/Fireboy and Watergirl Theme.mp3");
+
+  music->SetVolume(64);
+  music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel1.png");
   Background->SetVisible(true);
@@ -25,10 +32,10 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-256, 54)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-260, -260)); //-254
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-100, 54)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, -178)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -94,7 +101,10 @@ void FirstLevel::Start() {
 };
 
 void FirstLevel::Update() {
-
+  glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
   for (auto &pool : Pools) {
     if (!pool->IsLooping()) {
       pool->SetLooping(true);
@@ -148,9 +158,19 @@ void FirstLevel::Update() {
 
   Rock->Update(fireboy, watergirl);
 
-  TriggerStage(counter_fire, counter_water);
-
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::SecondLevel,
+               stash);
   m_Root.Update();
 };
 
-void FirstLevel::End(){};
+void FirstLevel::End() {
+  if (music)
+    music->FadeOut(50);
+  phase = Enum::PhaseEnum::FirstLevel;
+  RetryAnything();
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  music.reset();
+  m_CurrentState = App::State::START;
+};

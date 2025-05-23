@@ -1,8 +1,14 @@
 #include "pages/SecondLevel.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
+#include "enum.hpp"
 #include <glm/fwd.hpp>
 void SecondLevel::Start() {
+  music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
+                                      "/Fireboy and Watergirl Theme.mp3");
+
+  music->SetVolume(64);
+  music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel2.png");
   Background->SetVisible(true);
@@ -11,10 +17,10 @@ void SecondLevel::Start() {
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
 
-  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(240, -100));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -244));
   m_Root.AddChild(fireboy);
   // y = -240
-  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(300, 200));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, -244));
   m_Root.AddChild(watergirl);
   BasicAddStash();
   Pools.push_back(std::make_shared<NewPool>(
@@ -90,6 +96,7 @@ void SecondLevel::Start() {
 
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
+  m_Root.Update();
   m_CurrentState = State::UPDATE;
 };
 
@@ -147,11 +154,27 @@ void SecondLevel::Update() {
       counter_water++;
     }
   }
-
-  TriggerStage(counter_fire, counter_water);
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::ThirdLevel, stash);
   m_Root.Update();
 };
 
-void SecondLevel::End(){
-    // Implementation here
+void SecondLevel::End() {
+  phase = Enum::PhaseEnum::SecondLevel;
+  RetryAnything();
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  m_CurrentState = State::START;
+};
+
+void SecondLevel::End_next() {
+  if (music)
+    music->FadeOut(50);
+  phase = Enum::PhaseEnum::SecondLevel;
+  RetryAnything();
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  music.reset();
+  m_CurrentState = State::START;
 };

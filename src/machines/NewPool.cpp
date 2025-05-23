@@ -21,7 +21,7 @@ NewPool::NewPool(glm::vec2 startpos, glm::vec2 size, std::string color,
 
   };
   SetPosition(startpos);
-  SetZIndex(80);
+  SetZIndex(100);
   m_Transform.scale = {scale.x, scale.y};
   SetVisible(true);
   //   m_Drawable = std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Pool/" +

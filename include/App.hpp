@@ -4,6 +4,7 @@
 #include "Character.hpp"
 #include "Diamond.hpp"
 #include "Stage.hpp"
+#include "Util/BGM.hpp"
 #include "Util/Renderer.hpp"
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewWaterGirl.hpp"
@@ -11,6 +12,7 @@
 #include "machines/NewSwitch.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
+#include <string>
 
 class App {
 public:
@@ -32,9 +34,14 @@ public:
   virtual void End();
   void RetryAnything();
 
-  void TriggerStage(int counter_fire, int counter_water);
+  void
+  TriggerStage(int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
+               std::vector<std::shared_ptr<Util::GameObject>> stash_from_self);
   void TriggerBtnOrLever();
-  void NavigationTo(Enum::PhaseEnum phase) { this->phase = phase; }
+  void NavigationTo(Enum::PhaseEnum phase) {
+    this->phase = phase;
+    m_CurrentState = State::END;
+  }
   void BasicAddStash();
   Enum::PhaseEnum phase;
   Util::Renderer m_Root;
@@ -62,6 +69,7 @@ protected:
   float deltaTime = 1.0 / 60.0f;
 
   std::vector<std::shared_ptr<Util::GameObject>> stash;
+  std::shared_ptr<Util::BGM> music;
   int counter_fire = 0;
   int counter_water = 0;
 };
