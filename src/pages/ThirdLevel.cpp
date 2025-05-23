@@ -3,21 +3,25 @@
 #include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
+#include "enum.hpp"
 #include <glm/fwd.hpp>
 #include <memory>
 
 void ThirdLevel::Start() {
+  music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
+                                      "/Fireboy and Watergirl Theme.mp3");
+
+  music->SetVolume(64);
+  music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel3.png");
   Background->SetVisible(true);
   Background->SetZIndex(50);
 
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(342, 54));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-342, 104)); // y = -240
-  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, -254));
-  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, -254)); // y =
-  // -240
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, -260));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, -260)); // y = -240
+
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
 
@@ -119,8 +123,20 @@ void ThirdLevel::Update() {
     }
   }
 
-  TriggerStage(counter_fire, counter_water);
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel,
+               stash);
+
   m_Root.Update();
 };
 
-void ThirdLevel::End(){};
+void ThirdLevel::End() {
+  if (music)
+    music->FadeOut(50);
+  phase = Enum::PhaseEnum::ThirdLevel;
+  RetryAnything();
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  music.reset();
+  m_CurrentState = App::State::START;
+};

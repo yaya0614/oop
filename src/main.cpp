@@ -1,6 +1,7 @@
 #include "App.hpp"
 
 #include "Core/Context.hpp"
+#include "Util/Logger.hpp"
 #include "enum.hpp"
 #include "pages/FirstLevel.hpp"
 #include "pages/FourthLevel.hpp"
@@ -15,7 +16,8 @@ int main(int, char **) {
 
   auto context = Core::Context::GetInstance();
   auto phases = std::vector<std::shared_ptr<App>>();
-  auto currentPhase = Enum::PhaseEnum::FirstLevel;
+
+  auto currentPhase = Enum::PhaseEnum::FourthLevel;
   phases.push_back(std::make_shared<IntroductionPage>(IntroductionPage()));
   phases.push_back(std::make_shared<FirstLevel>(FirstLevel()));
   phases.push_back(std::make_shared<SecondLevel>(SecondLevel()));
@@ -24,12 +26,14 @@ int main(int, char **) {
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
+
     if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+
       context->SetExit(true);
+      continue;
     }
     if (phase && (phase->GetPhase() != currentPhase)) {
       currentPhase = phase->GetPhase();
-      continue;
     }
     switch (phase->GetCurrentState()) {
     case App::State::START:
@@ -42,7 +46,6 @@ int main(int, char **) {
 
     case App::State::END:
       phase->End();
-      context->SetExit(true);
       break;
     }
     context->Update();

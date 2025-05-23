@@ -23,7 +23,7 @@ void Stage::InitializeButtons(const std::string &path) {
     menuButton = std::make_shared<NewButton>(glm::vec2(0, -70), "BackToMenu");
   } else {
     retryButton = std::make_shared<NewButton>(glm::vec2(0, 70), "retry");
-    menuButton = std::make_shared<NewButton>(glm::vec2(0, -70), "main");
+    menuButton = std::make_shared<NewButton>(glm::vec2(0, -70), "Next");
   }
 
   AddChild(retryButton);

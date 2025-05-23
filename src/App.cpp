@@ -1,4 +1,5 @@
 #include "App.hpp"
+#include "Util/Logger.hpp"
 
 void App::BasicAddStash() {
   stash.push_back(fireboy);
@@ -55,19 +56,22 @@ void App::RetryAnything() {
   stash.clear();
 };
 
-void App::TriggerStage(int counter_fire, int counter_water) {
+void App::TriggerStage(
+    int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
+    std::vector<std::shared_ptr<Util::GameObject>> stash_from_self) {
   if (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die") {
     m_Root.AddChild(stages_over);
     stages_over->Update(0, 0);
 
     if (stages_over->GetRetryButton()->GetIsPressed()) {
       RetryAnything();
+      for (auto item : stash_from_self) {
+        m_Root.RemoveChild(item);
+      }
       Start(); // 確保重新初始化物件
     }
 
     if (stages_over->GetMainButton()->GetIsPressed()) {
-      // 確保清除畫面，然後回到首頁
-      RetryAnything();
       NavigationTo(Enum::PhaseEnum::IntroductionPage);
     }
   } else if ((fireboy->GetStatus() == "InDoor" &&
@@ -77,12 +81,14 @@ void App::TriggerStage(int counter_fire, int counter_water) {
 
     if (stages->GetRetryButton()->GetIsPressed()) {
       RetryAnything();
+      for (auto item : stash_from_self) {
+        m_Root.RemoveChild(item);
+      }
       Start();
     }
 
     if (stages->GetMainButton()->GetIsPressed()) {
-      RetryAnything();
-      NavigationTo(Enum::PhaseEnum::IntroductionPage);
+      NavigationTo(m_phase);
     }
   }
 };
