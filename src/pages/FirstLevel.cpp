@@ -21,7 +21,7 @@ void FirstLevel::Start() {
   music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
                                       "/Fireboy and Watergirl Theme.mp3");
 
-  music->SetVolume(64);
+  music->SetVolume(0);
   music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel1.png");
@@ -106,63 +106,71 @@ void FirstLevel::Update() {
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
   }
-  for (auto &pool : Pools) {
-    if (!pool->IsLooping()) {
-      pool->SetLooping(true);
+
+  bool someoneDied =
+      (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
+  // 僅在遊戲進行時才更新角色
+  if (!someoneDied) {
+    for (auto &pool : Pools) {
+      if (!pool->IsLooping()) {
+        pool->SetLooping(true);
+      }
     }
-  }
-  fireboy->SetDoor(doors);
-  watergirl->SetDoor(doors);
 
-  fireboy->SetElevators(elevators);
-  fireboy->SetRock(Rock);
-  fireboy->SetPool(Pools);
-  watergirl->SetElevators(elevators);
-  watergirl->SetPool(Pools);
-  watergirl->SetRock(Rock);
+    fireboy->SetDoor(doors);
+    watergirl->SetDoor(doors);
 
-  for (auto door : doors) {
-    if (!door->GetIsOpen()) {
-      door->IsCharacterInto(fireboy, watergirl);
+    fireboy->SetElevators(elevators);
+    fireboy->SetRock(Rock);
+    fireboy->SetPool(Pools);
+
+    watergirl->SetElevators(elevators);
+    watergirl->SetPool(Pools);
+    watergirl->SetRock(Rock);
+
+    for (auto door : doors) {
+      if (!door->GetIsOpen()) {
+        door->IsCharacterInto(fireboy, watergirl);
+      }
     }
-  }
-  fireboy->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
-  watergirl->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
 
-  for (auto s : switches) {
-    s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
+    fireboy->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
+    watergirl->Update(deltaTime, mapbackground->GetLevelData(0).platforms);
+
+    for (auto s : switches) {
+      s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
+    }
+
+    for (auto &diamond : diamonds) {
+      if (!diamond->IsCollected()) {
+        diamond->Update();
+      }
+      if (diamond->IsCollected())
+        continue;
+
+      if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_fire++;
+      }
+
+      if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_water++;
+      }
+    }
+
+    Rock->Update(fireboy, watergirl);
   }
+
   TriggerBtnOrLever();
-
-  for (auto &diamond : diamonds) {
-    if (!diamond->IsCollected()) {
-      diamond->Update();
-    }
-    if (diamond->IsCollected())
-      continue;
-
-    if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-
-      diamond->DisableShow();
-      counter_fire++;
-    }
-
-    if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-      diamond->DisableShow();
-      counter_water++;
-    }
-  }
-
-  Rock->Update(fireboy, watergirl);
-
   TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::SecondLevel,
                stash);
   m_Root.Update();
-};
+}
 
 void FirstLevel::End() {
   if (music)

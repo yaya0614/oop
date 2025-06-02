@@ -124,42 +124,46 @@ void FourthLevel::Update() {
   watergirl->SetDoor(doors);
   fireboy->SetPool(Pools);
   watergirl->SetPool(Pools);
-
-  for (auto pool : Pools) {
-    if (!pool->IsLooping()) {
-      pool->SetLooping(true);
+  bool someoneDied =
+      (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
+  // 僅在遊戲進行時才更新角色
+  if (!someoneDied) {
+    for (auto pool : Pools) {
+      if (!pool->IsLooping()) {
+        pool->SetLooping(true);
+      }
     }
+
+    for (auto s : switches) {
+      s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
+    }
+    TriggerBtnOrLever();
+
+    for (auto &diamond : diamonds) {
+      if (!diamond->IsCollected()) {
+        diamond->Update();
+      }
+      if (diamond->IsCollected())
+        continue;
+
+      if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_fire++;
+      }
+
+      if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_water++;
+      }
+    }
+    TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
+                 stash);
+    m_Root.Update();
   }
-
-  for (auto s : switches) {
-    s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
-  }
-  TriggerBtnOrLever();
-
-  for (auto &diamond : diamonds) {
-    if (!diamond->IsCollected()) {
-      diamond->Update();
-    }
-    if (diamond->IsCollected())
-      continue;
-
-    if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-      diamond->DisableShow();
-      counter_fire++;
-    }
-
-    if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-      diamond->DisableShow();
-      counter_water++;
-    }
-  }
-  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
-               stash);
-  m_Root.Update();
 };
 void FourthLevel::End() {
   if (music)

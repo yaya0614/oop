@@ -17,7 +17,7 @@ public:
 
   glm::vec2 position;
   glm::vec2 velocity;
-  void Animation();
+
   glm::vec2 size = {30, 40};
   glm::vec2 remainder;
   NewCharacter(glm::vec2 startPos, std::string tag,

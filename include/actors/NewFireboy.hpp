@@ -65,8 +65,8 @@ public:
   }
   void ChangeStatus(std::string status) {
     if (status == "Die") {
-      velocity.x = 0;
-      velocity.y = 0;
+      m_Drawable = std::make_shared<Util::Image>(
+          "/Users/mel/Desktop/oop/Resources/s-1.png");
 
     } else if (status == "InDoor") {
       velocity.x = 0;
@@ -76,8 +76,8 @@ public:
   };
   void Update(float deltaTime,
               const std::vector<MapBackground::Platform> &platforms) {
-    if ((status == "InDoor" ||
-         status == "Die")) { // 如果進門裡或是死掉，角色就不能再移動了!!!!
+    if ((status == "InDoor" || status == "Die") ||
+        status == "OtherDie") { // 如果進門裡或是死掉，角色就不能再移動了!!!!
       return;
     }
     bool onElevator = false;
