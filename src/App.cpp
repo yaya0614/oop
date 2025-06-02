@@ -60,6 +60,16 @@ void App::TriggerStage(
     int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
     std::vector<std::shared_ptr<Util::GameObject>> stash_from_self) {
   if (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die") {
+    if (fireboy->GetStatus() == "Die") {
+      fireboy->ChangeStatus("Die");
+
+    } else if (watergirl->GetStatus() == "Die") {
+      watergirl->ChangeStatus("Die");
+    } else {
+      fireboy->ChangeStatus("Die");
+      watergirl->ChangeStatus("Die");
+    }
+
     m_Root.AddChild(stages_over);
     stages_over->Update(0, 0);
 

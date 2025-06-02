@@ -73,6 +73,7 @@ void NewElevator::UpdateActivate(int dir, float deltaTime) {
   float currentY = GetPosition().y;
   float currentX = GetPosition().x;
   const float epsilon = 0.5f;
+
   if (tag == "Y") {
     if ((dir != record_dir)) {
       targetY = (dir == 1) ? m_OriginalY : m_TargetY;

@@ -82,51 +82,55 @@ void ThirdLevel::Update() {
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
   }
-
-  for (auto &pool : Pools) {
-    if (!pool->IsLooping()) {
-      pool->SetLooping(true);
+  bool someoneDied =
+      (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
+  // 僅在遊戲進行時才更新角色
+  if (!someoneDied) {
+    for (auto &pool : Pools) {
+      if (!pool->IsLooping()) {
+        pool->SetLooping(true);
+      }
     }
+    for (auto door : doors) {
+      if (!door->GetIsOpen()) {
+        door->IsCharacterInto(fireboy, watergirl);
+      }
+    }
+    fireboy->SetDoor(doors);
+    fireboy->SetPool(Pools);
+    watergirl->SetDoor(doors);
+    watergirl->SetPool(Pools);
+
+    fireboy->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
+    watergirl->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
+    for (auto &diamond : diamonds) {
+      if (!diamond->IsCollected()) {
+        diamond->Update();
+      }
+      if (diamond->IsCollected())
+        continue;
+
+      if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+
+        diamond->DisableShow();
+        counter_fire++;
+      }
+
+      if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_water++;
+      }
+    }
+
+    TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel,
+                 stash);
+
+    m_Root.Update();
   }
-  for (auto door : doors) {
-    if (!door->GetIsOpen()) {
-      door->IsCharacterInto(fireboy, watergirl);
-    }
-  }
-  fireboy->SetDoor(doors);
-  fireboy->SetPool(Pools);
-  watergirl->SetDoor(doors);
-  watergirl->SetPool(Pools);
-
-  fireboy->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
-  watergirl->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
-  for (auto &diamond : diamonds) {
-    if (!diamond->IsCollected()) {
-      diamond->Update();
-    }
-    if (diamond->IsCollected())
-      continue;
-
-    if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-
-      diamond->DisableShow();
-      counter_fire++;
-    }
-
-    if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-      diamond->DisableShow();
-      counter_water++;
-    }
-  }
-
-  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel,
-               stash);
-
-  m_Root.Update();
 };
 
 void ThirdLevel::End() {

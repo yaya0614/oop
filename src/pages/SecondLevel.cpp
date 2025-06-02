@@ -103,59 +103,66 @@ void SecondLevel::Start() {
 void SecondLevel::Update() {
 
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  for (auto &pool : Pools) {
-    if (!pool->IsLooping()) {
-      pool->SetLooping(true);
-    }
-  }
+
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
   }
-  fireboy->SetElevators(elevators);
-  watergirl->SetElevators(elevators);
-  fireboy->SetDoor(doors);
-  watergirl->SetDoor(doors);
-  fireboy->SetPool(Pools);
-  watergirl->SetPool(Pools);
 
-  for (auto door : doors) {
-    if (!door->GetIsOpen()) {
-      door->IsCharacterInto(fireboy, watergirl);
+  bool someoneDied =
+      (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
+  // 僅在遊戲進行時才更新角色
+  if (!someoneDied) {
+    fireboy->SetElevators(elevators);
+    watergirl->SetElevators(elevators);
+    fireboy->SetDoor(doors);
+    watergirl->SetDoor(doors);
+    fireboy->SetPool(Pools);
+    watergirl->SetPool(Pools);
+    for (auto &pool : Pools) {
+      if (!pool->IsLooping()) {
+        pool->SetLooping(true);
+      }
     }
+    for (auto door : doors) {
+      if (!door->GetIsOpen()) {
+        door->IsCharacterInto(fireboy, watergirl);
+      }
+    }
+
+    fireboy->Update(deltaTime, mapbackground->GetLevelData(1).platforms);
+    watergirl->Update(deltaTime, mapbackground->GetLevelData(1).platforms);
+
+    for (auto s : switches) {
+      s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
+    }
+    TriggerBtnOrLever();
+
+    for (auto &diamond : diamonds) {
+      if (!diamond->IsCollected()) {
+        diamond->Update();
+      }
+      if (diamond->IsCollected())
+        continue;
+
+      if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+
+        diamond->DisableShow();
+        counter_fire++;
+      }
+
+      if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
+        diamond->SetVisible(false);
+        diamond->isCollected = true;
+        diamond->DisableShow();
+        counter_water++;
+      }
+    }
+    TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::ThirdLevel,
+                 stash);
+    m_Root.Update();
   }
-
-  fireboy->Update(deltaTime, mapbackground->GetLevelData(1).platforms);
-  watergirl->Update(deltaTime, mapbackground->GetLevelData(1).platforms);
-
-  for (auto s : switches) {
-    s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
-  }
-  TriggerBtnOrLever();
-
-  for (auto &diamond : diamonds) {
-    if (!diamond->IsCollected()) {
-      diamond->Update();
-    }
-    if (diamond->IsCollected())
-      continue;
-
-    if (diamond->tag == "fire" && fireboy->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-
-      diamond->DisableShow();
-      counter_fire++;
-    }
-
-    if (diamond->tag == "water" && watergirl->IsCollidingWith(*diamond)) {
-      diamond->SetVisible(false);
-      diamond->isCollected = true;
-      diamond->DisableShow();
-      counter_water++;
-    }
-  }
-  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::ThirdLevel, stash);
-  m_Root.Update();
 };
 
 void SecondLevel::End() {

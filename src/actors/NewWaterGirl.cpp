@@ -146,8 +146,11 @@ void NewWaterGirl::OnCollideY() {
 
 void NewWaterGirl::ChangeStatus(std::string status) {
   if (status == "Die") {
-    // m_Drawable =
-    // std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+    m_Drawable = std::make_shared<Util::Image>(
+        "/Users/mel/Desktop/oop/Resources/s-1.png");
+
+  } else if (status == "OtherDie") {
+
   } else if (status == "InDoor") {
     SetVisible(false);
   }
