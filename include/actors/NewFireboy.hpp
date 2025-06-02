@@ -1,5 +1,6 @@
 #pragma once
 #include "NewCharacter.hpp"
+#include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "actors/NewRock.hpp"
@@ -21,11 +22,11 @@ private:
 
 public:
   NewFireBoy(glm::vec2 startPos) : NewCharacter(startPos, "fire", -4) {
-    m_Drawable =
-        std::make_shared<Util::Image>(GA_RESOURCE_DIR "/FireBoy/boy/boy_1.png");
-    SetVisible(true);
-    SetZIndex(90);
 
+    m_Drawable = std::make_shared<Util::Image>(
+        "/Users/mel/Desktop/oop/Resources/Rock.png");
+    SetVisible(true);
+    SetZIndex(60);
     m_Transform.scale = {0.34, 0.34};
     SetPosition(startPos);
     AddChild(boxImage);
@@ -64,8 +65,8 @@ public:
   }
   void ChangeStatus(std::string status) {
     if (status == "Die") {
-      m_Drawable =
-          std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+      velocity.x = 0;
+      velocity.y = 0;
 
     } else if (status == "InDoor") {
       velocity.x = 0;
@@ -83,8 +84,11 @@ public:
     for (auto &ele : elevators) {
       if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
         onElevator = true;
+        isOnElevator = true;
         position.y = ele->GetPosition().y + ele->GetSize().y + 30;
         break;
+      } else {
+        isOnElevator = false;
       }
     }
     // 判斷是否進入河
@@ -123,10 +127,10 @@ public:
       velocity.x += 80.0f;
 
     bool justJumped = false;
-
     if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
+
       if ((!isJumping && (IsOnGround(platforms))) ||
-          (isOnElevator && !isJumping)) {
+          (!isJumping && isOnElevator) || (!isJumping && onRock)) {
         Jump();
         justJumped = true;
       }
@@ -157,6 +161,6 @@ public:
 
   virtual void OnCollideY() override {
     velocity.y = 0;
-    isJumping = false; // 重設跳躍狀態
+    isJumping = false;
   }
 };

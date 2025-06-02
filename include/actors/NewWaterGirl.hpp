@@ -33,5 +33,6 @@ private:
   std::vector<std::shared_ptr<NewPool>> pool;
   std::shared_ptr<NewRock> rocks;
   bool isOnElevator = true;
+  bool isOnRock = false;
 };
 #endif // NEWWATERGIRL_HPP

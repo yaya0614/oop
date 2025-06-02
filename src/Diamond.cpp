@@ -14,7 +14,7 @@ Diamond::Diamond(glm::vec2 pos, std::string tag) {
         std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Dim/water_dim.png");
   }
   SetVisible(true);
-  SetZIndex(90);
+  SetZIndex(89);
 
   m_Transform.scale = {target_size, target_size};
   isCollected = false;

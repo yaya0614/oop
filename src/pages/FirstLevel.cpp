@@ -33,6 +33,7 @@ void FirstLevel::Start() {
   mapbackground = std::make_shared<MapBackground>();
 
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(-260, -260)); //-254
+
   m_Root.AddChild(fireboy);
 
   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, -178)); //-174
@@ -61,9 +62,9 @@ void FirstLevel::Start() {
       glm::vec2(250, 74), glm::vec2(5, 7), "purple", true));
 
   doors.push_back(
-      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(0, 30), "fire"));
+      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(5, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(320, 200),
-                                            glm::vec2(0, 30), "water"));
+                                            glm::vec2(5, 30), "water"));
 
   BasicAddStash();
   for (auto &s : switches) {
@@ -110,15 +111,15 @@ void FirstLevel::Update() {
       pool->SetLooping(true);
     }
   }
+  fireboy->SetDoor(doors);
+  watergirl->SetDoor(doors);
 
   fireboy->SetElevators(elevators);
   fireboy->SetRock(Rock);
   fireboy->SetPool(Pools);
-  fireboy->SetDoor(doors);
   watergirl->SetElevators(elevators);
   watergirl->SetPool(Pools);
   watergirl->SetRock(Rock);
-  watergirl->SetDoor(doors);
 
   for (auto door : doors) {
     if (!door->GetIsOpen()) {

@@ -27,7 +27,7 @@ NewElevator::NewElevator(glm::vec2 startpos, glm::vec2 size, std::string color,
 
   AddChild(boxImage);
   SetPosition(startpos);
-  SetZIndex(90);
+  SetZIndex(80);
   m_Transform.scale = {scale.x, scale.y};
 };
 

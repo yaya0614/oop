@@ -15,8 +15,7 @@ NewWaterGirl::NewWaterGirl(glm::vec2 startPos)
   m_Drawable =
       std::make_shared<Util::Image>(GA_RESOURCE_DIR "/IceGirl/girl/girl_1.png");
   SetVisible(true);
-  SetZIndex(90);
-
+  SetZIndex(60);
   m_Transform.scale = {0.34, 0.34};
   SetPosition({startPos.x, startPos.y + 3});
 
@@ -65,8 +64,11 @@ void NewWaterGirl::Update(
   for (auto &ele : elevators) {
     if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
       onElevator = true;
+      isOnElevator = true;
       position.y = ele->GetPosition().y + ele->GetSize().y + 30;
       break;
+    } else {
+      isOnElevator = false;
     }
   }
   // 判斷是否進入河
@@ -108,7 +110,7 @@ void NewWaterGirl::Update(
 
   if (Util::Input::IsKeyDown(Util::Keycode::W)) {
     if ((!isJumping && (IsOnGround(platforms))) ||
-        (isOnElevator && !isJumping)) {
+        (!isJumping && isOnElevator) || (!isJumping && onRock)) {
       Jump();
       justJumped = true;
     }
@@ -144,8 +146,8 @@ void NewWaterGirl::OnCollideY() {
 
 void NewWaterGirl::ChangeStatus(std::string status) {
   if (status == "Die") {
-    m_Drawable =
-        std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
+    // m_Drawable =
+    // std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Fire/boy/smoke.png");
   } else if (status == "InDoor") {
     SetVisible(false);
   }
