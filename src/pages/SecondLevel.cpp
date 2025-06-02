@@ -48,9 +48,9 @@ void SecondLevel::Start() {
 
   // doors
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-310, 221),
-                                            glm::vec2(0, 30), "fire"));
+                                            glm::vec2(5, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-240, 221),
-                                            glm::vec2(0, 30), "water"));
+                                            glm::vec2(5, 30), "water"));
   for (auto &s : switches) {
     m_Root.AddChild(s);
     stash.push_back(s);

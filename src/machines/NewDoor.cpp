@@ -16,7 +16,7 @@ NewDoor::NewDoor(glm::vec2 startpos, glm::vec2 size, std::string color)
   m_Transform.scale = {0.46, 0.5f};
   SetPosition(startpos);
   SetVisible(true);
-  SetZIndex(80);
+  SetZIndex(50);
   AnimationPaths = {
       GA_RESOURCE_DIR "/DoorAnimation/" + color + "_door/" + "door_1.png",
       GA_RESOURCE_DIR "/DoorAnimation/" + color + "_door/" + "door_2.png",

@@ -45,9 +45,9 @@ void ThirdLevel::Start() {
       glm::vec2(119, 5), glm::vec2(30, -7), "water", glm::vec2(0.62, 0.36)));
 
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-140, -51),
-                                            glm::vec2(0, 30), "fire"));
+                                            glm::vec2(5, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(125, -51),
-                                            glm::vec2(0, 30), "water"));
+                                            glm::vec2(5, 30), "water"));
   BasicAddStash();
 
   for (auto &pos : redDiamondPositions) {

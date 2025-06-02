@@ -10,6 +10,7 @@
 NewCharacter::NewCharacter(glm::vec2 startPos, std::string tag, int offest)
     : MGameObject(), Colliders(startPos, size), position(startPos),
       velocity(0.0f), remainder(0.0f), offest(offest) {
+  SetZIndex(90);
   boxImage = std::make_shared<MGameObject>();
   boxImage->SetDrawable(
       std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Test/Rectangle 113.png"));

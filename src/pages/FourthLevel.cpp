@@ -24,7 +24,7 @@ void FourthLevel::Start() {
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel4.png");
   Background->SetVisible(true);
-  Background->SetZIndex(50);
+  Background->SetZIndex(40);
   m_Root.AddChild(Background);
   mapbackground = std::make_shared<MapBackground>();
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
@@ -55,9 +55,9 @@ void FourthLevel::Start() {
 
   // doors
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-245, -60),
-                                            glm::vec2(0, 30), "fire"));
+                                            glm::vec2(5, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(235, -76),
-                                            glm::vec2(0, 30), "water"));
+                                            glm::vec2(5, 30), "water"));
 
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-143, -147), glm::vec2(3, 7), "yellow", false)); // lever
