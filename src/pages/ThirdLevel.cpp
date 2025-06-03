@@ -19,8 +19,8 @@ void ThirdLevel::Start() {
   Background->SetZIndex(50);
 
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, -260));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, -260)); // y = -240
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, 250));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, 250)); // y = -240
 
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
@@ -72,6 +72,7 @@ void ThirdLevel::Start() {
     m_Root.AddChild(door);
     stash.push_back(door);
   }
+
   RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
   m_Root.AddChild(RefreshButton);
   stash.push_back(RefreshButton);
@@ -99,10 +100,6 @@ void ThirdLevel::ResetObject() {
 
 void ThirdLevel::Update() {
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
-
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
@@ -110,10 +107,10 @@ void ThirdLevel::Update() {
     RefreshButton->Update();
 
     if (RefreshButton->GetIsPressed()) {
-      RetryAnything();
-      ResetObject();
 
+      RetryAnything();
       m_CurrentState = State::START;
+      ResetObject();
       return;
     }
     for (auto &pool : Pools) {
@@ -155,12 +152,13 @@ void ThirdLevel::Update() {
         counter_water++;
       }
     }
-
-    TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel,
-                 stash, [this]() { ResetObject(); });
-
-    m_Root.Update();
   }
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel, stash,
+               [this]() { ResetObject(); });
+  if (!fireboy || !watergirl) {
+    return;
+  }
+  m_Root.Update();
 };
 
 void ThirdLevel::End() {

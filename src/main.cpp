@@ -17,7 +17,7 @@ int main(int, char **) {
   auto context = Core::Context::GetInstance();
   auto phases = std::vector<std::shared_ptr<App>>();
 
-  auto currentPhase = Enum::PhaseEnum::FourthLevel;
+  auto currentPhase = Enum::PhaseEnum::SecondLevel;
   phases.push_back(std::make_shared<IntroductionPage>(IntroductionPage()));
   phases.push_back(std::make_shared<FirstLevel>(FirstLevel()));
   phases.push_back(std::make_shared<SecondLevel>(SecondLevel()));

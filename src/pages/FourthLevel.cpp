@@ -27,7 +27,7 @@ void FourthLevel::Start() {
   Background->SetZIndex(40);
   m_Root.AddChild(Background);
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, 244));
   m_Root.AddChild(fireboy);
   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
   m_Root.AddChild(watergirl);
@@ -102,7 +102,7 @@ void FourthLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
 
   BasicAddStash();
-  RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
+  RefreshButton = std::make_shared<NewButton>(glm::vec2(340, 250), "Refresh");
   m_Root.AddChild(RefreshButton);
   stash.push_back(RefreshButton);
   m_CurrentState = State::UPDATE;
@@ -119,6 +119,7 @@ void FourthLevel::ResetObject() {
   switches.clear();
   elevators.clear();
   Pools.clear();
+
   counter_fire = 0;
   counter_water = 0;
 
@@ -193,10 +194,10 @@ void FourthLevel::Update() {
         counter_water++;
       }
     }
-    TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
-                 stash, [this]() { ResetObject(); });
-    m_Root.Update();
   }
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
+               stash, [this]() { ResetObject(); });
+  m_Root.Update();
 };
 void FourthLevel::End() {
   if (music)
