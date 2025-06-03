@@ -72,8 +72,29 @@ void ThirdLevel::Start() {
     m_Root.AddChild(door);
     stash.push_back(door);
   }
+  RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
+  m_Root.AddChild(RefreshButton);
+  stash.push_back(RefreshButton);
 
   m_CurrentState = State::UPDATE;
+};
+
+void ThirdLevel::ResetObject() {
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  RetryAnything();
+  stash.clear();
+  diamonds.clear();
+  doors.clear();
+  switches.clear();
+  elevators.clear();
+  Pools.clear();
+  counter_fire = 0;
+  counter_water = 0;
+
+  music.reset();
+  RefreshButton.reset();
 };
 
 void ThirdLevel::Update() {
@@ -84,8 +105,17 @@ void ThirdLevel::Update() {
   }
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
-  // 僅在遊戲進行時才更新角色
+
   if (!someoneDied) {
+    RefreshButton->Update();
+
+    if (RefreshButton->GetIsPressed()) {
+      RetryAnything();
+      ResetObject();
+
+      m_CurrentState = State::START;
+      return;
+    }
     for (auto &pool : Pools) {
       if (!pool->IsLooping()) {
         pool->SetLooping(true);
@@ -127,7 +157,7 @@ void ThirdLevel::Update() {
     }
 
     TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::FourthLevel,
-                 stash);
+                 stash, [this]() { ResetObject(); });
 
     m_Root.Update();
   }

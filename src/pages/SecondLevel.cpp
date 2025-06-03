@@ -46,7 +46,6 @@ void SecondLevel::Start() {
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-100, 197), glm::vec2(20, 5), "yellow", true)); // button
 
-  // doors
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-310, 221),
                                             glm::vec2(5, 30), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-240, 221),
@@ -97,9 +96,29 @@ void SecondLevel::Start() {
   mapbackground = std::make_shared<MapBackground>();
   m_Root.AddChild(mapbackground);
   m_Root.Update();
+  RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
+  m_Root.AddChild(RefreshButton);
+  stash.push_back(RefreshButton);
   m_CurrentState = State::UPDATE;
 };
 
+void SecondLevel::ResetObject() {
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  RetryAnything();
+  stash.clear();
+  diamonds.clear();
+  doors.clear();
+  switches.clear();
+  elevators.clear();
+  Pools.clear();
+  counter_fire = 0;
+  counter_water = 0;
+
+  music.reset();
+  RefreshButton.reset();
+};
 void SecondLevel::Update() {
 
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
@@ -110,8 +129,17 @@ void SecondLevel::Update() {
 
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
-  // 僅在遊戲進行時才更新角色
+
   if (!someoneDied) {
+    RefreshButton->Update();
+
+    if (RefreshButton->GetIsPressed()) {
+      RetryAnything();
+      ResetObject();
+
+      m_CurrentState = State::START;
+      return;
+    }
     fireboy->SetElevators(elevators);
     watergirl->SetElevators(elevators);
     fireboy->SetDoor(doors);
@@ -160,28 +188,18 @@ void SecondLevel::Update() {
       }
     }
     TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::ThirdLevel,
-                 stash);
+                 stash, [this]() { ResetObject(); });
+
     m_Root.Update();
   }
 };
 
 void SecondLevel::End() {
-  phase = Enum::PhaseEnum::SecondLevel;
-  RetryAnything();
-  for (auto item : stash) {
-    m_Root.RemoveChild(item);
-  }
-  m_CurrentState = State::START;
-};
 
-void SecondLevel::End_next() {
   if (music)
     music->FadeOut(50);
   phase = Enum::PhaseEnum::SecondLevel;
   RetryAnything();
-  for (auto item : stash) {
-    m_Root.RemoveChild(item);
-  }
-  music.reset();
-  m_CurrentState = State::START;
+  ResetObject();
+  m_CurrentState = App::State::START;
 };
