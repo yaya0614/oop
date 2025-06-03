@@ -24,6 +24,7 @@ public:
   void Start() override;
   void Update() override;
   void End() override;
+  void ResetObject() override;
 
 private:
   std::vector<glm::vec2> redDiamondPositions = {

@@ -11,6 +11,7 @@
 #include "enum.hpp"
 #include "machines/NewSwitch.hpp"
 #include "pch.hpp" // IWYU pragma: export
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -33,10 +34,12 @@ public:
 
   virtual void End();
   void RetryAnything();
+  virtual void ResetObject();
 
   void
   TriggerStage(int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
-               std::vector<std::shared_ptr<Util::GameObject>> stash_from_self);
+               std::vector<std::shared_ptr<Util::GameObject>> stash_from_self,
+               std::function<void()> func);
   void TriggerBtnOrLever();
   void NavigationTo(Enum::PhaseEnum phase) {
     this->phase = phase;
@@ -49,6 +52,7 @@ public:
 
 protected:
   std::shared_ptr<NewButton> button;
+  std::shared_ptr<NewButton> RefreshButton;
   std::shared_ptr<Character> Background;
   std::shared_ptr<NewFireBoy> fireboy;
   std::shared_ptr<NewWaterGirl> watergirl;

@@ -2,6 +2,7 @@
 #include "App.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
+#include "NewButton.hpp"
 #include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
@@ -13,6 +14,7 @@
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
 #include "machines/NewSwitch.hpp"
+#include <functional>
 #include <glm/fwd.hpp>
 #include <memory>
 #include <vector>
@@ -98,7 +100,28 @@ void FirstLevel::Start() {
     m_Root.AddChild(door);
     stash.push_back(door);
   }
+  RefreshButton = std::make_shared<NewButton>(glm::vec2(360, 250), "Refresh");
+  m_Root.AddChild(RefreshButton);
+  stash.push_back(RefreshButton);
   m_CurrentState = State::UPDATE;
+};
+
+void FirstLevel::ResetObject() {
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  RetryAnything();
+  stash.clear();
+  diamonds.clear();
+  doors.clear();
+  switches.clear();
+  elevators.clear();
+  Pools.clear();
+  counter_fire = 0;
+  counter_water = 0;
+
+  music.reset();
+  RefreshButton.reset();
 };
 
 void FirstLevel::Update() {
@@ -109,8 +132,18 @@ void FirstLevel::Update() {
 
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
-  // 僅在遊戲進行時才更新角色
+
+  // 遊戲進行時才更新角色
   if (!someoneDied) {
+    RefreshButton->Update();
+
+    if (RefreshButton->GetIsPressed()) {
+      RetryAnything();
+      ResetObject();
+
+      m_CurrentState = State::START;
+      return; // 直接結束 Update()，後面就不會再觸發相關物件
+    }
     for (auto &pool : Pools) {
       if (!pool->IsLooping()) {
         pool->SetLooping(true);
@@ -167,8 +200,12 @@ void FirstLevel::Update() {
   }
 
   TriggerBtnOrLever();
-  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::SecondLevel,
-               stash);
+  TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::SecondLevel, stash,
+               [this]() { ResetObject(); });
+  // lambada表達式，compiler會把該表達式定義成一個class，並reload該operator
+  // 這邊是定義要呼叫一個 沒有參數無回傳值的func ｜() => 表示是否有參數 ;
+  // type{要回傳的內容} [捕獲] (參數) -> 回傳型別 { 函式的主體 }
+
   m_Root.Update();
 }
 
@@ -177,9 +214,6 @@ void FirstLevel::End() {
     music->FadeOut(50);
   phase = Enum::PhaseEnum::FirstLevel;
   RetryAnything();
-  for (auto item : stash) {
-    m_Root.RemoveChild(item);
-  }
-  music.reset();
+  ResetObject();
   m_CurrentState = App::State::START;
 };

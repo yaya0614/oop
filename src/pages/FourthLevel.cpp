@@ -102,7 +102,28 @@ void FourthLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
 
   BasicAddStash();
+  RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
+  m_Root.AddChild(RefreshButton);
+  stash.push_back(RefreshButton);
   m_CurrentState = State::UPDATE;
+};
+
+void FourthLevel::ResetObject() {
+  for (auto item : stash) {
+    m_Root.RemoveChild(item);
+  }
+  RetryAnything();
+  stash.clear();
+  diamonds.clear();
+  doors.clear();
+  switches.clear();
+  elevators.clear();
+  Pools.clear();
+  counter_fire = 0;
+  counter_water = 0;
+
+  music.reset();
+  RefreshButton.reset();
 };
 
 void FourthLevel::Update() {
@@ -116,23 +137,35 @@ void FourthLevel::Update() {
       door->IsCharacterInto(fireboy, watergirl);
     }
   }
-  watergirl->Update(deltaTime, mapbackground->GetLevelData(3).platforms);
-  fireboy->Update(deltaTime, mapbackground->GetLevelData(3).platforms);
-  fireboy->SetElevators(elevators);
-  watergirl->SetElevators(elevators);
-  fireboy->SetDoor(doors);
-  watergirl->SetDoor(doors);
-  fireboy->SetPool(Pools);
-  watergirl->SetPool(Pools);
+
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
-  // 僅在遊戲進行時才更新角色
+
   if (!someoneDied) {
+    RefreshButton->Update();
+
+    if (RefreshButton->GetIsPressed()) {
+      RetryAnything();
+      ResetObject();
+
+      m_CurrentState = State::START;
+      return;
+    }
+
+    fireboy->SetElevators(elevators);
+    watergirl->SetElevators(elevators);
+    fireboy->SetDoor(doors);
+    watergirl->SetDoor(doors);
+    fireboy->SetPool(Pools);
+    watergirl->SetPool(Pools);
     for (auto pool : Pools) {
       if (!pool->IsLooping()) {
         pool->SetLooping(true);
       }
     }
+
+    watergirl->Update(deltaTime, mapbackground->GetLevelData(3).platforms);
+    fireboy->Update(deltaTime, mapbackground->GetLevelData(3).platforms);
 
     for (auto s : switches) {
       s->UpdateSwitchState(fireboy, watergirl, deltaTime, elevators);
@@ -161,7 +194,7 @@ void FourthLevel::Update() {
       }
     }
     TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::IntroductionPage,
-                 stash);
+                 stash, [this]() { ResetObject(); });
     m_Root.Update();
   }
 };

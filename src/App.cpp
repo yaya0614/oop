@@ -12,6 +12,7 @@ void App::BasicAddStash() {
 void App::Start(){};
 void App::Update(){};
 void App::End(){};
+void App::ResetObject(){};
 
 void App::TriggerBtnOrLever() {
 
@@ -47,18 +48,24 @@ void App::TriggerBtnOrLever() {
     }
   }
 };
+
 void App::RetryAnything() {
   for (auto object : stash) {
     m_Root.RemoveChild(object);
   }
-
-  // 清空 stash，釋放記憶體
   stash.clear();
+  fireboy.reset();
+  watergirl.reset();
+  stages.reset();
+  stages_over.reset();
+  Background.reset();
+  mapbackground.reset();
 };
 
 void App::TriggerStage(
     int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
-    std::vector<std::shared_ptr<Util::GameObject>> stash_from_self) {
+    std::vector<std::shared_ptr<Util::GameObject>> stash_from_self,
+    std::function<void()> func) {
   if (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die") {
     if (fireboy->GetStatus() == "Die") {
       fireboy->ChangeStatus("Die");
@@ -78,6 +85,7 @@ void App::TriggerStage(
       for (auto item : stash_from_self) {
         m_Root.RemoveChild(item);
       }
+      func();
       Start(); // 確保重新初始化物件
     }
 
@@ -94,6 +102,9 @@ void App::TriggerStage(
       for (auto item : stash_from_self) {
         m_Root.RemoveChild(item);
       }
+      stash_from_self.clear();
+      func();
+
       Start();
     }
 
