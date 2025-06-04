@@ -61,7 +61,6 @@ void App::RetryAnything() {
   Background.reset();
   mapbackground.reset();
 };
-
 void App::TriggerStage(
     int counter_fire, int counter_water, Enum::PhaseEnum m_phase,
     std::vector<std::shared_ptr<Util::GameObject>> stash_from_self,
@@ -69,7 +68,6 @@ void App::TriggerStage(
   if (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die") {
     if (fireboy->GetStatus() == "Die") {
       fireboy->ChangeStatus("Die");
-
     } else if (watergirl->GetStatus() == "Die") {
       watergirl->ChangeStatus("Die");
     } else {
@@ -85,13 +83,15 @@ void App::TriggerStage(
       for (auto item : stash_from_self) {
         m_Root.RemoveChild(item);
       }
+      m_CurrentState = State::START;
       func();
-      Start(); // 確保重新初始化物件
+      return;
     }
 
     if (stages_over->GetMainButton()->GetIsPressed()) {
       NavigationTo(Enum::PhaseEnum::IntroductionPage);
     }
+
   } else if ((fireboy->GetStatus() == "InDoor" &&
               watergirl->GetStatus() == "InDoor")) {
     m_Root.AddChild(stages);
@@ -103,13 +103,13 @@ void App::TriggerStage(
         m_Root.RemoveChild(item);
       }
       stash_from_self.clear();
+      m_CurrentState = State::START;
       func();
-
-      Start();
+      return;
     }
 
     if (stages->GetMainButton()->GetIsPressed()) {
       NavigationTo(m_phase);
     }
   }
-};
+}

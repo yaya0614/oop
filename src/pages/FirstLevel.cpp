@@ -34,11 +34,11 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-260, -260)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(260, 250)); //-254
 
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, -178)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(200, 250)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -117,19 +117,15 @@ void FirstLevel::ResetObject() {
   switches.clear();
   elevators.clear();
   Pools.clear();
+
   counter_fire = 0;
   counter_water = 0;
-
+  Rock.reset();
   music.reset();
   RefreshButton.reset();
 };
 
 void FirstLevel::Update() {
-  glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
-
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
@@ -138,11 +134,11 @@ void FirstLevel::Update() {
     RefreshButton->Update();
 
     if (RefreshButton->GetIsPressed()) {
-      RetryAnything();
-      ResetObject();
 
+      RetryAnything();
       m_CurrentState = State::START;
-      return; // 直接結束 Update()，後面就不會再觸發相關物件
+      ResetObject();
+      return;
     }
     for (auto &pool : Pools) {
       if (!pool->IsLooping()) {
@@ -206,6 +202,9 @@ void FirstLevel::Update() {
   // 這邊是定義要呼叫一個 沒有參數無回傳值的func ｜() => 表示是否有參數 ;
   // type{要回傳的內容} [捕獲] (參數) -> 回傳型別 { 函式的主體 }
 
+  if (!fireboy || !watergirl) {
+    return;
+  }
   m_Root.Update();
 }
 
@@ -213,7 +212,7 @@ void FirstLevel::End() {
   if (music)
     music->FadeOut(50);
   phase = Enum::PhaseEnum::FirstLevel;
+  m_CurrentState = App::State::START;
   RetryAnything();
   ResetObject();
-  m_CurrentState = App::State::START;
 };
