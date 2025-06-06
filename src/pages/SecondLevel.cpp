@@ -1,9 +1,13 @@
 #include "pages/SecondLevel.hpp"
+#include "Character.hpp"
+#include "Diamond.hpp"
 #include "MapBackground.hpp"
 #include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "enum.hpp"
+#include "machines/NewBridge.hpp"
+#include <codecvt>
 #include <glm/fwd.hpp>
 #include <memory>
 
@@ -18,9 +22,30 @@ void SecondLevel::Start() {
   Background->SetVisible(true);
   Background->SetZIndex(50);
 
+  bridges.push_back(
+      std::make_shared<NewBridge>(glm::vec2(-155, 50), glm::vec2(30, 2),
+                                  glm::vec2(0.15, 0.2), "bridge", 85));
+
+  bridges.push_back(
+      std::make_shared<NewBridge>(glm::vec2(180, 50), glm::vec2(30, 2),
+                                  glm::vec2(0.15, 0.2), "bridge", 85));
+
+  for (auto &b : bridges) {
+    m_Root.AddChild(b);
+    stash.push_back(b);
+  }
+  bridge_line.push_back(std::make_shared<NewBridge>(
+      glm::vec2(-156, 100), glm::vec2(2, 30), glm::vec2(0.4, 0.4), "line", 55));
+  bridge_line.push_back(std::make_shared<NewBridge>(
+      glm::vec2(180, 100), glm::vec2(2, 30), glm::vec2(0.4, 0.4), "line", 55));
+  for (auto &line : bridge_line) {
+    m_Root.AddChild(line);
+    stash.push_back(line);
+  }
+
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, 244));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, 244)); // y = -240
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, 104));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, 244));
 
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
@@ -110,9 +135,16 @@ void SecondLevel::ResetObject() {
 
   music.reset();
   RefreshButton.reset();
+  bridges.clear();
+  bridge_line.clear();
 };
 
 void SecondLevel::Update() {
+
+  glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
@@ -138,14 +170,20 @@ void SecondLevel::Update() {
 
     fireboy->SetElevators(elevators);
     fireboy->SetPool(Pools);
+    fireboy->SetBridge(bridges);
 
     watergirl->SetElevators(elevators);
     watergirl->SetPool(Pools);
+    watergirl->SetBridge(bridges);
 
     for (auto door : doors) {
       if (!door->GetIsOpen()) {
         door->IsCharacterInto(fireboy, watergirl);
       }
+    }
+
+    for (auto &bridge : bridges) {
+      bridge->Update(deltaTime, fireboy, watergirl);
     }
 
     fireboy->Update(deltaTime, mapbackground->GetLevelData(1).platforms);

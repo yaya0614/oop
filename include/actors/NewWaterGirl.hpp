@@ -2,6 +2,7 @@
 #define NEWWATERGIRL_HPP
 #include "actors/NewCharacter.hpp"
 #include "actors/NewRock.hpp"
+#include "machines/NewBridge.hpp"
 #include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
@@ -26,11 +27,13 @@ public:
   void SetPool(const std::vector<std::shared_ptr<NewPool>> &pools) {
     pool = pools;
   }
+  void SetBridge(const std::vector<std::shared_ptr<NewBridge>> &bridge);
 
 private:
   std::vector<std::shared_ptr<NewElevator>> elevators;
   std::vector<std::shared_ptr<NewDoor>> doors;
   std::vector<std::shared_ptr<NewPool>> pool;
+  std::vector<std::shared_ptr<NewBridge>> bridges;
   std::shared_ptr<NewRock> rocks;
   bool isOnElevator = true;
   bool isOnRock = false;
