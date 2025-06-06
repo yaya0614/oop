@@ -9,6 +9,8 @@
 
 class NewMachine : public MGameObject {
 public:
+  glm::vec2 GetSize() { return size; };
+
   bool IsLooping() const {
     return std::dynamic_pointer_cast<Util::Animation>(m_Drawable)->GetLooping();
   }

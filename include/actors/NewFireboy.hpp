@@ -4,6 +4,7 @@
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "actors/NewRock.hpp"
+#include "machines/NewBridge.hpp"
 #include "machines/NewDoor.hpp"
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
@@ -16,8 +17,10 @@ class NewFireBoy : public NewCharacter,
                    public std::enable_shared_from_this<NewFireBoy> {
 private:
   std::vector<std::shared_ptr<NewDoor>> doors;
+
   std::vector<std::shared_ptr<NewElevator>> elevators;
   std::shared_ptr<NewRock> rocks;
+  std::vector<std::shared_ptr<NewBridge>> bridges;
   std::vector<std::shared_ptr<NewPool>> pools;
 
 public:
@@ -35,6 +38,9 @@ public:
   void SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door) {
     doors = door;
   };
+  void SetBridge(const std::vector<std::shared_ptr<NewBridge>> &bridge) {
+    bridges = bridge;
+  }
 
   void Jump() {
     if (!isJumping) {
@@ -111,26 +117,42 @@ public:
     }
 
     ChangeStatus(status);
-
     if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
       onRock = true;
     } else {
       onRock = false;
     }
 
+    bool onBridge = false;
+    for (auto &bridge : bridges) {
+      if (bridge && bridge->IsCollidingWithMachine(shared_from_this())) {
+        onBridge = true;
+
+        float bridgeAngle = bridge->GetAngle();
+        float safeAngle = glm::radians(30.0f);
+
+        if (std::abs(bridgeAngle) > safeAngle) {
+
+          onBridge = false;
+          isJumping = false;
+          velocity.y = 0.0f;
+        }
+      }
+    }
+
     velocity.x = 0.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) {
       velocity.x -= 80.0f;
     }
-
-    if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT))
+    if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT)) {
       velocity.x += 80.0f;
+    }
 
     bool justJumped = false;
     if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
-
-      if ((!isJumping && (IsOnGround(platforms))) ||
-          (!isJumping && isOnElevator) || (!isJumping && onRock)) {
+      if ((!isJumping && IsOnGround(platforms)) ||
+          (!isJumping && isOnElevator) || (!isJumping && onRock) ||
+          (!isJumping && onBridge)) {
         Jump();
         justJumped = true;
       }
@@ -142,7 +164,7 @@ public:
 
     bool grounded = IsOnGround(platforms);
 
-    if ((grounded || onElevator || onRock) && !justJumped) {
+    if ((grounded || onElevator || onRock || onBridge) && !justJumped) {
       isJumping = false;
       if (velocity.y < 0) {
         velocity.y = 0;

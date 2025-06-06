@@ -10,7 +10,6 @@ public:
   NewElevator(glm::vec2 startpos, glm::vec2 size, std::string color,
               int targetpos, glm::vec2 scale, std::string tag);
   std::string GetColor() { return color; };
-  glm::vec2 GetSize() { return size; };
 
   void UpdateBtnActivate(bool Activate, float deltaTime);
   void UpdateActivate(int dir, float deltaTime);

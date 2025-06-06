@@ -9,11 +9,13 @@
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewWaterGirl.hpp"
 #include "enum.hpp"
+#include "machines/NewBridge.hpp"
 #include "machines/NewSwitch.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 class App {
 public:
@@ -60,6 +62,8 @@ protected:
   std::shared_ptr<NewPool> Pool;
   std::shared_ptr<Stage> stages;
   std::shared_ptr<Stage> stages_over;
+  std::vector<std::shared_ptr<NewBridge>> bridges;
+  std::vector<std::shared_ptr<NewBridge>> bridge_line;
 
   std::shared_ptr<NewElevator> elevator;
   std::vector<std::shared_ptr<NewPool>> Pools;

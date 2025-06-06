@@ -39,6 +39,10 @@ void NewWaterGirl::SetRock(const std::shared_ptr<NewRock> &rock) {
 void NewWaterGirl::SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door) {
   doors = door;
 };
+void NewWaterGirl::SetBridge(
+    const std::vector<std::shared_ptr<NewBridge>> &bridge) {
+  bridges = bridge;
+}
 
 bool NewWaterGirl::IsOnGround(
     const std::vector<MapBackground::Platform> &platforms) {
@@ -98,6 +102,23 @@ void NewWaterGirl::Update(
     onRock = false;
   }
 
+  bool onBridge = false;
+  for (auto &bridge : bridges) {
+    if (bridge && bridge->IsCollidingWithMachine(shared_from_this())) {
+      onBridge = true;
+
+      float bridgeAngle = bridge->GetAngle();
+      float safeAngle = glm::radians(30.0f);
+
+      if (std::abs(bridgeAngle) > safeAngle) {
+
+        onBridge = false;
+        isJumping = false;
+        velocity.y = 0.0f;
+      }
+    }
+  }
+
   velocity.x = 0.0f;
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
     velocity.x -= 80.0f;
@@ -109,8 +130,8 @@ void NewWaterGirl::Update(
   bool justJumped = false;
 
   if (Util::Input::IsKeyDown(Util::Keycode::W)) {
-    if ((!isJumping && (IsOnGround(platforms))) ||
-        (!isJumping && isOnElevator) || (!isJumping && onRock)) {
+    if ((!isJumping && IsOnGround(platforms)) || (!isJumping && isOnElevator) ||
+        (!isJumping && onRock) || (!isJumping && onBridge)) {
       Jump();
       justJumped = true;
     }
@@ -122,7 +143,7 @@ void NewWaterGirl::Update(
 
   bool grounded = IsOnGround(platforms);
 
-  if ((grounded || onElevator || onRock) && !justJumped) {
+  if ((grounded || onElevator || onRock || onBridge) && !justJumped) {
     isJumping = false;
     if (velocity.y < 0) {
       velocity.y = 0;
