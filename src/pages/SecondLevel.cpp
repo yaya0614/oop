@@ -23,11 +23,11 @@ void SecondLevel::Start() {
   Background->SetZIndex(50);
 
   bridges.push_back(
-      std::make_shared<NewBridge>(glm::vec2(-155, 50), glm::vec2(30, 2),
+      std::make_shared<NewBridge>(glm::vec2(-155, 50), glm::vec2(35, 2),
                                   glm::vec2(0.15, 0.2), "bridge", 85));
 
   bridges.push_back(
-      std::make_shared<NewBridge>(glm::vec2(180, 50), glm::vec2(30, 2),
+      std::make_shared<NewBridge>(glm::vec2(180, 50), glm::vec2(35, 2),
                                   glm::vec2(0.15, 0.2), "bridge", 85));
 
   for (auto &b : bridges) {
@@ -44,7 +44,7 @@ void SecondLevel::Start() {
   }
 
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, 104));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, 244));
   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, 244));
 
   stages = std::make_shared<Stage>("stage");
@@ -67,14 +67,14 @@ void SecondLevel::Start() {
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(182, -17), glm::vec2(60, -7), "green", glm::vec2(0.62, 0.36)));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(30, 2),
+      std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(34, 2),
                                     "yellow", 15, glm::vec2(0.55, 0.36), "x"));
 
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(170, 197), glm::vec2(20, 5), "yellow",
+      glm::vec2(170, 197), glm::vec2(-6, 5), "yellow",
       true)); // button(每個switch都要調y的觸發點，才可以準確觸發碰撞項)
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(-100, 197), glm::vec2(20, 5), "yellow", true)); // button
+      glm::vec2(-100, 197), glm::vec2(-6, 5), "yellow", true)); // button
 
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(-310, 221),
                                             glm::vec2(5, 30), "fire"));
@@ -148,7 +148,6 @@ void SecondLevel::Update() {
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
-  // 遊戲進行時才更新角色
   if (!someoneDied) {
     RefreshButton->Update();
 
@@ -176,9 +175,12 @@ void SecondLevel::Update() {
     watergirl->SetPool(Pools);
     watergirl->SetBridge(bridges);
 
-    for (auto door : doors) {
-      if (!door->GetIsOpen()) {
-        door->IsCharacterInto(fireboy, watergirl);
+    if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
+      bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
+      bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
+      if (firedoor && waterdoor) {
+        doors[0]->OpenDoor();
+        doors[1]->OpenDoor();
       }
     }
 

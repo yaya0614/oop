@@ -37,9 +37,6 @@ void Stage::SetImage(const std::string &ImagePath) {
 
 void Stage::Update(int RedDiamondAmount, int WaterDiamondAmount) {
   if (path != "stage_over") {
-    LOG_DEBUG("有進來");
-    LOG_DEBUG("RedDiamondAmount");
-    LOG_DEBUG(RedDiamondAmount);
     redGemCount = std::make_shared<Text>(RedDiamondAmount);
     redGemCount->SetPosition({30, 13});
     AddChild(redGemCount);
