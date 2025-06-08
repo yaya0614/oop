@@ -75,10 +75,10 @@ void NewElevator::UpdateActivate(int dir, float deltaTime) {
   const float epsilon = 0.5f;
 
   if (tag == "Y") {
-    if ((dir != record_dir)) {
-      targetY = (dir == 1) ? m_OriginalY : m_TargetY;
-      record_dir = dir;
-    }
+    // if ((dir != record_dir)) {
+    targetY = (dir == 1) ? m_OriginalY : m_TargetY;
+    record_dir = dir;
+    // }
 
     if (fabs(currentY - targetY) > epsilon) {
       float direction = (targetY > currentY) ? 1.0f : -1.0f;
@@ -93,12 +93,14 @@ void NewElevator::UpdateActivate(int dir, float deltaTime) {
       SetPosition({GetPosition().x, targetY});
     }
   } else {
-    if ((dir != record_dir)) {
-      targetX = (dir == 1) ? m_OriginalX : m_TargetX;
-      record_dir = dir;
-    }
+    // if ((dir != record_dir)) {
+    //   LOG_CRITICAL("1");
+    targetX = (dir == 1) ? m_OriginalX : m_TargetX;
+    record_dir = dir;
+    // }
 
     if (fabs(currentX - targetX) > epsilon) {
+      LOG_DEBUG("進來這裡");
       float direction = (targetX > currentX) ? 1.0f : -1.0f;
       float newX = currentX + direction * m_Speed * deltaTime;
 

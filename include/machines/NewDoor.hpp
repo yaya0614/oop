@@ -13,16 +13,16 @@ public:
   NewDoor(glm::vec2 startpos, glm::vec2 size, std::string color);
 
   void PlayAnimation();
+  void OpenDoor();
   int GetCurrentAnimation();
   std::string GetSelTag() { return self_tag; };
   bool GetIsOpen() { return IsOpen; };
   bool IsCollider(std::shared_ptr<NewCharacter> c1);
   bool IsCharacterMatch(std::shared_ptr<NewCharacter> c1);
-  void IsCharacterInto(std::shared_ptr<NewCharacter> c1,
+  bool IsCharacterInto(std::shared_ptr<NewCharacter> c1,
                        std::shared_ptr<NewCharacter> c2);
   void PlayAnima(std::string fireboy, std::string watergirl) {
     if (fireboy == "InDoor" && watergirl == "InDoor") {
-      LOG_DEBUG("都掛了");
       auto animation = std::make_shared<Util::Animation>(AnimationPaths, false,
                                                          300, false, 0);
       animation->Play();

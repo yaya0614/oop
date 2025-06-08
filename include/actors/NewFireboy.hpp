@@ -75,8 +75,7 @@ public:
           "/Users/mel/Desktop/oop/Resources/s-1.png");
 
     } else if (status == "InDoor") {
-      velocity.x = 0;
-      velocity.y = 0;
+      LOG_ERROR("開完!");
       SetVisible(false);
     }
   };
@@ -110,6 +109,9 @@ public:
 
     for (auto &door : doors) {
       if (door->GetIsOpen()) {
+        // LOG_DEBUG("已經站好，還沒開完.....");
+        velocity.x = 0;
+        velocity.y = 0;
         if (door->GetCurrentAnimation() == 6 && door->GetSelTag() == tag) {
           status = "InDoor";
         }
@@ -127,8 +129,12 @@ public:
     for (auto &bridge : bridges) {
       if (bridge && bridge->IsCollidingWithMachine(shared_from_this())) {
         onBridge = true;
-
+        // LOG_DEBUG("bridge Pos:");
+        // LOG_DEBUG(bridge->GetPosition().y);
+        // LOG_DEBUG("fireBoy Pos:");
+        // LOG_DEBUG(GetPosition().y);
         float bridgeAngle = bridge->GetAngle();
+        // LOG_DEBUG(bridgeAngle);
         float safeAngle = glm::radians(30.0f);
 
         if (std::abs(bridgeAngle) > safeAngle) {

@@ -19,7 +19,7 @@ void FourthLevel::Start() {
   music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
                                       "/Fireboy and Watergirl Theme.mp3");
 
-  music->SetVolume(64);
+  music->SetVolume(60);
   music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel4.png");
@@ -30,6 +30,7 @@ void FourthLevel::Start() {
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, 244));
   m_Root.AddChild(fireboy);
   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(41, -65));
   m_Root.AddChild(watergirl);
 
   Pools.push_back(std::make_shared<NewPool>(
@@ -67,7 +68,7 @@ void FourthLevel::Start() {
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-143, 100), glm::vec2(3, 7), "blue", false));
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(-341, -130), glm::vec2(5, 7), "orange", true));
+      glm::vec2(-341, -130), glm::vec2(-6, 7), "orange", true));
 
   for (auto &pool : Pools) {
     m_Root.AddChild(pool);
@@ -128,14 +129,16 @@ void FourthLevel::ResetObject() {
 };
 
 void FourthLevel::Update() {
-
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
   }
-  for (auto door : doors) {
-    if (!door->GetIsOpen()) {
-      door->IsCharacterInto(fireboy, watergirl);
+  if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
+    bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
+    bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
+    if (firedoor && waterdoor) {
+      doors[0]->OpenDoor();
+      doors[1]->OpenDoor();
     }
   }
 

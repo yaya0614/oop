@@ -34,11 +34,11 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(260, 250)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(260, -254)); //-254
 
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(200, 250)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(200, -254)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -56,12 +56,12 @@ void FirstLevel::Start() {
       std::make_shared<NewElevator>(glm::vec2(340, 56), glm::vec2(22, 2),
                                     "purple", -30, glm::vec2(0.4, 0.34), "Y"));
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(-100, -115), glm::vec2(20, 5), "blue", false)); // lever
+      glm::vec2(-100, -115), glm::vec2(20, 5), "blue", false));
 
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(200, -32), glm::vec2(5, 7), "purple", true));
+      glm::vec2(200, -32), glm::vec2(-6, 7), "purple", true));
   switches.push_back(std::make_shared<NewSwitch>(
-      glm::vec2(250, 74), glm::vec2(5, 7), "purple", true));
+      glm::vec2(250, 74), glm::vec2(-6, 7), "purple", true));
 
   doors.push_back(
       std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(5, 30), "fire"));
@@ -157,9 +157,12 @@ void FirstLevel::Update() {
     watergirl->SetPool(Pools);
     watergirl->SetRock(Rock);
 
-    for (auto door : doors) {
-      if (!door->GetIsOpen()) {
-        door->IsCharacterInto(fireboy, watergirl);
+    if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
+      bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
+      bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
+      if (firedoor && waterdoor) {
+        doors[0]->OpenDoor();
+        doors[1]->OpenDoor();
       }
     }
 
@@ -198,9 +201,6 @@ void FirstLevel::Update() {
   TriggerBtnOrLever();
   TriggerStage(counter_fire, counter_water, Enum::PhaseEnum::SecondLevel, stash,
                [this]() { ResetObject(); });
-  // lambada表達式，compiler會把該表達式定義成一個class，並reload該operator
-  // 這邊是定義要呼叫一個 沒有參數無回傳值的func ｜() => 表示是否有參數 ;
-  // type{要回傳的內容} [捕獲] (參數) -> 回傳型別 { 函式的主體 }
 
   if (!fireboy || !watergirl) {
     return;

@@ -55,18 +55,20 @@ bool NewDoor::IsCharacterMatch(std::shared_ptr<NewCharacter> c1) {
   return false;
 };
 
-//
-void NewDoor::IsCharacterInto(std::shared_ptr<NewCharacter> c1,
+bool NewDoor::IsCharacterInto(std::shared_ptr<NewCharacter> c1,
                               std::shared_ptr<NewCharacter> c2) {
   if ((IsCollider(c1) && c1->tag == self_tag) ||
       (IsCollider(c2) && c2->tag == self_tag)) {
-
-    if (!IsOpen) {
-      IsOpen = true;
-      PlayAnimation();
-    }
+    return true;
   }
+  return false;
 }
+void NewDoor::OpenDoor() {
+  if (!IsOpen) {
+    IsOpen = true;
+    PlayAnimation();
+  }
+};
 
 int NewDoor::GetCurrentAnimation() {
   return this->animation->GetCurrentFrameIndex();

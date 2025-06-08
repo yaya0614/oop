@@ -118,9 +118,12 @@ void ThirdLevel::Update() {
         pool->SetLooping(true);
       }
     }
-    for (auto door : doors) {
-      if (!door->GetIsOpen()) {
-        door->IsCharacterInto(fireboy, watergirl);
+    if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
+      bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
+      bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
+      if (firedoor && waterdoor) {
+        doors[0]->OpenDoor();
+        doors[1]->OpenDoor();
       }
     }
     fireboy->SetDoor(doors);
