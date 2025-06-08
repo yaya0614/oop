@@ -41,7 +41,6 @@ void NewSwitch::UpdateSwitchState(
     isPressed = isColliding;
 
   } else {
-    // 拉桿：即時更新 current_lever_dir
     if (isColliding) {
 
       bool c1_trigger =
