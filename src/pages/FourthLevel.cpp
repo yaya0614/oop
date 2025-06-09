@@ -27,10 +27,10 @@ void FourthLevel::Start() {
   Background->SetZIndex(40);
   m_Root.AddChild(Background);
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, 244));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
   m_Root.AddChild(fireboy);
   watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(41, -65));
+
   m_Root.AddChild(watergirl);
 
   Pools.push_back(std::make_shared<NewPool>(
@@ -104,8 +104,12 @@ void FourthLevel::Start() {
 
   BasicAddStash();
   RefreshButton = std::make_shared<NewButton>(glm::vec2(340, 250), "Refresh");
+  ModeButton = std::make_shared<NewButton>(glm::vec2(270, 262), "mode");
   m_Root.AddChild(RefreshButton);
+  m_Root.AddChild(ModeButton);
   stash.push_back(RefreshButton);
+  IsModePress = false;
+
   m_CurrentState = State::UPDATE;
 };
 
@@ -125,6 +129,7 @@ void FourthLevel::ResetObject() {
   counter_water = 0;
 
   music.reset();
+  ModeButton.reset();
   RefreshButton.reset();
 };
 
@@ -132,6 +137,11 @@ void FourthLevel::Update() {
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
+  }
+
+  ModeButton->Update();
+  if (ModeButton->GetIsPressed()) {
+    IsModePress = !IsModePress;
   }
   if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
     bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
@@ -151,22 +161,28 @@ void FourthLevel::Update() {
     if (RefreshButton->GetIsPressed()) {
       RetryAnything();
       ResetObject();
-
       m_CurrentState = State::START;
       return;
+    }
+
+    for (auto pool : Pools) {
+      if (!pool->IsLooping()) {
+        pool->SetLooping(true);
+      }
+    }
+
+    if (!IsModePress) {
+      fireboy->SetPool(Pools);
+      watergirl->SetPool(Pools);
+    } else {
+      fireboy->SetPool({});
+      watergirl->SetPool({});
     }
 
     fireboy->SetElevators(elevators);
     watergirl->SetElevators(elevators);
     fireboy->SetDoor(doors);
     watergirl->SetDoor(doors);
-    fireboy->SetPool(Pools);
-    watergirl->SetPool(Pools);
-    for (auto pool : Pools) {
-      if (!pool->IsLooping()) {
-        pool->SetLooping(true);
-      }
-    }
 
     watergirl->Update(deltaTime, mapbackground->GetLevelData(3).platforms);
     fireboy->Update(deltaTime, mapbackground->GetLevelData(3).platforms);

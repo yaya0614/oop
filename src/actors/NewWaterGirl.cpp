@@ -5,6 +5,7 @@
 #include "Util/Logger.hpp"
 #include "actors/NewCharacter.hpp"
 #include "actors/NewRock.hpp"
+#include <cstddef>
 #include <glm/fwd.hpp>
 #include <memory>
 #include <vector>
