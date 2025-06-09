@@ -2,6 +2,7 @@
 #include "Character.hpp"
 #include "Diamond.hpp"
 #include "MapBackground.hpp"
+#include "NewButton.hpp"
 #include "Stage.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
@@ -15,7 +16,7 @@ void SecondLevel::Start() {
   music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
                                       "/Fireboy and Watergirl Theme.mp3");
 
-  music->SetVolume(64);
+  music->SetVolume(60);
   music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel2.png");
@@ -44,8 +45,8 @@ void SecondLevel::Start() {
   }
 
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, 244));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-260, 244));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-330, -244));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-280, -244));
 
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
@@ -116,6 +117,10 @@ void SecondLevel::Start() {
   m_Root.AddChild(RefreshButton);
   stash.push_back(RefreshButton);
 
+  ModeButton = std::make_shared<NewButton>(glm::vec2(290, 262), "mode");
+  m_Root.AddChild(ModeButton);
+  IsModePress = false;
+
   m_CurrentState = State::UPDATE;
 };
 
@@ -135,15 +140,20 @@ void SecondLevel::ResetObject() {
 
   music.reset();
   RefreshButton.reset();
+  ModeButton.reset();
   bridges.clear();
   bridge_line.clear();
 };
 
 void SecondLevel::Update() {
-
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
   if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
     LOG_DEBUG(mousePos);
+  }
+
+  ModeButton->Update();
+  if (ModeButton->GetIsPressed()) {
+    IsModePress = !IsModePress;
   }
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
@@ -152,27 +162,33 @@ void SecondLevel::Update() {
     RefreshButton->Update();
 
     if (RefreshButton->GetIsPressed()) {
-
       RetryAnything();
-      m_CurrentState = State::START;
       ResetObject();
+      m_CurrentState = State::START;
       return;
     }
+
     for (auto &pool : Pools) {
       if (!pool->IsLooping()) {
         pool->SetLooping(true);
       }
     }
 
+    if (!IsModePress) {
+      fireboy->SetPool(Pools);
+      watergirl->SetPool(Pools);
+    } else {
+      fireboy->SetPool({});
+      watergirl->SetPool({});
+    }
+
     fireboy->SetDoor(doors);
     watergirl->SetDoor(doors);
 
     fireboy->SetElevators(elevators);
-    fireboy->SetPool(Pools);
     fireboy->SetBridge(bridges);
 
     watergirl->SetElevators(elevators);
-    watergirl->SetPool(Pools);
     watergirl->SetBridge(bridges);
 
     if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
@@ -233,6 +249,7 @@ void SecondLevel::End() {
     music->FadeOut(50);
   phase = Enum::PhaseEnum::SecondLevel;
   RetryAnything();
+  ResetObject();
   for (auto item : stash) {
     m_Root.RemoveChild(item);
   }

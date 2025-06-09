@@ -14,16 +14,18 @@
 #include "machines/NewElevator.hpp"
 #include "machines/NewPool.hpp"
 #include "machines/NewSwitch.hpp"
+#include <cstddef>
 #include <functional>
 #include <glm/fwd.hpp>
 #include <memory>
+#include <optional>
 #include <vector>
 
 void FirstLevel::Start() {
   music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
                                       "/Fireboy and Watergirl Theme.mp3");
 
-  music->SetVolume(0);
+  music->SetVolume(60);
   music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel1.png");
@@ -34,11 +36,11 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(260, -254)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -254)); //-254
 
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(200, -254)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -174)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -101,8 +103,11 @@ void FirstLevel::Start() {
     stash.push_back(door);
   }
   RefreshButton = std::make_shared<NewButton>(glm::vec2(360, 250), "Refresh");
+  ModeButton = std::make_shared<NewButton>(glm::vec2(290, 262), "mode");
   m_Root.AddChild(RefreshButton);
+  m_Root.AddChild(ModeButton);
   stash.push_back(RefreshButton);
+  IsModePress = false;
   m_CurrentState = State::UPDATE;
 };
 
@@ -122,28 +127,41 @@ void FirstLevel::ResetObject() {
   counter_water = 0;
   Rock.reset();
   music.reset();
+  ModeButton.reset();
   RefreshButton.reset();
 };
 
 void FirstLevel::Update() {
+  ModeButton->Update();
+  if (ModeButton->GetIsPressed()) {
+    IsModePress = !IsModePress;
+  }
+
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
-  // 遊戲進行時才更新角色
   if (!someoneDied) {
     RefreshButton->Update();
 
     if (RefreshButton->GetIsPressed()) {
-
       RetryAnything();
-      m_CurrentState = State::START;
       ResetObject();
+      m_CurrentState = State::START;
       return;
     }
+
     for (auto &pool : Pools) {
       if (!pool->IsLooping()) {
         pool->SetLooping(true);
       }
+    }
+
+    if (!IsModePress) {
+      fireboy->SetPool(Pools);
+      watergirl->SetPool(Pools);
+    } else {
+      fireboy->SetPool({});
+      watergirl->SetPool({});
     }
 
     fireboy->SetDoor(doors);
@@ -151,10 +169,8 @@ void FirstLevel::Update() {
 
     fireboy->SetElevators(elevators);
     fireboy->SetRock(Rock);
-    fireboy->SetPool(Pools);
 
     watergirl->SetElevators(elevators);
-    watergirl->SetPool(Pools);
     watergirl->SetRock(Rock);
 
     if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {

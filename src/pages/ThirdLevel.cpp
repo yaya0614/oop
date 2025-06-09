@@ -11,7 +11,7 @@ void ThirdLevel::Start() {
   music = std::make_shared<Util::BGM>(GA_RESOURCE_DIR
                                       "/Fireboy and Watergirl Theme.mp3");
 
-  music->SetVolume(64);
+  music->SetVolume(60);
   music->Play(-1);
   Background = std::make_shared<Character>(GA_RESOURCE_DIR
                                            "/Image/Background/NewLevel3.png");
@@ -19,8 +19,8 @@ void ThirdLevel::Start() {
   Background->SetZIndex(50);
 
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, 250));
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, 250)); // y = -240
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-342, -240));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(342, -240)); // y = -240
 
   stages = std::make_shared<Stage>("stage");
   stages_over = std::make_shared<Stage>("stage_over");
@@ -74,8 +74,11 @@ void ThirdLevel::Start() {
   }
 
   RefreshButton = std::make_shared<NewButton>(glm::vec2(350, 250), "Refresh");
+  ModeButton = std::make_shared<NewButton>(glm::vec2(290, 262), "mode");
   m_Root.AddChild(RefreshButton);
+  m_Root.AddChild(ModeButton);
   stash.push_back(RefreshButton);
+  IsModePress = false;
 
   m_CurrentState = State::UPDATE;
 };
@@ -95,11 +98,19 @@ void ThirdLevel::ResetObject() {
   counter_water = 0;
 
   music.reset();
+  ModeButton.reset();
   RefreshButton.reset();
 };
 
 void ThirdLevel::Update() {
   glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
+  ModeButton->Update();
+  if (ModeButton->GetIsPressed()) {
+    IsModePress = !IsModePress;
+  }
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");
 
@@ -107,10 +118,9 @@ void ThirdLevel::Update() {
     RefreshButton->Update();
 
     if (RefreshButton->GetIsPressed()) {
-
       RetryAnything();
-      m_CurrentState = State::START;
       ResetObject();
+      m_CurrentState = State::START;
       return;
     }
     for (auto &pool : Pools) {
@@ -118,6 +128,17 @@ void ThirdLevel::Update() {
         pool->SetLooping(true);
       }
     }
+    if (!IsModePress) {
+      fireboy->SetPool(Pools);
+      watergirl->SetPool(Pools);
+    } else {
+      fireboy->SetPool({});
+      watergirl->SetPool({});
+    }
+
+    fireboy->SetDoor(doors);
+    watergirl->SetDoor(doors);
+
     if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
       bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
       bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
@@ -126,13 +147,10 @@ void ThirdLevel::Update() {
         doors[1]->OpenDoor();
       }
     }
-    fireboy->SetDoor(doors);
-    fireboy->SetPool(Pools);
-    watergirl->SetDoor(doors);
-    watergirl->SetPool(Pools);
 
     fireboy->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
     watergirl->Update(deltaTime, mapbackground->GetLevelData(2).platforms);
+
     for (auto &diamond : diamonds) {
       if (!diamond->IsCollected()) {
         diamond->Update();

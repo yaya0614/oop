@@ -55,9 +55,12 @@ public:
 protected:
   std::shared_ptr<NewButton> button;
   std::shared_ptr<NewButton> RefreshButton;
+  std::shared_ptr<NewButton> ModeButton;
+
   std::shared_ptr<Character> Background;
   std::shared_ptr<NewFireBoy> fireboy;
   std::shared_ptr<NewWaterGirl> watergirl;
+
   std::shared_ptr<NewRock> Rock;
   std::shared_ptr<NewPool> Pool;
   std::shared_ptr<Stage> stages;
@@ -74,10 +77,12 @@ protected:
 
   std::shared_ptr<Stage> m_stage;
   std::shared_ptr<MapBackground> mapbackground;
-  float deltaTime = 1.0 / 60.0f;
 
   std::vector<std::shared_ptr<Util::GameObject>> stash;
   std::shared_ptr<Util::BGM> music;
+
+  float deltaTime = 1.0 / 60.0f;
+  bool IsModePress = false;
   int counter_fire = 0;
   int counter_water = 0;
 };
