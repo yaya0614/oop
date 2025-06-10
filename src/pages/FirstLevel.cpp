@@ -5,6 +5,7 @@
 #include "NewButton.hpp"
 #include "Stage.hpp"
 #include "Util/Input.hpp"
+#include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "actors/NewFireBoy.hpp"
 #include "actors/NewRock.hpp"
@@ -37,10 +38,9 @@ void FirstLevel::Start() {
   mapbackground = std::make_shared<MapBackground>();
 
   fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -254)); //-254
-
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -174)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -254)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -107,6 +107,7 @@ void FirstLevel::Start() {
   m_Root.AddChild(RefreshButton);
   m_Root.AddChild(ModeButton);
   stash.push_back(RefreshButton);
+  stash.push_back(ModeButton);
   IsModePress = false;
   m_CurrentState = State::UPDATE;
 };
@@ -115,6 +116,7 @@ void FirstLevel::ResetObject() {
   for (auto item : stash) {
     m_Root.RemoveChild(item);
   }
+
   RetryAnything();
   stash.clear();
   diamonds.clear();
@@ -132,7 +134,9 @@ void FirstLevel::ResetObject() {
 };
 
 void FirstLevel::Update() {
+
   ModeButton->Update();
+  LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
     IsModePress = !IsModePress;
   }
@@ -227,8 +231,8 @@ void FirstLevel::Update() {
 void FirstLevel::End() {
   if (music)
     music->FadeOut(50);
-  phase = Enum::PhaseEnum::FirstLevel;
-  m_CurrentState = App::State::START;
   RetryAnything();
   ResetObject();
+  phase = Enum::PhaseEnum::FirstLevel;
+  m_CurrentState = App::State::START;
 };

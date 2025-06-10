@@ -11,13 +11,7 @@ NewCharacter::NewCharacter(glm::vec2 startPos, std::string tag, int offest)
     : MGameObject(), Colliders(startPos, size), position(startPos),
       velocity(0.0f), remainder(0.0f), offest(offest) {
   SetZIndex(90);
-  boxImage = std::make_shared<MGameObject>();
-  boxImage->SetDrawable(
-      std::make_shared<Util::Image>(GA_RESOURCE_DIR "/Test/Rectangle 113.png"));
-  boxImage->m_Transform.scale = size;
-  boxImage->SetZIndex(100);
-  boxImage->SetPosition({position.x, position.y + offest});
-  boxImage->SetVisible(false);
+
   this->tag = tag;
   if (tag == "fire") {
     animation_walk = std::make_shared<Util::Animation>(FireBoyAnimationPaths,
@@ -38,13 +32,31 @@ bool NewCharacter::IsCollidingWithPlatform(
   float right = tag.x + size.x / 2;
   float top = tag.y + size.y / 2;
   float bottom = tag.y - size.y / 2;
-  // LOG_DEBUG(bottom);
   const int epsilon = 1;
 
   return (right >= platform.x1 - epsilon && left <= platform.x2 + epsilon &&
           bottom <= platform.y_high + epsilon &&
           top >= platform.y_low - epsilon);
 }
+
+void NewCharacter::SetElevators(
+    const std::vector<std::shared_ptr<NewElevator>> &elevatorsList) {
+  elevators = elevatorsList;
+}
+void NewCharacter::SetDoor(const std::vector<std::shared_ptr<NewDoor>> &door) {
+  doors = door;
+};
+
+void NewCharacter::SetBridge(
+    const std::vector<std::shared_ptr<NewBridge>> &bridge) {
+  bridges = bridge;
+}
+
+void NewCharacter::SetPool(const std::vector<std::shared_ptr<NewPool>> &pool) {
+  pools = pool;
+}
+
+std::string NewCharacter::GetStatus() { return status; };
 
 void NewCharacter::MoveX(float amount,
                          const std::vector<MapBackground::Platform> &platforms,
@@ -78,7 +90,6 @@ void NewCharacter::MoveX(float amount,
       if (IsCollidingWithPlatform(p)) {
         position.x -= dir * 2;
         remainder.x = 0;
-        OnCollideX();
         return;
       }
     }
@@ -122,6 +133,14 @@ void NewCharacter::MoveY(
   }
 }
 
+void NewCharacter::Jump() {
+  if (!isJumping) {
+    velocity.y = jumpSpeed;
+    isJumping = true;
+    jumpingBuffer = 0.1f;
+  }
+}
+
 bool NewCharacter::IsCollidingWith(const MGameObject &other) {
   glm::vec2 pos1 = GetPosition();
   glm::vec2 pos2 = other.GetPosition();
@@ -130,11 +149,16 @@ bool NewCharacter::IsCollidingWith(const MGameObject &other) {
   return distance < 40.0f;
 };
 
-std::string NewCharacter::GetStatus() { return status; };
+bool NewCharacter::IsOnGround(
+    const std::vector<MapBackground::Platform> &platforms) {
+  glm::vec2 tag = {position.x, position.y + offest};
+  float bottom = tag.y - size.y / 2;
 
-void NewCharacter::Update(
-    float deltaTime, const std::vector<MapBackground::Platform> &platforms) {
-  velocity.y += 0.3f; // gravity
-  MoveX(velocity.x * deltaTime, platforms, tag);
-  MoveY(velocity.y * deltaTime, platforms);
+  for (const auto &p : platforms) {
+    if (position.x + size.x / 2 >= p.x1 && position.x - size.x / 2 <= p.x2 &&
+        bottom - p.y_high >= 1 && bottom - p.y_high <= 2) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -1,30 +1,22 @@
-#include "actors/NewWaterGirl.hpp"
-#include "Util/Image.hpp"
-#include "Util/Input.hpp"
-#include "Util/Keycode.hpp"
-#include "Util/Logger.hpp"
+#include "actors/NewFireboy.hpp"
 #include "actors/NewCharacter.hpp"
-#include "actors/NewRock.hpp"
-#include <cstddef>
+#include "actors/NewFireBoy.hpp"
 #include <glm/fwd.hpp>
-#include <memory>
-#include <vector>
 
-NewWaterGirl::NewWaterGirl(glm::vec2 startPos)
-    : NewCharacter(startPos, "water", -4) {
+NewFireBoy::NewFireBoy(glm::vec2 startPos)
+    : NewCharacter(startPos, "fire", -4) {
 
-  m_Drawable =
-      std::make_shared<Util::Image>(GA_RESOURCE_DIR "/IceGirl/girl/girl_1.png");
+  m_Drawable = std::make_shared<Util::Image>(
+      "/Users/mel/Desktop/oop/Resources/FireBoy/boy/boy_1.png");
   SetVisible(true);
   SetZIndex(60);
   m_Transform.scale = {0.34, 0.34};
-  SetPosition({startPos.x, startPos.y + 3});
+  SetPosition(startPos);
 }
 
-void NewWaterGirl::Update(
-    float deltaTime, const std::vector<MapBackground::Platform> &platforms) {
-  if ((status == "InDoor" ||
-       status == "Die")) { // 如果進門裡或是死掉，角色就不能再移動了!!!!
+void NewFireBoy::Update(float deltaTime,
+                        const std::vector<MapBackground::Platform> &platforms) {
+  if ((status == "InDoor" || status == "Die") || status == "OtherDie") {
     return;
   }
   bool onElevator = false;
@@ -38,7 +30,6 @@ void NewWaterGirl::Update(
       isOnElevator = false;
     }
   }
-
   for (auto &pool : pools) {
     if (pool && pool->IsCharacterFall(shared_from_this()) != "no") {
       if (pool->IsCharacterFall(shared_from_this()) != tag) {
@@ -51,6 +42,8 @@ void NewWaterGirl::Update(
 
   for (auto &door : doors) {
     if (door->GetIsOpen()) {
+      velocity.x = 0;
+      velocity.y = 0;
       if (door->GetCurrentAnimation() == 6 && door->GetSelTag() == tag) {
         status = "InDoor";
       }
@@ -58,7 +51,6 @@ void NewWaterGirl::Update(
   }
 
   ChangeStatus(status);
-
   if (rocks && rocks->IsCollidingWithCharacter(shared_from_this(), -1)) {
     onRock = true;
   } else {
@@ -83,16 +75,15 @@ void NewWaterGirl::Update(
   }
 
   velocity.x = 0.0f;
-  if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
+  if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) {
     velocity.x -= 80.0f;
   }
-
-  if (Util::Input::IsKeyPressed(Util::Keycode::D))
+  if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT)) {
     velocity.x += 80.0f;
+  }
 
   bool justJumped = false;
-
-  if (Util::Input::IsKeyDown(Util::Keycode::W)) {
+  if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
     if ((!isJumping && IsOnGround(platforms)) || (!isJumping && isOnElevator) ||
         (!isJumping && onRock) || (!isJumping && onBridge)) {
       Jump();
@@ -120,7 +111,7 @@ void NewWaterGirl::Update(
   SetPosition(position);
 }
 
-void NewWaterGirl::ChangeStatus(std::string status) {
+void NewFireBoy::ChangeStatus(std::string status) {
   if (status == "Die") {
     m_Drawable = std::make_shared<Util::Image>(
         "/Users/mel/Desktop/oop/Resources/s-1.png");
