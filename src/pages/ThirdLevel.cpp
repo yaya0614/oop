@@ -78,6 +78,7 @@ void ThirdLevel::Start() {
   m_Root.AddChild(RefreshButton);
   m_Root.AddChild(ModeButton);
   stash.push_back(RefreshButton);
+  stash.push_back(ModeButton);
   IsModePress = false;
 
   m_CurrentState = State::UPDATE;
@@ -103,12 +104,10 @@ void ThirdLevel::ResetObject() {
 };
 
 void ThirdLevel::Update() {
-  glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
   ModeButton->Update();
+  LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
+
     IsModePress = !IsModePress;
   }
   bool someoneDied =

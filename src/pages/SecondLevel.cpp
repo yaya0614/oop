@@ -119,6 +119,7 @@ void SecondLevel::Start() {
 
   ModeButton = std::make_shared<NewButton>(glm::vec2(290, 262), "mode");
   m_Root.AddChild(ModeButton);
+  stash.push_back(ModeButton);
   IsModePress = false;
 
   m_CurrentState = State::UPDATE;
@@ -146,13 +147,10 @@ void SecondLevel::ResetObject() {
 };
 
 void SecondLevel::Update() {
-  glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
-
   ModeButton->Update();
+  LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
+
     IsModePress = !IsModePress;
   }
   bool someoneDied =
