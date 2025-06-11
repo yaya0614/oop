@@ -1,4 +1,5 @@
 #include "actors/NewFireboy.hpp"
+#include "Util/Logger.hpp"
 #include "actors/NewCharacter.hpp"
 #include "actors/NewFireBoy.hpp"
 #include <glm/fwd.hpp>
@@ -21,15 +22,49 @@ void NewFireBoy::Update(float deltaTime,
   }
   bool onElevator = false;
   for (auto &ele : elevators) {
-    if (ele && ele->IsCharacterOnElevator(shared_from_this())) {
+    if (!ele)
+      continue;
+
+    float eleBottom = ele->GetPosition().y - ele->GetSize().y;
+    float eleLeft = ele->GetPosition().x - ele->GetSize().x;
+    float eleRight = ele->GetPosition().x + ele->GetSize().x;
+
+    float charTop = position.y + size.y;
+    float charBottom = position.y - size.y;
+    float charleft = GetPosition().x - size.x / 2;
+    float charright = GetPosition().x + size.x / 2;
+
+    bool isHorizontal = (charleft < eleRight && eleLeft < charleft) ||
+                        (charright > eleLeft && eleRight > charright);
+
+    if (ele->IsCharacterOnElevator(shared_from_this())) {
       onElevator = true;
       isOnElevator = true;
-      position.y = ele->GetPosition().y + ele->GetSize().y + 30;
+
+      position.y = ele->GetPosition().y + ele->GetSize().y + 31;
       break;
     } else {
       isOnElevator = false;
     }
+
+    if (velocity.y > 0 && isHorizontal && charTop <= eleBottom &&
+        charTop >= eleBottom - 3.0f) {
+      position.y = eleBottom - size.y + 10;
+      velocity.y = 0.0f;
+    }
+
+    if (!isJumping && (charBottom <= eleBottom && eleBottom <= charTop) &&
+        isHorizontal) {
+
+      velocity.x = 0.0f;
+      if (position.x < ele->GetPosition().x) {
+        position.x = eleLeft - size.x / 2 - 0.1f;
+      } else {
+        position.x = eleRight + size.x / 2 + 0.1f;
+      }
+    }
   }
+
   for (auto &pool : pools) {
     if (pool && pool->IsCharacterFall(shared_from_this()) != "no") {
       if (pool->IsCharacterFall(shared_from_this()) != tag) {

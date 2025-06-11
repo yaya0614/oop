@@ -23,7 +23,7 @@ void IntroductionPage::Start() {
   button = std::make_shared<NewButton>(glm::vec2(0, -180), "play");
   m_Root.AddChild(button);
   music->Play(-1);
-  music->SetVolume(50);
+  music->SetVolume(60);
   m_CurrentState = State::UPDATE;
 };
 

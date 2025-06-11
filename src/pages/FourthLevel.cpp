@@ -43,16 +43,16 @@ void FourthLevel::Start() {
                                             glm::vec2(85, -12), "water",
                                             glm::vec2(1.2, 0.36)));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-34, -225), glm::vec2(20, 2),
+      std::make_shared<NewElevator>(glm::vec2(-34, -225), glm::vec2(36, 5),
                                     "yellow", 30, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(30, -97), glm::vec2(20, 2),
+      std::make_shared<NewElevator>(glm::vec2(30, -99), glm::vec2(39, 5),
                                     "green", -34, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-34, 20), glm::vec2(20, 3),
+      std::make_shared<NewElevator>(glm::vec2(-34, 19), glm::vec2(29, 5),
                                     "blue", 30, glm::vec2(0.35, 0.36), "x"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(330, 123), glm::vec2(20, 2),
+      std::make_shared<NewElevator>(glm::vec2(330, 123), glm::vec2(34, 5),
                                     "orange", -90, glm::vec2(0.4, 0.34), "Y"));
 
   // doors
@@ -136,8 +136,12 @@ void FourthLevel::ResetObject() {
 };
 
 void FourthLevel::Update() {
+  glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
   ModeButton->Update();
-  LOG_DEBUG(IsModePress);
+  // LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
 
     IsModePress = !IsModePress;

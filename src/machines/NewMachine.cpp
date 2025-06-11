@@ -31,7 +31,11 @@ bool NewMachine::IsCharacterOnElevator(
 
   bool x_overlap = (char_right >= ele_left) && (char_left <= ele_right);
 
-  bool y_touch = (fabs(char_bottom - ele_high) <= epsilon);
-
+  bool y_touch =
+      (char_bottom > ele_high && fabs(char_bottom - ele_high) <= epsilon);
+  // LOG_CRITICAL(char_bottom);
+  // LOG_CRITICAL(char_bottom);
+  // LOG_DEBUG("y_touch");
+  // LOG_ERROR(y_touch);
   return x_overlap && y_touch;
 }

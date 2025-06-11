@@ -68,7 +68,7 @@ void SecondLevel::Start() {
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(182, -17), glm::vec2(60, -7), "green", glm::vec2(0.62, 0.36)));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(34, 2),
+      std::make_shared<NewElevator>(glm::vec2(120, 163), glm::vec2(34, 5),
                                     "yellow", 15, glm::vec2(0.55, 0.36), "x"));
 
   switches.push_back(std::make_shared<NewSwitch>(
@@ -148,7 +148,7 @@ void SecondLevel::ResetObject() {
 
 void SecondLevel::Update() {
   ModeButton->Update();
-  LOG_DEBUG(IsModePress);
+  // LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
 
     IsModePress = !IsModePress;
