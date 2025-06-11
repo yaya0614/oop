@@ -2,9 +2,7 @@
 #include "Character.hpp"
 #include "Enum.hpp"
 #include "NewButton.hpp"
-#include "Stage.hpp"
 #include "Util/BGM.hpp"
-#include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "enum.hpp"
 #include <memory>

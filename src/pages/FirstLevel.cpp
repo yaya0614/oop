@@ -37,12 +37,12 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -144)); //-254
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-234, -94)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -254)); //-254
+
   m_Root.AddChild(fireboy);
 
-  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -144)); //-174
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-234, -94)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -174)); //-174
+  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-234, -94)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -136,15 +136,13 @@ void FirstLevel::ResetObject() {
 };
 
 void FirstLevel::Update() {
-  glm::vec2 mousePos = Util::Input::GetCursorPosition();
-  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
-    LOG_DEBUG(mousePos);
-  }
+
   ModeButton->Update();
 
   if (ModeButton->GetIsPressed()) {
     IsModePress = !IsModePress;
   }
+  LOG_DEBUG(IsModePress);
 
   bool someoneDied =
       (fireboy->GetStatus() == "Die" || watergirl->GetStatus() == "Die");

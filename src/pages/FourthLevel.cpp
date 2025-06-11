@@ -27,9 +27,9 @@ void FourthLevel::Start() {
   Background->SetZIndex(40);
   m_Root.AddChild(Background);
   mapbackground = std::make_shared<MapBackground>();
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-160, -244));
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-150, -244));
   m_Root.AddChild(fireboy);
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(160, -244));
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(150, -244));
 
   m_Root.AddChild(watergirl);
 
@@ -141,7 +141,7 @@ void FourthLevel::Update() {
     LOG_DEBUG(mousePos);
   }
   ModeButton->Update();
-  // LOG_DEBUG(IsModePress);
+  LOG_DEBUG(IsModePress);
   if (ModeButton->GetIsPressed()) {
 
     IsModePress = !IsModePress;
