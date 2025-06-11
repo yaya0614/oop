@@ -37,10 +37,12 @@ void FirstLevel::Start() {
   stages_over = std::make_shared<Stage>("stage_over");
   mapbackground = std::make_shared<MapBackground>();
 
-  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -254)); //-254
+  // fireboy = std::make_shared<NewFireBoy>(glm::vec2(-320, -144)); //-254
+  fireboy = std::make_shared<NewFireBoy>(glm::vec2(-234, -94)); //-254
   m_Root.AddChild(fireboy);
 
-  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -254)); //-174
+  // watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-320, -144)); //-174
+  watergirl = std::make_shared<NewWaterGirl>(glm::vec2(-234, -94)); //-174
   m_Root.AddChild(watergirl);
 
   Rock = std::make_shared<NewRock>(glm::vec2(-200, 80), glm::vec2(10, 14));
@@ -52,10 +54,10 @@ void FirstLevel::Start() {
   Pools.push_back(std::make_shared<NewPool>(
       glm::vec2(150, -292), glm::vec2(23, -7), "fire", glm::vec2(0.6, 0.36)));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(-341, -26), glm::vec2(20, 2),
+      std::make_shared<NewElevator>(glm::vec2(-342, -26), glm::vec2(36, 5),
                                     "blue", -90, glm::vec2(0.4, 0.34), "Y"));
   elevators.push_back(
-      std::make_shared<NewElevator>(glm::vec2(340, 56), glm::vec2(22, 2),
+      std::make_shared<NewElevator>(glm::vec2(340, 38), glm::vec2(34, 5),
                                     "purple", -30, glm::vec2(0.4, 0.34), "Y"));
   switches.push_back(std::make_shared<NewSwitch>(
       glm::vec2(-100, -115), glm::vec2(20, 5), "blue", false));
@@ -66,9 +68,9 @@ void FirstLevel::Start() {
       glm::vec2(250, 74), glm::vec2(-6, 7), "purple", true));
 
   doors.push_back(
-      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(5, 30), "fire"));
+      std::make_shared<NewDoor>(glm::vec2(250, 200), glm::vec2(5, 31), "fire"));
   doors.push_back(std::make_shared<NewDoor>(glm::vec2(320, 200),
-                                            glm::vec2(5, 30), "water"));
+                                            glm::vec2(5, 31), "water"));
 
   BasicAddStash();
   for (auto &s : switches) {
@@ -134,9 +136,12 @@ void FirstLevel::ResetObject() {
 };
 
 void FirstLevel::Update() {
-
+  glm::vec2 mousePos = Util::Input::GetCursorPosition();
+  if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB)) {
+    LOG_DEBUG(mousePos);
+  }
   ModeButton->Update();
-  LOG_DEBUG(IsModePress);
+
   if (ModeButton->GetIsPressed()) {
     IsModePress = !IsModePress;
   }
@@ -180,6 +185,7 @@ void FirstLevel::Update() {
     if (!doors[1]->GetIsOpen() || !doors[0]->GetIsOpen()) {
       bool firedoor = (doors[0]->IsCharacterInto(fireboy, watergirl));
       bool waterdoor = (doors[1]->IsCharacterInto(fireboy, watergirl));
+
       if (firedoor && waterdoor) {
         doors[0]->OpenDoor();
         doors[1]->OpenDoor();
