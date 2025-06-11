@@ -2,7 +2,7 @@
 
 ## 組別資訊
 
-組別：14  組員：張孟綺 112590014 復刻遊戲： 冰火姐弟
+組別：12  組員：張孟綺 112590014 復刻遊戲： 冰火姐弟
 
 ## 專案簡介
 
@@ -122,7 +122,6 @@
 
 解決方法：多次重置同一個關卡後，發現人物的移動變得很遲緩，故針對整體架構做思考後發現是沒有清空使用完的shared_ptr。因此，我將每個物件做了reset，同時Start()初始化的地方將物件加入stash，以便遊戲結束、重置時可以利用for將物件從畫面中移除；另外，針對用到的vector也要做到清除的動作，這邊使用的是clear()。上述三點的實作，是為了確保遊戲重置、結束後不會造成性能的不佳與記載上一次遊戲所造成的資料不正確性。
 
-
 * Circular Dependency
 
 問題：因為NewFireboy和NewWaterGirl兩個class都隸屬於NewCharacter的子類，且使用的Funciton相同所以我希望將共同會使用的Funciton放置在NewCharacter，以避免重複的Code。但因為在NewDoor和其他機關中，其Function中的參數有呼叫到NewCharacter，故導致當我將NewFireboy和NewWaterGirl的Function結合在NewCharacter時會出現“Circular Dependency”的問題。因為我令兩個class雙向呼叫了。
@@ -138,13 +137,11 @@
 
 將會造成circular dependency的function以Interface實作，讓方法變成一個接口給class繼承。如此，便可使兩個class去繼承該Interface以避免雙向呼叫（同USB介面跟電腦插口的關係）。
 
-
 * 跳躍事件
 
 問題：當一直壓著W或UP時，人物就會一直觸發跳躍事件，導致人物的頭會貼著平台的天花板。
 
 解決方法：將原本的Util::Input::IsKeyPressed(Util::Keycode::UP)調整成IsKeyDown。 兩種按鍵觸發的時機與幀數並不相同。IsKeyPressed是只要你按著不放開，他就會一直除發；Keycode是你按下去那個有作用，並觸發function。
-
 
 * 碰撞項檢測、架構
 
