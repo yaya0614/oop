@@ -1,24 +1,172 @@
-# PTSD Template
+# 2025 OOPL Final Report
 
-This is a [PTSD](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) framework template for students taking OOPL2024s.
+## 組別資訊
 
-## Quick Start
+組別：14  組員：張孟綺 112590014 復刻遊戲： 冰火姐弟
 
-1. Use this template to create a new repository
-   ![github screenshot](https://github.com/ntut-rick/ptsd-template/assets/126899559/ef62242f-03ed-481d-b858-12b730c09beb)
+## 專案簡介
 
-2. Clone your repository
+### 遊戲簡介
 
-   ```bash
-   git clone YOUR_GIT_URL --recursive
-   ```
+該遊戲主要在復刻經典的童年雙人遊戲「冰火姐弟」。
 
-3. Build your project
+* 角色為火弟弟與冰姐姐，兩人合力經過各種機關以完成闖關。
+* 機關包含：利用搖桿、按鈕控制升降梯，跳過和自己不同屬性的冰河、火河、沼澤，走過平衡吊橋。
+* 關卡數共4關。
 
-  > [!WARNING]
-  > Please build your project in `Debug` because our `Release` path is broken D:
-   
-   ```sh
-   cmake -DCMAKE_BUILD_TYPE=Debug -B build # -G Ninja
-   ```
-   better read [PTSD README](https://github.com/ntut-open-source-club/practical-tools-for-simple-design)
+### 組別分工
+
+一人實作整個專案，含括：找素材、修圖、架構設計與撰寫程式、測試與除錯。
+
+## 遊戲介紹
+
+### 遊戲規則
+
+**角色操控：**
+
+* 冰姐姐操控鍵為WAD
+
+  A（往左移平移）、D（往右平移）、WA（跳左上）、WD（跳右上）
+* 火弟弟操控鍵為上左右
+
+  左（往左移平移）、右（往右平移）、左上（跳左上）、右上（跳右上）
+
+**得分辦法：**
+
+    有紅、藍兩種寶石。火弟弟吃到紅寶石便會得分｜冰姐姐吃到藍寶石便會得分
+
+**死亡機制：**
+
+當冰姐姐、火弟弟任一角色觸犯遊戲規範時（如：冰姐姐掉入火海、火弟弟掉入冰河、任一角色掉入沼澤）就會死亡。
+
+**過關機制：**
+
+1. 人物可透過推桿、按鈕來控制升降梯的水平跟垂直移動。
+2. 岩石能幫助人物在兩階層高度落差太大時，起到減少垂直距離的作用。
+3. 當人物距離吊橋中心太遠時則會掉落吊橋。
+
+透過上述2點機制，以達到闖關門。當冰姐姐與火弟弟同時進入屬於自己顏色的門中，便會開啟門以完成闖關。
+
+### 遊戲畫面
+
+**起始頁面**
+
+<img src="./ReadmeUse/IntroductionPage.png" width="350">
+
+**第一關**
+
+<img src="./ReadmeUse/Level1.png" width="350">
+
+**第二關**
+
+<img src="./ReadmeUse/Level2.png" width="350">
+
+**第三關**
+
+<img src="./ReadmeUse/Level3.png" width="350">
+
+**第四關**
+
+<img src="./ReadmeUse/Level4.png" width="350">
+
+**人物死亡觸發Stage畫面**
+
+<img src="./ReadmeUse/StageOver.png" width="350">
+
+**人物過關**
+
+<img src="./ReadmeUse/Stage.png" width="350">
+
+## 程式設計
+
+### 程式架構
+
+1. 遊戲角色 (Actors)
+
+   - NewCharacter：基礎角色類別
+   - NewFireboy：火人角色
+   - NewWaterGirl：冰人角色
+   - NewRock：岩石物件
+2. 頁面管理 (Pages)
+
+   - IntroductionPage：遊戲介紹頁面
+   - FirstLevel 到 FourthLevel：四個遊戲關卡
+3. 遊戲機制 (Machines)
+
+   - 包含各個遊戲機關
+4. 應用程式管理 (App)
+
+   - 負責管理遊戲狀態
+   - 程式技術
+5. 物件導向程式設計
+
+   - 使用繼承實現角色系統
+   - 使用多型處理不同類型的遊戲物件
+   - 封裝遊戲邏輯和資料
+6. 記憶體管理
+
+   - 使用shared_ptr管理物件的生命週期
+   - 避免Memory leak
+7. 遊戲循環
+
+   - 實現遊戲循環：Start -> Update -> End
+   - 使用狀態管理遊戲進程
+
+## 結語
+
+### 問題與解決方法
+
+* 記憶體管理
+
+問題：在未設計重置關卡的功能時，沒有做針對使用完的記憶體做釋放，導致多次重置同一關卡時遊戲的整體效能變得非常慢
+
+解決方法：多次重置同一個關卡後，發現人物的移動變得很遲緩，故針對整體架構做思考後發現是沒有清空使用完的shared_ptr。因此，我將每個物件做了reset，同時Start()初始化的地方將物件加入stash，以便遊戲結束、重置時可以利用for將物件從畫面中移除；另外，針對用到的vector也要做到清除的動作，這邊使用的是clear()。上述三點的實作，是為了確保遊戲重置、結束後不會造成性能的不佳與記載上一次遊戲所造成的資料不正確性。
+
+
+* Circular Dependency
+
+問題：因為NewFireboy和NewWaterGirl兩個class都隸屬於NewCharacter的子類，且使用的Funciton相同所以我希望將共同會使用的Funciton放置在NewCharacter，以避免重複的Code。但因為在NewDoor和其他機關中，其Function中的參數有呼叫到NewCharacter，故導致當我將NewFireboy和NewWaterGirl的Function結合在NewCharacter時會出現“Circular Dependency”的問題。因為我令兩個class雙向呼叫了。
+
+解決方法：我查過一些資料，發生該問題時應視情況而決定更動的大小。目前已知的做法有二，前項呼叫、使用介面。
+
+**做法一：**
+
+這邊我用到的是“前項呼叫”，其定義是不include呼叫或定義資料的型態，而是定義該資料的class在前讓compilier不去對應的include抓該class，以逃過compilier檢測到Circular Dependency。
+之所以會使用「前項呼叫」的原因是因為這邊的function不多，所以不打算將方法獨立抽出做成一個Interface。
+
+**做法二：**
+
+將會造成circular dependency的function以Interface實作，讓方法變成一個接口給class繼承。如此，便可使兩個class去繼承該Interface以避免雙向呼叫（同USB介面跟電腦插口的關係）。
+
+
+* 跳躍事件
+
+問題：當一直壓著W或UP時，人物就會一直觸發跳躍事件，導致人物的頭會貼著平台的天花板。
+
+解決方法：將原本的Util::Input::IsKeyPressed(Util::Keycode::UP)調整成IsKeyDown。 兩種按鍵觸發的時機與幀數並不相同。IsKeyPressed是只要你按著不放開，他就會一直除發；Keycode是你按下去那個有作用，並觸發function。
+
+
+* 碰撞項檢測、架構
+
+問題：在我的第一版碰中，針對平台部分只有做左右平移的檢測，這會導致當人物實施Jump()方法時頭部會穿過平台。另外，檢測碰撞像的地方因為是寫在Update所以如果要做後續管理會非常不便。
+
+解決方法：我refactor程式的整體架構，新增一個專門在處理人物的類別NewCharacter，該類別的成員包含基本的startpos和tag，用在Start()初始化人物得屬性與位置。而方法的部分，我建構了IsCollidingWithPlatform()在檢測人物與平台的碰撞，並針對X軸和Y軸分別建構了兩個function去檢測人物與平台的碰撞。將碰撞項放在基底寫，並使用虛擬函式就可以實現方便管理且自定義可變內容。
+
+### 自評
+
+| 項次 | 項目                                     | 完成 |
+| ---- | ---------------------------------------- | ---- |
+| 1    | 這是範例                                 | V    |
+| 2    | 完成專案權限改為 public                  | V    |
+| 3    | 具有 debug mode 的功能                   | V    |
+| 4    | 解決專案上所有 Memory Leak 的問題        | V    |
+| 5    | 報告中沒有任何錯字，以及沒有任何一項遺漏 | V    |
+| 6    | 報告至少保持基本的美感，人類可讀         | V    |
+
+### 心得
+
+獨立建構一個小專案真的可以學到很多東西，尤其針對自己不太熟悉的領域。藉由這次實作，終於理解了很多上學期oop的內容，包括封裝、繼承、介面和智慧指標等。和上學期不同的是，該專案需要非常瞭解遊戲的需求與功能面是什麼，而學會一套概念要加以使用才是真正的學問。過程中最大的收穫就是邊做邊學且不斷思考之後的擴充性該如何，還記得一開始實作的水平碰撞項成功後，我認為那就是很棒的功能了，但卻低估了後續程式的擴充性，因此決定打掉重練。因為我希望每一關的建構方式都相較方便管理，這讓我體悟到做中學的思緒成長是會對事件的角度產生很大的影響的。而遇到問題時應該先瞭解造成問題發生的原因，進而思考可解決的方式。方式與技巧並無優劣，應該是要依照當前的需求即使用的場景來決定要使用何種方法解決問題。最後，因為製作專案期間很常會出現編譯器報錯的提示，我更加熟悉查看報錯指令，並依照該提示去找相對應的解決方式。整體來說，受益良多且學到很多新鮮的概念與領域，並針對c++的使用更為熟悉，也完成了我小時候最喜歡玩的遊戲，非常有意義的一堂課！
+
+### 貢獻比例
+
+張孟綺 100%

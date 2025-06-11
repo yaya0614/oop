@@ -1,0 +1,37 @@
+ [debug] vec2(336.000000, -259.000000)
+ [debug] vec2(360.000000, -235.000000)
+
+ [debug] vec2(337.000000, -259.000000)
+
+
+
+人物碰撞障礙物IsCollider()
+
+橫向：
+障礙物在火人右側
+(fb_left_x < platform_left_x)&&(fb_right_x > platform_left_x)
+障礙物在火人左側
+(fb_right_x > platform_right_x)&&(fb_left_x < platform_left_x)
+
+縱向：
+火人當前站地高度 fireboy->GetPosition.y - fireboy->GetScaledSize.y/2
+
+如果火人當前站地高度==platform_y_high && platform_y_high-platform_y_low>30 （為true）那表示火人站在平台上（該平台不是障礙物）
+=false表示有可能遇到障礙物遇到障礙物
+
+
+elevation:
+-> 這邊用elevation 去寫一個function（傳入player）來觸發 = 當player跳進elevation x的範圍且player_y_low == current_y_top 回傳一個bool跟當前elevation的高度
+-> 讓Player::Update（）來接收---因為Update才是真正可以Set Player Postion的。
+這邊會有一個判斷，如果回傳的值為true那麼就要根據回傳的elevation的高度，來先讓火人站在上面，並且可以行走。
+當電梯開始動的時候就讓他一直回傳其position給player讓火人可以跟電梯同步
+
+
+
+Rock跟Player
+- 推動關係
+ 只要player的左邊接觸到Rock的右邊，就要讓Player跟Rock兩個一起推著走 往左邊的方向
+ 只要player的右邊接觸到Rock的左邊，就要讓Player跟Rock兩個一起推著走 往右邊的方向
+- Player可以跳到Rock上
+ 偵測如果Player.GetPosition.x中間的位置有在 Rock.GetPosition.x + 寬/2 且 Player.GetPosition.y_low高度 >= Rock.GetPosition.y + 高/2 就設定Player的高度在Rock上
+
