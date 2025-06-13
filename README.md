@@ -103,7 +103,6 @@
 4. 應用程式管理 (App)
 
    - 負責管理遊戲狀態
-   - 程式技術
 5. 物件導向程式設計
 
    - 使用繼承實現角色系統
@@ -136,7 +135,7 @@
 
 **做法一：**
 
-這邊我使用的是「前項宣告」，它的定義是不直接 include 該資料型態，使用「前項宣告」，避免直接 `include` 資料型態，而是先宣告該 class，，讓 compiler 不會去 include 該 class，從而避開 Circular Dependency 的檢測。之所以會使用「前項宣告」的原因是因為這邊的 Function 不多，所以不打算將方法獨立抽出做成一個 Interface。
+這邊我使用的是「前項宣告」，它的定義是不直接 include 該資料型態，使用「前項宣告」，避免直接 `include` 資料型態，而是先宣告該 class，讓 compiler 不會去 include 該 class，從而避開 Circular Dependency 的檢測。之所以會使用「前項宣告」的原因是因為這邊的 Function 不多，所以不打算將方法獨立抽出做成一個 Interface。
 
 **做法二：**
 
